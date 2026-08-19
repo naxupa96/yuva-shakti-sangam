@@ -1,7 +1,7 @@
 /**
  * Centralized configuration for Yuva Shakti Sangam.
  */
-export const LUMA_REGISTRATION_URL = "https://luma.com/2zbw39ii";
+export const LUMA_REGISTRATION_URL = "https://luma.com/rkfe66wo";
 
 export const eventConfig = {
   name: "Yuva Shakti Sangam",
