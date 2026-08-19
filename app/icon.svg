@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="14" fill="#080808"/>
+  <circle cx="32" cy="32" r="28" stroke="#FF6A00" stroke-width="1.5" stroke-opacity="0.3"/>
+  <!-- Stylized Shakti / Rising Flame Energy -->
+  <path d="M32 10C32 10 38 22 38 28C38 31.3137 35.3137 34 32 34C28.6863 34 26 31.3137 26 28C26 22 32 10 32 10Z" fill="#FF6A00"/>
+  <path d="M32 24C32 24 45 36 45 44C45 51.1797 39.1797 57 32 57C24.8203 57 19 51.1797 19 44C19 36 32 24 32 24Z" fill="#FF6A00" fill-opacity="0.85"/>
+  <circle cx="32" cy="44" r="5" fill="#F5F5F0"/>
+</svg>

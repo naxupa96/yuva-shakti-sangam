@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-parchment: #E7CEA3;
+  --bg-parchment-light: #F2DFBD;
+  --bg-parchment-dark: #D8BE91;
+  --text-ink: #17130E;
+  --text-muted: #5A4839;
+  --color-bhagwa: #F05A12;
+  --color-bhagwa-light: #FF6D00;
+  --color-bhagwa-rust: #C8460B;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    color-scheme: light;
+    background-color: #E7CEA3;
+    color: #17130E;
+    font-family: var(--font-inter), sans-serif;
+  }
+
+  body {
+    background-color: #E7CEA3;
+    color: #17130E;
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(240, 90, 18, 0.09) 0%, transparent 65%),
+      radial-gradient(circle at 100% 45%, rgba(200, 70, 11, 0.07) 0%, transparent 55%),
+      radial-gradient(circle at 0% 100%, rgba(255, 160, 0, 0.07) 0%, transparent 60%);
+  }
+
+  /* Accessibility focus visible */
+  *:focus-visible {
+    outline: 2px solid #F05A12;
+    outline-offset: 3px;
+  }
+}
+
+/* Rich Vintage Parchment Textures */
+.bg-parchment-texture {
+  background-color: #E7CEA3;
+  background-image: 
+    radial-gradient(rgba(23, 19, 14, 0.04) 1px, transparent 0),
+    radial-gradient(circle at 20% 30%, rgba(240, 90, 18, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(200, 70, 11, 0.06) 0%, transparent 50%);
+  background-size: 24px 24px, 100% 100%, 100% 100%;
+}
+
+.bg-parchment-card {
+  background-color: #F2DFBD;
+  border: 1px solid rgba(23, 19, 14, 0.15);
+  box-shadow: 0 4px 25px rgba(23, 19, 14, 0.08);
+}
+
+.bg-dark-panel {
+  background-color: #17130E;
+  color: #F2DFBD;
+  border: 1px solid rgba(231, 206, 163, 0.18);
+}
+
+/* Distressed Print Title Styling */
+.distressed-title {
+  letter-spacing: -0.03em;
+  line-height: 0.88;
+  text-shadow: 0 1px 1px rgba(23, 19, 14, 0.15);
+}
+
+/* Primary Saffron / Bhagwa Gradient Buttons */
+.btn-bhagwa-primary {
+  background: linear-gradient(135deg, #FF6D00 0%, #F05A12 50%, #C8460B 100%);
+  color: #FFFFFF;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 18px rgba(240, 90, 18, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-bhagwa-primary:hover {
+  background: linear-gradient(135deg, #FF7D1A 0%, #FA621B 50%, #D84D12 100%);
+  box-shadow: 0 6px 26px rgba(240, 90, 18, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-bhagwa-primary:active {
+  transform: translateY(1px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #E7CEA3;
+}
+::-webkit-scrollbar-thumb {
+  background: #C8B087;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B59B6F;
+}
