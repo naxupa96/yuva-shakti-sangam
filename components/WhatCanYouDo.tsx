@@ -2,16 +2,16 @@
 
 import React, { useState } from "react";
 import { actionDomains } from "@/lib/data";
-import { Code, GraduationCap, Building2, Trees, HeartHandshake, Award, ChevronDown, CheckCircle2, Sparkles } from "lucide-react";
+import { Cpu, GraduationCap, Briefcase, Trees, HeartHandshake, Shield, ChevronDown, CheckCircle2, Sparkles } from "lucide-react";
 import { CornerOrnament, DevanagariWatermark, OrnamentalDivider } from "./Decorations";
 
 const domainIcons: Record<string, React.ReactNode> = {
-  tech: <Code className="w-5 h-5 text-[#E65100]" />,
-  edu: <GraduationCap className="w-5 h-5 text-[#E65100]" />,
-  biz: <Building2 className="w-5 h-5 text-[#E65100]" />,
-  env: <Trees className="w-5 h-5 text-[#E65100]" />,
-  seva: <HeartHandshake className="w-5 h-5 text-[#E65100]" />,
-  lead: <Award className="w-5 h-5 text-[#E65100]" />,
+  tech: <Cpu className="w-5 h-5 text-[#F05A12]" />,
+  education: <GraduationCap className="w-5 h-5 text-[#F05A12]" />,
+  entrepreneurship: <Briefcase className="w-5 h-5 text-[#F05A12]" />,
+  seva: <HeartHandshake className="w-5 h-5 text-[#F05A12]" />,
+  environment: <Trees className="w-5 h-5 text-[#F05A12]" />,
+  leadership: <Shield className="w-5 h-5 text-[#F05A12]" />,
 };
 
 export default function WhatCanYouDo() {
@@ -22,25 +22,25 @@ export default function WhatCanYouDo() {
   };
 
   return (
-    <section id="what-can-you-do" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#EAE0D0] bg-parchment-texture relative overflow-hidden border-b border-[#292524]/10">
-      <DevanagariWatermark text="कर्म" className="top-10 left-4 text-[12rem] sm:text-[20rem] text-[#292524]/5" />
+    <section id="what-can-you-do" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#E7CEA3] bg-parchment-texture relative overflow-hidden border-b border-[#17130E]/15">
+      <DevanagariWatermark text="कर्म" className="top-10 left-4 text-[12rem] sm:text-[20rem] text-[#17130E]/5" />
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1C1917] text-[#FAF4EC] text-xs font-black uppercase tracking-widest shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-[#E65100]" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#17130E] text-[#FAF4EC] text-xs font-black uppercase tracking-widest shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 text-[#F05A12]" />
             <span>ACTION PATHWAYS</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black uppercase text-[#1C1917] tracking-tight">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-black uppercase text-[#17130E] tracking-tight">
             WHAT CAN YOU DO <br />
-            <span className="text-[#E65100]">
+            <span className="text-[#F05A12]">
               FOR BHARAT?
             </span>
           </h2>
 
-          <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#5A4839] leading-relaxed">
             Nation-building is tangible work across six vital frontiers. Tap any domain to unlock concrete action pathways.
           </p>
         </div>
@@ -55,50 +55,48 @@ export default function WhatCanYouDo() {
                 onClick={() => toggleExpand(domain.id)}
                 className={`p-7 rounded-3xl border cursor-pointer transition-all duration-300 relative overflow-hidden flex flex-col justify-between shadow-parchment-card ${
                   isExpanded
-                    ? "bg-[#FAF4EC] border-[#E65100] ring-1 ring-[#E65100]/40 shadow-bhagwa-sm"
-                    : "bg-[#F5EBE1] border-[#292524]/15 hover:border-[#E65100]/50 hover:bg-[#FAF4EC]"
+                    ? "bg-[#F2DFBD] border-[#F05A12] ring-1 ring-[#F05A12]/40 shadow-bhagwa-sm"
+                    : "bg-[#F2DFBD]/80 border-[#17130E]/15 hover:border-[#F05A12]/50 hover:bg-[#F2DFBD]"
                 }`}
               >
-                <CornerOrnament className="absolute top-2 right-2 opacity-20 text-[#E65100]" />
+                <CornerOrnament className="absolute top-2 right-2 opacity-20 text-[#F05A12]" />
 
                 <div>
                   {/* Top Bar */}
                   <div className="flex items-center justify-between mb-5">
-                    <div className="w-12 h-12 rounded-2xl bg-[#EAE0D0] border border-[#292524]/10 flex items-center justify-center shadow-sm">
-                      {domainIcons[domain.id]}
+                    <div className="w-12 h-12 rounded-2xl bg-[#E7CEA3] border border-[#17130E]/10 flex items-center justify-center shadow-sm">
+                      {domainIcons[domain.id] || <Sparkles className="w-5 h-5 text-[#F05A12]" />}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-devanagari font-bold text-[#57534E] px-2.5 py-1 rounded-lg bg-[#EAE0D0] border border-[#292524]/10">
-                        {domain.hindiWord}
-                      </span>
-                      <span className="text-xs font-black uppercase tracking-wider text-[#E65100] px-3 py-1 rounded-full bg-[#E65100]/10 border border-[#E65100]/30">
-                        {domain.actionWord}
-                      </span>
-                    </div>
+                    <span className="text-[11px] font-black uppercase tracking-wider text-[#F05A12] px-3 py-1 rounded-full bg-[#E7CEA3] border border-[#F05A12]/30">
+                      {domain.impactMetric}
+                    </span>
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-display font-black text-2xl text-[#1C1917] uppercase tracking-tight mb-2">
+                  <h3 className="font-display font-black text-2xl text-[#17130E] uppercase tracking-tight mb-2">
                     {domain.title}
                   </h3>
 
-                  {/* Short Description */}
-                  <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed mb-4">
-                    {domain.shortDesc}
+                  {/* Tagline & Description */}
+                  <p className="text-xs font-bold text-[#F05A12] mb-1">
+                    {domain.tagline}
+                  </p>
+                  <p className="text-xs sm:text-sm text-[#5A4839] leading-relaxed mb-4">
+                    {domain.description}
                   </p>
                 </div>
 
                 {/* Collapsible Expanded Details */}
                 {isExpanded && (
-                  <div className="pt-4 border-t border-[#292524]/10 space-y-4 animate-in fade-in duration-200">
+                  <div className="pt-4 border-t border-[#17130E]/10 space-y-4 animate-in fade-in duration-200">
                     <div>
-                      <span className="text-[10px] font-black text-[#E65100] uppercase tracking-widest block mb-2">
+                      <span className="text-[10px] font-black text-[#F05A12] uppercase tracking-widest block mb-2">
                         HOW YOU CAN CONTRIBUTE
                       </span>
                       <ul className="space-y-2">
-                        {domain.expandedDetails.howToContribute.map((item, i) => (
-                          <li key={i} className="flex items-start gap-2.5 text-xs text-[#1C1917] font-medium">
-                            <CheckCircle2 className="w-4 h-4 text-[#E65100] shrink-0 mt-0.5" />
+                        {domain.contributionPoints.map((item, i) => (
+                          <li key={i} className="flex items-start gap-2.5 text-xs text-[#17130E] font-medium">
+                            <CheckCircle2 className="w-4 h-4 text-[#F05A12] shrink-0 mt-0.5" />
                             <span>{item}</span>
                           </li>
                         ))}
@@ -106,21 +104,21 @@ export default function WhatCanYouDo() {
                     </div>
 
                     <div className="pt-2">
-                      <span className="text-[10px] font-bold text-[#57534E] uppercase tracking-widest block mb-0.5">
-                        CIVILIZATIONAL IMPACT
+                      <span className="text-[10px] font-bold text-[#5A4839] uppercase tracking-widest block mb-0.5">
+                        CIVILIZATIONAL RELEVANCE
                       </span>
-                      <p className="text-xs text-[#57534E] italic">
-                        {domain.expandedDetails.impact}
+                      <p className="text-xs text-[#5A4839] italic">
+                        {domain.civilizationalRelevance}
                       </p>
                     </div>
                   </div>
                 )}
 
                 {/* Toggle Prompt */}
-                <div className="pt-4 mt-2 flex items-center justify-between text-xs font-bold text-[#57534E]">
+                <div className="pt-4 mt-2 flex items-center justify-between text-xs font-bold text-[#5A4839]">
                   <span>{isExpanded ? "Collapse details" : "Tap to explore action plan"}</span>
                   <ChevronDown
-                    className={`w-4 h-4 text-[#E65100] transition-transform duration-200 ${
+                    className={`w-4 h-4 text-[#F05A12] transition-transform duration-200 ${
                       isExpanded ? "rotate-180" : ""
                     }`}
                   />
@@ -130,7 +128,7 @@ export default function WhatCanYouDo() {
           })}
         </div>
 
-        <OrnamentalDivider className="mt-14 opacity-30 text-[#E65100]" />
+        <OrnamentalDivider className="mt-14 opacity-30 text-[#F05A12]" />
       </div>
     </section>
   );

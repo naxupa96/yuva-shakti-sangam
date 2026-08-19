@@ -67,9 +67,9 @@ export default function Hero() {
                 <a href="#why-attend" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Why Attend</a>
                 <a href="#experience" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Experience</a>
                 <a href="#samvaad" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Yuva Samvaad</a>
+                <a href="#what-can-you-do" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Action Areas</a>
                 <a href="#about-rss" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">About RSS</a>
                 <a href="#timeline" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Timeline</a>
-                <a href="#what-can-you-do" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Action Areas</a>
                 <a href="#event-info" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Venue & FAQ</a>
               </div>
             </div>

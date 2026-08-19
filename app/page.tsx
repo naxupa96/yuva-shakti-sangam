@@ -33,11 +33,11 @@ export default function Home() {
       {/* 4. What Awaits You (Games, Drama, Samvaad, Community) */}
       <Experience />
 
-      {/* 5. What Can You Do For Bharat? (Action Pathways) */}
-      <WhatCanYouDo />
-
-      {/* 6. Yuva Samvaad (Bilingual Youth Dialogue & Pre-Sangam Question Builder) */}
+      {/* 5. Yuva Samvaad (Bilingual Youth Dialogue & Pre-Sangam Question Builder) */}
       <Samvaad />
+
+      {/* 6. What Can You Do For Bharat? (Action Pathways) */}
+      <WhatCanYouDo />
 
       {/* 7. Factual RSS Introduction */}
       <AboutRSS />
