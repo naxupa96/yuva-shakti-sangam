@@ -30,7 +30,7 @@ export default function Hero() {
                 <div className="font-display font-black text-xl sm:text-2xl text-[#17130E] tracking-tight leading-none uppercase">
                   YUVA <span className="text-[#F05A12]">SHAKTI</span> SANGAM
                 </div>
-                <div className="text-[11px] sm:text-xs font-devanagari font-black text-[#5A4839] flex items-center gap-1 mt-0.5 select-none">
+                <div className="text-[11px] sm:text-xs font-devanagari font-black text-[#5A4839] flex items-center gap-1 mt-0.5 select-none whitespace-nowrap">
                   <span className="text-[#F05A12]">युवा शक्ति</span>
                   <span>•</span>
                   <span className="text-[#17130E]">राष्ट्र शक्ति</span>
