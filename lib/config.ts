@@ -24,4 +24,20 @@ export const eventConfig = {
   registrationUrl: LUMA_REGISTRATION_URL,
   host: "Rashtriya Swayamsevak Sangh (RSS)",
   siteUrl: "https://yuvashaktisangam.org",
+  email: "yuvashaktisangam2047@gmail.com",
+  coordinators: [
+    {
+      name: "Dhruvil Bhatt",
+      phone: "+91 90547 37915",
+      phoneRaw: "+919054737915",
+      whatsappUrl: "https://wa.me/919054737915?text=Namaste%20Dhruvil%20bhai%2C%20I%20have%20a%20query%20regarding%20Yuva%20Shakti%20Sangam.",
+    },
+    {
+      name: "Kushal Patel",
+      phone: "+91 70462 32003",
+      phoneRaw: "+917046232003",
+      whatsappUrl: "https://wa.me/917046232003?text=Namaste%20Kushal%20bhai%2C%20I%20have%20a%20query%20regarding%20Yuva%20Shakti%20Sangam.",
+    },
+  ],
 };
+

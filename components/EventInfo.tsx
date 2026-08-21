@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import { eventConfig, LUMA_REGISTRATION_URL } from "@/lib/config";
 import { faqs } from "@/lib/data";
-import { MapPin, Calendar, Clock, Navigation, ChevronDown, Sparkles, ExternalLink } from "lucide-react";
-import { CornerOrnament, DevanagariWatermark, OrnamentalDivider } from "./Decorations";
+import { MapPin, Calendar, Clock, Navigation, ChevronDown, ExternalLink, Mail, Phone, MessageCircle, UserCheck } from "lucide-react";
+import { CornerOrnament, DevanagariWatermark } from "./Decorations";
 
 export default function EventInfo() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -30,13 +30,13 @@ export default function EventInfo() {
           </h2>
 
           <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed">
-            Essential venue, schedule, and attendance details for 6 September 2026.
+            Essential venue, schedule, helpline, and attendance details for 6 September 2026.
           </p>
         </div>
 
         {/* 3 Logistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          {/* Card 1 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {/* Card 1: Location */}
           <div className="p-8 rounded-3xl bg-[#F5EBE1] border border-[#292524]/15 hover:border-[#E65100]/60 transition-all flex flex-col justify-between group shadow-parchment-card">
             <CornerOrnament className="absolute top-2 right-2 opacity-20 text-[#E65100]" />
             <div>
@@ -70,7 +70,7 @@ export default function EventInfo() {
             </div>
           </div>
 
-          {/* Card 2 */}
+          {/* Card 2: Date */}
           <div className="p-8 rounded-3xl bg-[#F5EBE1] border border-[#292524]/15 hover:border-[#E65100]/60 transition-all flex flex-col justify-between group shadow-parchment-card">
             <CornerOrnament className="absolute top-2 right-2 opacity-20 text-[#E65100]" />
             <div>
@@ -104,7 +104,7 @@ export default function EventInfo() {
             </div>
           </div>
 
-          {/* Card 3 */}
+          {/* Card 3: Time */}
           <div className="p-8 rounded-3xl bg-[#F5EBE1] border border-[#292524]/15 hover:border-[#E65100]/60 transition-all flex flex-col justify-between group shadow-parchment-card">
             <CornerOrnament className="absolute top-2 right-2 opacity-20 text-[#E65100]" />
             <div>
@@ -133,6 +133,76 @@ export default function EventInfo() {
                 <span>EXPLORE 4-HOUR TIMELINE</span>
                 <ChevronDown className="w-3.5 h-3.5" />
               </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact & Helpline Panel */}
+        <div className="p-8 sm:p-10 rounded-3xl bg-[#1C1917] text-[#FAF4EC] border border-[#292524] shadow-2xl mb-16 relative overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+            {/* Left Col: Info */}
+            <div className="space-y-2 lg:col-span-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E65100]/20 text-[#E65100] text-[11px] font-black uppercase tracking-wider">
+                <span>DIRECT SUPPORT &amp; QUERIES</span>
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-display font-black uppercase text-[#FAF4EC]">
+                CONTACT &amp; HELPLINE
+              </h3>
+              <p className="text-xs text-[#A8A29E] leading-relaxed">
+                Have questions regarding registration, delegation, volunteering, or venue access? Reach out to our organizing team.
+              </p>
+              <div className="pt-2">
+                <a
+                  href={`mailto:${eventConfig.email}`}
+                  className="inline-flex items-center gap-2 text-xs font-bold text-[#E65100] hover:underline"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>{eventConfig.email}</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Right Col: Coordinators Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:col-span-2">
+              {eventConfig.coordinators.map((coordinator) => (
+                <div
+                  key={coordinator.name}
+                  className="p-5 rounded-2xl bg-[#241F1A] border border-[#3E3832] flex flex-col justify-between space-y-4 hover:border-[#E65100]/50 transition-colors"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <UserCheck className="w-4 h-4 text-[#E65100]" />
+                        <h4 className="font-display font-black text-lg text-[#FAF4EC]">
+                          {coordinator.name}
+                        </h4>
+                      </div>
+                      <span className="text-[11px] text-[#78716C] uppercase font-bold tracking-wider block mt-0.5">
+                        Event Coordinator
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#3E3832]">
+                    <a
+                      href={`tel:${coordinator.phoneRaw}`}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#141210] border border-[#3E3832] text-xs font-bold text-[#FAF4EC] hover:text-[#E65100] hover:border-[#E65100]/50 transition-colors"
+                    >
+                      <Phone className="w-3.5 h-3.5 text-[#E65100]" />
+                      <span>{coordinator.phone}</span>
+                    </a>
+                    <a
+                      href={coordinator.whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#25D366]/15 border border-[#25D366]/30 text-xs font-bold text-[#25D366] hover:bg-[#25D366]/25 transition-colors"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      <span>WhatsApp</span>
+                    </a>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

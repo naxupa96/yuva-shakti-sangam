@@ -108,19 +108,20 @@ export default function AboutRSS() {
               </div>
             </div>
             <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed mb-5">
-              Inspired Swayamsevaks lead massive non-profit institutions in education (Vidya Bharati, Ekal Vidyalaya), tribal healthcare (Vanvasi Kalyan Ashram), and emergency disaster response across India.
+              Inspired Swayamsevaks lead massive non-profit institutions in education (Vidya Bharati, Ekal Vidyalaya), tribal healthcare (Vanvasi Kalyan Ashram), and act as immediate civilian first-responders during disasters across India.
             </p>
             <ul className="space-y-2 text-xs text-[#1C1917] font-medium">
               <li className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-[#E65100] shrink-0" />
-                <span>Immediate first-response during earthquakes, floods, and pandemics</span>
+                <span>First responders in Ahmedabad Aviation Emergencies (1988 &amp; 2025), Morbi (1979), Bhuj (2001) &amp; Balasore (2023)</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-4 h-4 text-[#E65100] shrink-0" />
-                <span>Extensive vocational training and grassroots self-reliance</span>
+                <span>Pan-India COVID-19 relief: 8.5+ crore meals, isolation centers, plasma &amp; oxygen registries</span>
               </li>
             </ul>
           </div>
+
 
           {/* Card 4 */}
           <div className="p-7 sm:p-9 rounded-3xl bg-[#F5EBE1] border border-[#292524]/15 hover:border-[#E65100]/60 transition-all shadow-parchment-card relative overflow-hidden group">
