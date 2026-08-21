@@ -144,10 +144,11 @@ export function DevanagariWatermark({
 }) {
   return (
     <span
-      className={`absolute font-devanagari font-black select-none pointer-events-none uppercase tracking-tighter opacity-[0.03] text-saffron leading-none ${className}`}
+      className={`absolute font-devanagari font-black select-none pointer-events-none uppercase tracking-tighter leading-none ${className}`}
       aria-hidden="true"
     >
       {text}
     </span>
   );
 }
+

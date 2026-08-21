@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { MessageSquare, Send, Sparkles, Check, ArrowRight, Flame } from "lucide-react";
+import { MessageSquare, ArrowUpRight, Flame, Sparkles } from "lucide-react";
 import { LUMA_REGISTRATION_URL } from "@/lib/config";
 import { CornerOrnament, DevanagariWatermark } from "./Decorations";
 
@@ -17,19 +17,10 @@ const discussionNodes = [
 
 export default function Samvaad() {
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
-  const [userQuestion, setUserQuestion] = useState("");
-  const [reflected, setReflected] = useState(false);
-
-  const handleReflect = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (userQuestion.trim() || selectedTopic) {
-      setReflected(true);
-    }
-  };
 
   return (
     <section id="samvaad" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#E7CEA3] bg-parchment-texture relative overflow-hidden border-b border-[#17130E]/15">
-      <DevanagariWatermark text="संवाद" className="top-10 right-4 text-[12rem] sm:text-[20rem] text-[#17130E]/5" />
+      <DevanagariWatermark text="संवाद" className="top-8 right-4 text-[12rem] sm:text-[20rem] text-[#17130E]/12 pointer-events-none" />
 
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Bilingual Section Header */}
@@ -79,10 +70,7 @@ export default function Samvaad() {
             {discussionNodes.map((topic) => (
               <button
                 key={topic}
-                onClick={() => {
-                  setSelectedTopic(topic);
-                  setReflected(false);
-                }}
+                onClick={() => setSelectedTopic(selectedTopic === topic ? null : topic)}
                 className={`p-3.5 rounded-xl border text-left text-xs font-bold transition-all duration-200 shadow-sm ${
                   selectedTopic === topic
                     ? "bg-[#F2DFBD] border-[#F05A12] text-[#F05A12] ring-1 ring-[#F05A12]"
@@ -99,72 +87,38 @@ export default function Samvaad() {
           </div>
         </div>
 
-        {/* Interactive Question Canvas */}
-        <div className="p-6 sm:p-10 rounded-3xl bg-[#F2DFBD] border-2 border-[#17130E]/15 shadow-parchment-deep relative">
+        {/* Question Submission via Luma Banner */}
+        <div className="p-8 sm:p-10 rounded-3xl bg-[#F2DFBD] border-2 border-[#17130E]/15 shadow-parchment-deep relative overflow-hidden">
           <CornerOrnament className="absolute top-3 left-3 text-[#F05A12]/40" />
           <CornerOrnament className="absolute top-3 right-3 text-[#F05A12]/40 -scale-x-100" />
+          <CornerOrnament className="absolute bottom-3 left-3 text-[#F05A12]/40 -scale-y-100" />
+          <CornerOrnament className="absolute bottom-3 right-3 text-[#F05A12]/40 -scale-100" />
 
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-6">
-              <span className="text-xs font-black text-[#F05A12] uppercase tracking-widest block mb-1">
-                PRE-SANGAM THOUGHT STARTER
-              </span>
-              <h3 className="text-2xl sm:text-3xl font-display font-black uppercase text-[#17130E]">
-                If you could change ONE thing about India... What would it be?
-              </h3>
-              <p className="text-xs sm:text-sm text-[#5A4839] mt-2">
-                Frame your perspective below and bring this question to the live Sangam on 6 September.
-              </p>
+          <div className="max-w-2xl mx-auto text-center space-y-4 relative z-10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#17130E] text-[#FAF4EC] text-[11px] font-black uppercase tracking-wider">
+              <Sparkles className="w-3 h-3 text-[#FFA000]" />
+              <span>SUBMIT VIA LUMA REGISTRATION</span>
             </div>
 
-            {reflected ? (
-              <div className="p-6 rounded-2xl bg-[#E7CEA3] border border-[#F05A12] text-center space-y-3 animate-in fade-in">
-                <div className="w-12 h-12 rounded-full bg-[#F05A12] text-white flex items-center justify-center mx-auto shadow-bhagwa-sm">
-                  <Check className="w-6 h-6 stroke-[3]" />
-                </div>
-                <h4 className="font-display font-black text-lg text-[#17130E] uppercase">
-                  QUESTION FRAMED FOR SANGAM!
-                </h4>
-                <p className="text-xs text-[#5A4839] max-w-md mx-auto">
-                  &ldquo;{userQuestion || selectedTopic}&rdquo;
-                </p>
-                <div className="pt-2">
-                  <a
-                    href={LUMA_REGISTRATION_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl btn-bhagwa-primary text-xs font-black uppercase tracking-wider"
-                  >
-                    <span>CLAIM YOUR SANGAM PASS</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </a>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleReflect} className="space-y-4">
-                <textarea
-                  rows={3}
-                  value={userQuestion}
-                  onChange={(e) => setUserQuestion(e.target.value)}
-                  placeholder="Type your question or perspective for the open dialogue..."
-                  className="w-full p-4 rounded-xl bg-[#E7CEA3] border border-[#17130E]/20 text-[#17130E] text-xs sm:text-sm placeholder-[#5A4839]/60 focus:outline-none focus:border-[#F05A12] focus:ring-1 focus:ring-[#F05A12] resize-none"
-                />
+            <h3 className="text-2xl sm:text-4xl font-display font-black uppercase text-[#17130E] tracking-tight">
+              HAVE A QUESTION FOR THE SAMVAAD?
+            </h3>
 
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <span className="text-[11px] text-[#5A4839] font-medium">
-                    {selectedTopic ? `Selected Theme: ${selectedTopic}` : "Select a theme above or write your own question"}
-                  </span>
+            <p className="text-xs sm:text-sm text-[#5A4839] max-w-lg mx-auto leading-relaxed font-medium">
+              You can submit your questions and topics directly in the Luma registration form before the event, or raise them live during the open-mic dialogue on 6 September.
+            </p>
 
-                  <button
-                    type="submit"
-                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#17130E] hover:bg-[#24170D] text-white text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-sm"
-                  >
-                    <Send className="w-3.5 h-3.5 text-[#F05A12]" />
-                    <span>REFLECT QUESTION</span>
-                  </button>
-                </div>
-              </form>
-            )}
+            <div className="pt-3">
+              <a
+                href={LUMA_REGISTRATION_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl btn-bhagwa-primary text-xs sm:text-sm font-black uppercase tracking-wider active:scale-95 transition-all shadow-bhagwa-sm"
+              >
+                <span>REGISTER &amp; SUBMIT QUESTION ON LUMA</span>
+                <ArrowUpRight className="w-4 h-4 stroke-[3]" />
+              </a>
+            </div>
           </div>
         </div>
 
