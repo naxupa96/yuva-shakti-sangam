@@ -108,7 +108,7 @@ export default function Navbar() {
                   rel="noopener noreferrer"
                   className="block w-full text-center py-3 rounded-xl btn-bhagwa-primary text-xs font-black uppercase tracking-wider"
                 >
-                  REGISTER VIA LUMA (FREE)
+                  REGISTER VIA LUMA (₹50)
                 </a>
               </div>
             </div>

@@ -108,3 +108,16 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #B59B6F;
 }
+
+@keyframes equalizer {
+  0% {
+    height: 20%;
+  }
+  50% {
+    height: 100%;
+  }
+  100% {
+    height: 40%;
+  }
+}
+

@@ -13,6 +13,7 @@ import EventJourney from "@/components/EventJourney";
 import EventInfo from "@/components/EventInfo";
 import RegistrationCTA from "@/components/RegistrationCTA";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import AudioPlayer from "@/components/AudioPlayer";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -20,6 +21,9 @@ export default function Home() {
     <main className="min-h-screen bg-background text-text-primary selection:bg-saffron selection:text-black">
       {/* Global Navigation Header */}
       <Navbar />
+
+      {/* Background Music Player */}
+      <AudioPlayer />
 
       {/* 1. Hero Section with Live Countdown & Sacred Geometry Backdrop */}
       <Hero />

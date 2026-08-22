@@ -192,7 +192,7 @@ export default function Hero() {
                   rel="noopener noreferrer"
                   className="w-full py-4 px-6 rounded-xl btn-bhagwa-primary text-sm sm:text-base font-black uppercase tracking-wider flex items-center justify-center gap-2 group"
                 >
-                  <span>JOIN THE SANGAM (FREE)</span>
+                  <span>JOIN THE SANGAM (₹50)</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
               </div>
@@ -202,8 +202,8 @@ export default function Hero() {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2">
                   <Ticket className="w-4 h-4 text-[#F05A12]" />
                   <div className="text-left">
-                    <span className="text-[10px] sm:text-xs font-black uppercase block leading-none">100%</span>
-                    <span className="text-[9px] sm:text-[10px] text-[#5A4839] block leading-tight">FREE ENTRY</span>
+                    <span className="text-[10px] sm:text-xs font-black uppercase block leading-none">₹50 ONLY</span>
+                    <span className="text-[9px] sm:text-[10px] text-[#5A4839] block leading-tight">ENTRY PASS</span>
                   </div>
                 </div>
 

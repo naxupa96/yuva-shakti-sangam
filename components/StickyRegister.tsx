@@ -31,7 +31,7 @@ export default function StickyRegister() {
             Yuva Shakti Sangam
           </span>
           <span className="text-[10px] text-text-muted font-medium">
-            6 Sept 2026 • Free Pass
+            6 Sept 2026 • ₹50 Entry Pass
           </span>
         </div>
 

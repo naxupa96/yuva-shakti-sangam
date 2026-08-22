@@ -26,7 +26,7 @@ export default function RegistrationCTA() {
           {/* Overline Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1C1917] text-[#FAF4EC] text-xs font-black uppercase tracking-widest mb-6 shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-[#FFA000]" />
-            <span>FREE REGISTRATION VIA LUMA</span>
+            <span>REGISTRATION VIA LUMA (₹50)</span>
           </div>
 
           {/* Heading */}
@@ -52,7 +52,7 @@ export default function RegistrationCTA() {
               rel="noopener noreferrer"
               className="w-full py-4 px-8 rounded-xl btn-bhagwa-primary text-base sm:text-lg font-black uppercase tracking-wider flex items-center justify-center gap-3 active:scale-95 transition-all group"
             >
-              <span>JOIN THE SANGAM (FREE)</span>
+              <span>JOIN THE SANGAM (₹50)</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
             </a>
           </div>
@@ -64,8 +64,8 @@ export default function RegistrationCTA() {
                 <Ticket className="w-5 h-5" />
               </div>
               <div className="text-left">
-                <span className="text-[11px] font-black text-[#1C1917] uppercase tracking-wider block">100% FREE</span>
-                <span className="text-[10px] text-[#57534E]">No Registration Fee</span>
+                <span className="text-[11px] font-black text-[#1C1917] uppercase tracking-wider block">₹50 ENTRY</span>
+                <span className="text-[10px] text-[#57534E]">Nominal Reg. Fee</span>
               </div>
             </div>
 

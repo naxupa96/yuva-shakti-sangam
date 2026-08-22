@@ -22,6 +22,8 @@ export const eventConfig = {
   venueNote: "VENUE DETAILS COMING SOON",
   googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=Maninagar,+Ahmedabad,+Gujarat",
   registrationUrl: LUMA_REGISTRATION_URL,
+  registrationFee: "₹50",
+  registrationFeeAmount: 50,
   host: "Rashtriya Swayamsevak Sangh (RSS)",
   siteUrl: "https://yuvashaktisangam.org",
   email: "yuvashaktisangam2047@gmail.com",

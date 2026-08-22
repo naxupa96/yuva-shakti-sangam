@@ -522,7 +522,7 @@ export const faqs: FAQItem[] = [
   {
     category: "Participation",
     question: "Is there any registration fee or ticket cost?",
-    answer: "No. Registration is 100% free. Entry is managed through verified digital tickets on Luma to maintain venue safety and logistics planning.",
+    answer: "The registration fee is ₹50 (nominal fee covering event badge, access, and materials). Entry is managed through verified digital tickets on Luma to maintain venue safety and logistics planning.",
   },
   {
     category: "Participation",

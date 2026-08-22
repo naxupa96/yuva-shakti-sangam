@@ -27,7 +27,7 @@ export default function Timeline() {
 
   return (
     <section id="timeline" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#E7CEA3] bg-parchment-texture relative overflow-hidden border-b border-[#17130E]/15">
-      <DevanagariWatermark text="इतिहास" className="bottom-4 left-2 sm:left-4 text-[12rem] sm:text-[20rem] text-[#17130E]/14 pointer-events-none" />
+      <DevanagariWatermark text="इतिहास" className="bottom-4 left-2 sm:left-4 text-[12rem] sm:text-[20rem] text-[#17130E]/5 pointer-events-none" />
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Section Header */}

@@ -99,7 +99,7 @@ export default function Footer() {
           <div className="space-y-4">
             <div>
               <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#FAF4EC] block mb-2">
-                FREE REGISTRATION
+                REGISTRATION (₹50)
               </span>
               <p className="text-xs text-[#A8A29E] mb-3">
                 Prior registration is mandatory for entry and logistics.

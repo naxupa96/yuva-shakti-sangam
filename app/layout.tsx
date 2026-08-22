@@ -105,7 +105,7 @@ export default function RootLayout({
     "offers": {
       "@type": "Offer",
       "url": LUMA_REGISTRATION_URL,
-      "price": "0",
+      "price": "50",
       "priceCurrency": "INR",
       "availability": "https://schema.org/InStock"
     }

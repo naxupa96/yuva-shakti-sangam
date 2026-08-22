@@ -20,7 +20,7 @@ export default function Samvaad() {
 
   return (
     <section id="samvaad" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#E7CEA3] bg-parchment-texture relative overflow-hidden border-b border-[#17130E]/15">
-      <DevanagariWatermark text="संवाद" className="top-8 right-4 text-[12rem] sm:text-[20rem] text-[#17130E]/12 pointer-events-none" />
+      <DevanagariWatermark text="संवाद" className="top-8 right-4 text-[12rem] sm:text-[20rem] text-[#17130E]/5 pointer-events-none" />
 
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Bilingual Section Header */}
