@@ -7,97 +7,100 @@ export default function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [hasInteracted, setHasInteracted] = useState(false);
   const [showTooltip, setShowTooltip] = useState(true);
 
   useEffect(() => {
-    const audio = new Audio("/music1.m4a");
-    audio.loop = true;
-    audio.preload = "auto";
-    audioRef.current = audio;
+    const audio = audioRef.current;
+    if (!audio) return;
 
-    // Attempt autoplay immediately
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          setIsPlaying(true);
-          setHasInteracted(true);
-        })
-        .catch(() => {
-          // Autoplay blocked by browser policy; wait for first user gesture
-          setIsPlaying(false);
+    audio.volume = 0.85;
 
-          const startAudioOnGesture = () => {
-            if (audioRef.current && !hasInteracted) {
-              audioRef.current
-                .play()
-                .then(() => {
-                  setIsPlaying(true);
-                  setHasInteracted(true);
-                })
-                .catch((e) => {
-                  console.warn("Audio play prevented:", e);
-                });
+    const playAudio = async () => {
+      try {
+        await audio.play();
+        setIsPlaying(true);
+      } catch {
+        // Autoplay blocked by browser policy; wait for first user gesture
+        setIsPlaying(false);
+
+        const startAudioOnGesture = async () => {
+          try {
+            if (audio) {
+              await audio.play();
+              setIsPlaying(true);
             }
-            // Cleanup listeners
+          } catch (e) {
+            console.warn("Audio gesture playback prevented:", e);
+          } finally {
             cleanupListeners();
-          };
+          }
+        };
 
-          const cleanupListeners = () => {
-            window.removeEventListener("click", startAudioOnGesture);
-            window.removeEventListener("touchstart", startAudioOnGesture);
-            window.removeEventListener("keydown", startAudioOnGesture);
-          };
+        const cleanupListeners = () => {
+          window.removeEventListener("click", startAudioOnGesture);
+          window.removeEventListener("touchstart", startAudioOnGesture);
+          window.removeEventListener("keydown", startAudioOnGesture);
+        };
 
-          window.addEventListener("click", startAudioOnGesture, { once: true });
-          window.addEventListener("touchstart", startAudioOnGesture, { once: true });
-          window.addEventListener("keydown", startAudioOnGesture, { once: true });
-        });
-    }
+        window.addEventListener("click", startAudioOnGesture, { once: true });
+        window.addEventListener("touchstart", startAudioOnGesture, { once: true });
+        window.addEventListener("keydown", startAudioOnGesture, { once: true });
+      }
+    };
 
-    // Auto-dismiss initial tooltip after 7 seconds
+    playAudio();
+
+    // Auto-dismiss initial prompt tooltip after 7 seconds
     const tooltipTimer = setTimeout(() => {
       setShowTooltip(false);
     }, 7000);
 
     return () => {
       clearTimeout(tooltipTimer);
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = "";
-      }
     };
   }, []);
 
-  const togglePlay = (e: React.MouseEvent) => {
+  const togglePlay = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!audioRef.current) return;
+    const audio = audioRef.current;
+    if (!audio) return;
 
     if (isPlaying) {
-      audioRef.current.pause();
+      audio.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current
-        .play()
-        .then(() => {
-          setIsPlaying(true);
-          setHasInteracted(true);
-          setShowTooltip(false);
-        })
-        .catch((err) => console.warn("Audio error:", err));
+      try {
+        await audio.play();
+        setIsPlaying(true);
+        setShowTooltip(false);
+      } catch (err) {
+        console.warn("Audio play error:", err);
+      }
     }
   };
 
   const toggleMute = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!audioRef.current) return;
-    audioRef.current.muted = !isMuted;
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.muted = !isMuted;
     setIsMuted(!isMuted);
   };
 
   return (
     <aside aria-label="Audio controls" className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 flex items-center gap-2 select-none print:hidden">
+      {/* Native HTML5 Audio element for instant preloading & dual-format support */}
+      <audio
+        ref={audioRef}
+        loop
+        preload="auto"
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+      >
+        <source src="/music1.mp3" type="audio/mpeg" />
+        <source src="/music1.m4a" type="audio/mp4" />
+      </audio>
+
       {/* Floating Prompt / Badge */}
       {showTooltip && (
         <div
