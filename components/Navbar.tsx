@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { LUMA_REGISTRATION_URL } from "@/lib/config";
 import { navItems } from "@/lib/data";
@@ -66,15 +67,13 @@ export default function Navbar() {
 
           {/* Register Action CTA */}
           <div className="flex items-center gap-3">
-            <a
-              href={LUMA_REGISTRATION_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/register"
               className="px-5 py-2.5 rounded-xl btn-bhagwa-primary text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
             >
-              <span>REGISTER</span>
+              <span>REGISTER (₹50)</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
-            </a>
+            </Link>
 
             {/* Mobile Hamburger Button */}
             <button
@@ -102,14 +101,13 @@ export default function Navbar() {
                 </a>
               ))}
               <div className="pt-2">
-                <a
-                  href={LUMA_REGISTRATION_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/register"
+                  onClick={() => setIsOpen(false)}
                   className="block w-full text-center py-3 rounded-xl btn-bhagwa-primary text-xs font-black uppercase tracking-wider"
                 >
-                  REGISTER VIA LUMA (₹50)
-                </a>
+                  REGISTER NOW (₹50)
+                </Link>
               </div>
             </div>
           </div>

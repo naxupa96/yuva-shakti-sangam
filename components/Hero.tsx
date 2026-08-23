@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { LUMA_REGISTRATION_URL, eventConfig } from "@/lib/config";
 import Countdown from "./Countdown";
 import { Calendar, Clock, MapPin, Sparkles, ArrowRight, Ticket, ShieldCheck, Users, Menu, X } from "lucide-react";
@@ -40,14 +41,12 @@ export default function Hero() {
 
             {/* Right Action Buttons */}
             <div className="flex items-center gap-2 sm:gap-3">
-              <a
-                href={LUMA_REGISTRATION_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/register"
                 className="px-5 sm:px-6 py-2.5 rounded-xl bg-[#F05A12] hover:bg-[#C8460B] text-white text-xs sm:text-sm font-black uppercase tracking-wider shadow-bhagwa-sm transition-all active:scale-95 flex items-center gap-1.5"
               >
-                <span>REGISTER</span>
-              </a>
+                <span>REGISTER (₹50)</span>
+              </Link>
 
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
@@ -186,15 +185,13 @@ export default function Hero() {
 
               {/* Large Saffron CTA Button */}
               <div className="pt-2">
-                <a
-                  href={LUMA_REGISTRATION_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/register"
                   className="w-full py-4 px-6 rounded-xl btn-bhagwa-primary text-sm sm:text-base font-black uppercase tracking-wider flex items-center justify-center gap-2 group"
                 >
                   <span>JOIN THE SANGAM (₹50)</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </a>
+                </Link>
               </div>
 
               {/* 3-Column Trust Strip */}

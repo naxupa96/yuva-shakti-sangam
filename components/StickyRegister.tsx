@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { LUMA_REGISTRATION_URL } from "@/lib/config";
 
 export default function StickyRegister() {
   const [visible, setVisible] = useState(false);
@@ -35,15 +35,13 @@ export default function StickyRegister() {
           </span>
         </div>
 
-        <a
-          href={LUMA_REGISTRATION_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          href="/register"
           className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-saffron text-black font-display font-black text-xs shrink-0 active:scale-95 transition-all shadow-[0_0_15px_rgba(255,106,0,0.4)]"
         >
-          <span>REGISTER</span>
+          <span>REGISTER (₹50)</span>
           <ArrowUpRight className="w-3.5 h-3.5" />
-        </a>
+        </Link>
       </div>
     </div>
   );

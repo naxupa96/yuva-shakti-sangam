@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { ArrowRight, Sparkles, ShieldCheck, Users, Ticket, Flame } from "lucide-react";
 import { eventConfig, LUMA_REGISTRATION_URL } from "@/lib/config";
 import { CornerOrnament, MandalaMotif, DevanagariWatermark } from "./Decorations";
@@ -26,7 +27,7 @@ export default function RegistrationCTA() {
           {/* Overline Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1C1917] text-[#FAF4EC] text-xs font-black uppercase tracking-widest mb-6 shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-[#FFA000]" />
-            <span>REGISTRATION VIA LUMA (₹50)</span>
+            <span>OFFICIAL REGISTRATION PASS (₹50)</span>
           </div>
 
           {/* Heading */}
@@ -46,15 +47,13 @@ export default function RegistrationCTA() {
 
           {/* High-Impact CTA Button */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto mb-10">
-            <a
-              href={LUMA_REGISTRATION_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/register"
               className="w-full py-4 px-8 rounded-xl btn-bhagwa-primary text-base sm:text-lg font-black uppercase tracking-wider flex items-center justify-center gap-3 active:scale-95 transition-all group"
             >
               <span>JOIN THE SANGAM (₹50)</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
-            </a>
+            </Link>
           </div>
 
           {/* Benefit / Trust Strip */}

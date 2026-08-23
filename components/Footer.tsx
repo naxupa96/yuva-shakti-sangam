@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { ArrowUpRight, Mail, Phone, UserCheck } from "lucide-react";
 import { eventConfig, LUMA_REGISTRATION_URL } from "@/lib/config";
 import { navItems } from "@/lib/data";
@@ -99,25 +100,29 @@ export default function Footer() {
           <div className="space-y-4">
             <div>
               <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#FAF4EC] block mb-2">
-                REGISTRATION (₹50)
+                REGISTRATION PASS (₹50)
               </span>
               <p className="text-xs text-[#A8A29E] mb-3">
-                Prior registration is mandatory for entry and logistics.
+                Prior registration is mandatory for entry and event logistics.
               </p>
-              <a
-                href={LUMA_REGISTRATION_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/register"
                 className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#E65100] text-white text-xs font-black tracking-wider shadow-bhagwa-sm hover:bg-[#FF6D00] transition-colors"
               >
-                <span>REGISTER VIA LUMA</span>
+                <span>REGISTER NOW (₹50)</span>
                 <ArrowUpRight className="w-4 h-4 stroke-[3]" />
-              </a>
+              </Link>
             </div>
 
-            <div className="pt-3 border-t border-[#292524]">
+            <div className="pt-3 border-t border-[#292524] flex flex-col gap-1">
               <span className="text-[10px] text-[#78716C] block uppercase font-bold">HOSTED BY</span>
               <span className="text-xs font-bold text-[#FAF4EC]">{eventConfig.host}</span>
+              <Link
+                href="/admin/login"
+                className="text-[10px] text-[#A8A29E] hover:text-[#FFA000] mt-2 inline-block font-mono"
+              >
+                🔒 Staff / Volunteer Portal →
+              </Link>
             </div>
           </div>
         </div>

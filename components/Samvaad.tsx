@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { MessageSquare, ArrowUpRight, Flame, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { MessageSquare, ArrowUpRight, ArrowRight, Flame, Sparkles } from "lucide-react";
 import { LUMA_REGISTRATION_URL } from "@/lib/config";
 import { CornerOrnament, DevanagariWatermark } from "./Decorations";
 
@@ -108,15 +109,22 @@ export default function Samvaad() {
               You can submit your questions and topics directly in the Luma registration form before the event, or raise them live during the open-mic dialogue on 6 September.
             </p>
 
-            <div className="pt-3">
+            <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                href="/register"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl btn-bhagwa-primary text-xs sm:text-sm font-black uppercase tracking-wider active:scale-95 transition-all shadow-bhagwa-sm"
+              >
+                <span>REGISTER FOR SANGAM (₹50)</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
               <a
                 href={LUMA_REGISTRATION_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl btn-bhagwa-primary text-xs sm:text-sm font-black uppercase tracking-wider active:scale-95 transition-all shadow-bhagwa-sm"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#1C1917] text-[#FAF4EC] text-xs font-bold uppercase tracking-wider hover:text-[#FFA000] transition-colors"
               >
-                <span>REGISTER &amp; SUBMIT QUESTION ON LUMA</span>
-                <ArrowUpRight className="w-4 h-4 stroke-[3]" />
+                <span>OR VIA LUMA</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
