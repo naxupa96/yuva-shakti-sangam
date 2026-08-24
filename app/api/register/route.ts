@@ -36,6 +36,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "Please specify your city." }, { status: 400 });
     }
 
+    if (!interests || interests.length === 0) {
+      return NextResponse.json({ success: false, error: "Please select at least one area under 'Interested in'." }, { status: 400 });
+    }
+
     if (paymentMethod !== "online" && paymentMethod !== "cash") {
       return NextResponse.json({ success: false, error: "Invalid payment method selected." }, { status: 400 });
     }

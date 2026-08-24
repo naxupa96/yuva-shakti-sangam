@@ -137,6 +137,11 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: false, error: "Please enter your city." }, { status: 400 });
       }
 
+      const interests = Array.isArray(body.interests) ? body.interests : [];
+      if (!interests || interests.length === 0) {
+        return NextResponse.json({ success: false, error: "Please select at least one area under 'Interested in'." }, { status: 400 });
+      }
+
       // Check if already paid
       const { data: existingActive } = await supabase
         .from("participants")
@@ -157,7 +162,6 @@ export async function POST(req: NextRequest) {
 
       const qrToken = `yss_${crypto.randomBytes(20).toString("hex")}`;
       const samvaadQuestion = (body.samvaad_question || "").trim();
-      const interests = Array.isArray(body.interests) ? body.interests : [];
       const interestStr = interests.join(", ");
 
       let combinedReferral = referral_source ? referral_source.trim() : "";

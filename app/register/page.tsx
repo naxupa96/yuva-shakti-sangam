@@ -170,6 +170,11 @@ export default function RegisterPage() {
       setErrorMessage("Please enter your city / town.");
       return;
     }
+    if (!formData.interests || formData.interests.length === 0) {
+      setErrorMessage("Please select at least one area under 'Interested in'.");
+      setInterestDropdownOpen(true);
+      return;
+    }
 
     if (formData.payment_method === "online") {
       if (!screenshotBase64 && !manualUtr.trim()) {
@@ -448,8 +453,10 @@ export default function RegisterPage() {
                 {/* Interested In Multi-Select Dropdown */}
                 <div className="sm:col-span-2 relative" ref={dropdownRef}>
                   <label className="block text-xs font-black uppercase tracking-wider text-[#1C1917] mb-1.5 flex items-center justify-between">
-                    <span>Interested in</span>
-                    <span className="text-[#5A4839] font-normal text-[11px]">(Optional • Select one or more)</span>
+                    <span>
+                      Interested in <span className="text-[#E65100]">*</span>
+                    </span>
+                    <span className="text-[#E65100] font-bold text-[11px]">(Required • Select at least one)</span>
                   </label>
 
                   {/* Dropdown Trigger Box */}
