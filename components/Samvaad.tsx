@@ -6,13 +6,44 @@ import Link from "next/link";
 import { MessageSquare, ArrowRight, Flame, Sparkles } from "lucide-react";
 import { CornerOrnament, DevanagariWatermark } from "./Decorations";
 
-const discussionNodes = [
-  "National Pride vs Global Ambition",
-  "Technology Sovereignty & AI Era",
-  "Social Harmony & Breaking Divides",
-  "Role of Youth in National Governance",
-  "Swadeshi & Modern Economy",
-  "Cultural Roots for Gen-Z Bharat",
+interface SamvaadTopic {
+  id: string;
+  gujarati: string;
+  english: string;
+  description: string;
+}
+
+const discussionNodes: SamvaadTopic[] = [
+  {
+    id: "01",
+    gujarati: "યુવા અને સેવા",
+    english: "Youth & Social Service (Seva)",
+    description: "Grassroots service, empathy, and organized community upliftment.",
+  },
+  {
+    id: "02",
+    gujarati: "યુવા અને પર્યાવરણ",
+    english: "Youth & Environment",
+    description: "Ecological responsibility, water conservation, and sustainable lifestyles.",
+  },
+  {
+    id: "03",
+    gujarati: "યુવા અને સ્વદેશી",
+    english: "Youth & Swadeshi (Self-Reliance)",
+    description: "Indigenous innovation, local enterprise, and Atmanirbhar Bharat.",
+  },
+  {
+    id: "04",
+    gujarati: "વૈચારિક યુદ્ધ અને સોશિયલ મીડિયા: યુવાની ભૂમિકા",
+    english: "Ideological Warfare & Social Media: Role of Youth",
+    description: "Countering misinformation and establishing truthful cultural discourse.",
+  },
+  {
+    id: "05",
+    gujarati: "RSS અને યુવા",
+    english: "RSS & The Youth",
+    description: "Centenary vision, discipline, and nation-building in the modern era.",
+  },
 ];
 
 export default function Samvaad() {
@@ -51,38 +82,58 @@ export default function Samvaad() {
         {/* Editorial Illustration & Theme Panel */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12 items-center">
           {/* Discussion Artwork */}
-          <div className="lg:col-span-6 relative rounded-2xl overflow-hidden border border-[#17130E]/20 shadow-parchment-card h-64 sm:h-80">
+          <div className="lg:col-span-5 relative rounded-2xl overflow-hidden border border-[#17130E]/20 shadow-parchment-card h-72 sm:h-96">
             <Image
               src="/images/samvaad-art.jpg"
               alt="Youth in open thoughtful dialogue"
               fill
               className="object-cover mix-blend-multiply"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#17130E]/80 via-transparent to-transparent flex items-end p-4">
-              <span className="text-[#F2DFBD] text-xs font-black uppercase tracking-widest">
-                Direct • Candid • Constructive
+            <div className="absolute inset-0 bg-gradient-to-t from-[#17130E]/90 via-[#17130E]/30 to-transparent flex flex-col justify-end p-5 text-white">
+              <span className="text-[#FFA000] text-[10px] font-black uppercase tracking-widest">
+                સંવાદ ના મુખ્ય વિષયો
+              </span>
+              <span className="font-display font-black text-lg sm:text-xl text-[#FAF4EC] uppercase">
+                5 CORE SAMVAAD THEMES
+              </span>
+              <span className="text-[#F2DFBD]/80 text-xs mt-1">
+                Direct • Candid • Constructive Youth Engagement
               </span>
             </div>
           </div>
 
           {/* Theme Nodes */}
-          <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="lg:col-span-7 flex flex-col gap-2.5">
             {discussionNodes.map((topic) => (
-              <button
-                key={topic}
-                onClick={() => setSelectedTopic(selectedTopic === topic ? null : topic)}
-                className={`p-3.5 rounded-xl border text-left text-xs font-bold transition-all duration-200 shadow-sm ${
-                  selectedTopic === topic
-                    ? "bg-[#F2DFBD] border-[#F05A12] text-[#F05A12] ring-1 ring-[#F05A12]"
-                    : "bg-[#F2DFBD] border-[#17130E]/15 text-[#5A4839] hover:border-[#F05A12]/40 hover:text-[#17130E]"
+              <div
+                key={topic.id}
+                onClick={() => setSelectedTopic(selectedTopic === topic.id ? null : topic.id)}
+                className={`p-3.5 sm:p-4 rounded-xl border text-left transition-all duration-200 shadow-sm cursor-pointer ${
+                  selectedTopic === topic.id
+                    ? "bg-[#FAF4EC] border-[#F05A12] ring-2 ring-[#F05A12]/30 shadow-md"
+                    : "bg-[#FAF4EC]/80 border-[#17130E]/15 hover:border-[#F05A12]/60 hover:bg-[#FAF4EC]"
                 }`}
               >
-                <div className="flex items-center gap-1.5 text-[#F05A12] mb-1 text-[10px] uppercase font-black">
-                  <Flame className="w-3 h-3 fill-[#F05A12]" />
-                  <span>THEME</span>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-1 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono font-black px-1.5 py-0.5 rounded bg-[#F05A12]/10 text-[#F05A12]">
+                        {topic.id}
+                      </span>
+                      <h4 className="font-devanagari font-bold text-sm sm:text-base text-[#17130E]">
+                        {topic.gujarati}
+                      </h4>
+                    </div>
+                    <p className="text-xs font-bold text-[#E65100]">
+                      {topic.english}
+                    </p>
+                    <p className="text-[11px] text-[#5A4839] leading-snug">
+                      {topic.description}
+                    </p>
+                  </div>
+                  <Flame className={`w-4 h-4 shrink-0 transition-colors ${selectedTopic === topic.id ? "text-[#F05A12] fill-[#F05A12]" : "text-[#5A4839]/40"}`} />
                 </div>
-                <p className="leading-snug text-[#17130E]">{topic}</p>
-              </button>
+              </div>
             ))}
           </div>
         </div>
