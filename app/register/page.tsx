@@ -22,7 +22,7 @@ import {
   ExternalLink,
   ScanLine,
 } from "lucide-react";
-import { eventConfig, LUMA_REGISTRATION_URL } from "@/lib/config";
+import { eventConfig } from "@/lib/config";
 import { CornerOrnament, MandalaMotif, DevanagariWatermark } from "@/components/Decorations";
 import { PaymentMethod, RegistrationInput } from "@/types/registration";
 
@@ -34,10 +34,11 @@ export default function RegisterPage() {
     name: "",
     phone: "",
     email: "",
-    age: 21,
-    city: "Ahmedabad",
+    age: "",
+    city: "",
     college: "",
     referral_source: "",
+    samvaad_question: "",
     payment_method: "online",
   });
 
@@ -52,12 +53,12 @@ export default function RegisterPage() {
   const [showManualUtrField, setShowManualUtrField] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "age" ? parseInt(value, 10) || "" : value,
+      [name]: name === "age" ? (value === "" ? "" : parseInt(value, 10) || "") : value,
     }));
     setErrorMessage("");
   };
@@ -113,12 +114,13 @@ export default function RegisterPage() {
       setErrorMessage("Please enter a valid 10-digit mobile number.");
       return;
     }
-    if (!formData.age || formData.age < 12 || formData.age > 80) {
+    const numAge = Number(formData.age);
+    if (!formData.age || isNaN(numAge) || numAge < 12 || numAge > 80) {
       setErrorMessage("Please enter a valid age (12–80).");
       return;
     }
     if (!formData.city.trim()) {
-      setErrorMessage("Please enter your city.");
+      setErrorMessage("Please enter your city / town.");
       return;
     }
 
@@ -144,6 +146,7 @@ export default function RegisterPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...formData,
+            age: numAge,
             phone: cleanPhone,
             screenshot_base64: screenshotBase64,
             manual_utr: manualUtr.trim() || undefined,
@@ -182,6 +185,7 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          age: numAge,
           phone: cleanPhone,
         }),
       });
@@ -344,9 +348,10 @@ export default function RegisterPage() {
                     min={12}
                     max={80}
                     required
+                    placeholder="e.g. 22"
                     value={formData.age}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-[#1C1917] focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 font-medium text-sm transition-all"
+                    className="w-full px-4 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-[#1C1917] placeholder:text-[#5A4839]/50 focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 font-medium text-sm transition-all"
                   />
                 </div>
 
@@ -361,7 +366,7 @@ export default function RegisterPage() {
                     required
                     value={formData.city}
                     onChange={handleChange}
-                    placeholder="e.g. Ahmedabad"
+                    placeholder="e.g. Ahmedabad, Gandhinagar, Surat..."
                     className="w-full px-4 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-[#1C1917] placeholder:text-[#5A4839]/50 focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 font-medium text-sm transition-all"
                   />
                 </div>
@@ -376,8 +381,27 @@ export default function RegisterPage() {
                     name="college"
                     value={formData.college}
                     onChange={handleChange}
-                    placeholder="e.g. Gujarat University / TCS / Entrepreneur"
+                    placeholder="e.g. Gujarat University / LD College / Entrepreneur"
                     className="w-full px-4 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-[#1C1917] placeholder:text-[#5A4839]/50 focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 font-medium text-sm transition-all"
+                  />
+                </div>
+
+                {/* Question for Samvaad */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-black uppercase tracking-wider text-[#1C1917] mb-1.5 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <span className="text-[#F05A12]">✦</span>
+                      <span>Question for Open Samvaad / Dialogue</span>
+                    </span>
+                    <span className="text-[#5A4839] font-normal">(Optional)</span>
+                  </label>
+                  <textarea
+                    name="samvaad_question"
+                    rows={3}
+                    value={formData.samvaad_question || ""}
+                    onChange={handleChange}
+                    placeholder="Share a question or topic you want to discuss with panelists and speakers during the youth dialogue..."
+                    className="w-full px-4 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-[#1C1917] placeholder:text-[#5A4839]/50 focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 font-medium text-sm transition-all resize-none"
                   />
                 </div>
 
@@ -662,21 +686,13 @@ export default function RegisterPage() {
             </div>
           </form>
 
-          {/* Alternative Luma Link */}
-          <div className="mt-8 pt-6 border-t border-[#292524]/10 text-center text-xs text-[#5A4839] space-y-2">
-            <p>
-              Prefer registering via Luma instead?{" "}
-              <a
-                href={LUMA_REGISTRATION_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#E65100] font-bold underline hover:text-[#C8460B]"
-              >
-                Register via Luma Platform
-              </a>
+          {/* Coordinator Contact Support */}
+          <div className="mt-8 pt-6 border-t border-[#292524]/10 text-center text-xs text-[#5A4839] space-y-1">
+            <p className="font-bold text-[#1C1917]">
+              Need assistance with registration or payment?
             </p>
             <p className="text-[11px] text-[#5A4839]/80">
-              Need assistance? WhatsApp Coordinators at +91 90547 37915 / +91 70462 32003
+              WhatsApp Coordinators: Dhruvil (+91 90547 37915) &bull; Kushal (+91 70462 32003)
             </p>
           </div>
         </div>

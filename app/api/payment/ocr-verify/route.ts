@@ -156,33 +156,52 @@ export async function POST(req: NextRequest) {
       }
 
       const qrToken = `yss_${crypto.randomBytes(20).toString("hex")}`;
+      const samvaadQuestion = (body.samvaad_question || "").trim();
+
+      const insertData: any = {
+        name: cleanName,
+        phone: cleanPhone,
+        email: cleanEmail || null,
+        age: numAge,
+        city: cleanCity,
+        college: college ? college.trim() : null,
+        referral_source: referral_source
+          ? (samvaadQuestion ? `${referral_source.trim()} | Q: ${samvaadQuestion}` : referral_source.trim())
+          : (samvaadQuestion ? `Q: ${samvaadQuestion}` : null),
+        payment_method: "online",
+        payment_status: "paid",
+        qr_token: qrToken,
+      };
+
+      if (samvaadQuestion) {
+        insertData.samvaad_question = samvaadQuestion;
+      }
 
       const { data: newParticipant, error: insertErr } = await supabase
         .from("participants")
-        .insert({
-          name: cleanName,
-          phone: cleanPhone,
-          email: cleanEmail || null,
-          age: numAge,
-          city: cleanCity,
-          college: college ? college.trim() : null,
-          referral_source: referral_source ? referral_source.trim() : null,
-          payment_method: "online",
-          payment_status: "paid",
-          qr_token: qrToken,
-        })
+        .insert(insertData)
         .select("*")
         .single();
 
-      if (insertErr || !newParticipant) {
-        console.error("Participant insert error:", insertErr);
-        return NextResponse.json(
-          { success: false, error: "Failed to create participant record." },
-          { status: 500 }
-        );
-      }
+      if (insertErr) {
+        delete insertData.samvaad_question;
+        const { data: fallbackParticipant, error: fallbackErr } = await supabase
+          .from("participants")
+          .insert(insertData)
+          .select("*")
+          .single();
 
-      participant = newParticipant;
+        if (fallbackErr || !fallbackParticipant) {
+          console.error("Participant insert error:", fallbackErr || insertErr);
+          return NextResponse.json(
+            { success: false, error: "Failed to create participant record." },
+            { status: 500 }
+          );
+        }
+        participant = fallbackParticipant;
+      } else {
+        participant = newParticipant;
+      }
     }
 
     // 5. Record payment in payments table

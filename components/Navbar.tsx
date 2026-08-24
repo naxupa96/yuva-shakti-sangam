@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X, ArrowUpRight } from "lucide-react";
-import { LUMA_REGISTRATION_URL } from "@/lib/config";
 import { navItems } from "@/lib/data";
 
 export default function Navbar() {

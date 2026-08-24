@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
     const city = (body.city || "").trim();
     const college = (body.college || "").trim();
     const referralSource = (body.referral_source || "").trim();
+    const samvaadQuestion = (body.samvaad_question || "").trim();
     const paymentMethod = body.payment_method;
 
     if (!name || name.length < 2) {
@@ -61,30 +62,50 @@ export async function POST(req: NextRequest) {
     // 3. Generate Cryptographic QR Token
     const qrToken = `yss_${crypto.randomBytes(20).toString("hex")}`;
 
-    // 4. Create participant record in Supabase
-    const { data: newParticipant, error: insertError } = await supabase
+    // 4. Create participant record in Supabase (with fallback if samvaad_question column isn't created yet)
+    let newParticipant: any = null;
+    const insertData: any = {
+      name,
+      phone,
+      email: email || null,
+      age,
+      city,
+      college: college || null,
+      referral_source: referralSource ? (samvaadQuestion ? `${referralSource} | Q: ${samvaadQuestion}` : referralSource) : (samvaadQuestion ? `Q: ${samvaadQuestion}` : null),
+      payment_method: paymentMethod,
+      payment_status: "pending",
+      qr_token: qrToken,
+    };
+
+    if (samvaadQuestion) {
+      insertData.samvaad_question = samvaadQuestion;
+    }
+
+    const { data: inserted, error: insertError } = await supabase
       .from("participants")
-      .insert({
-        name,
-        phone,
-        email: email || null,
-        age,
-        city,
-        college: college || null,
-        referral_source: referralSource || null,
-        payment_method: paymentMethod,
-        payment_status: "pending",
-        qr_token: qrToken,
-      })
+      .insert(insertData)
       .select("*")
       .single();
 
-    if (insertError || !newParticipant) {
-      console.error("Database registration error:", insertError);
-      return NextResponse.json(
-        { success: false, error: "Registration could not be saved. Please try again." },
-        { status: 500 }
-      );
+    if (insertError) {
+      // Fallback without direct samvaad_question column if schema doesn't have it yet
+      delete insertData.samvaad_question;
+      const { data: fallbackInsert, error: fallbackError } = await supabase
+        .from("participants")
+        .insert(insertData)
+        .select("*")
+        .single();
+
+      if (fallbackError || !fallbackInsert) {
+        console.error("Database registration error:", fallbackError || insertError);
+        return NextResponse.json(
+          { success: false, error: "Registration could not be saved. Please try again." },
+          { status: 500 }
+        );
+      }
+      newParticipant = fallbackInsert;
+    } else {
+      newParticipant = inserted;
     }
 
     // 5. Payment processing

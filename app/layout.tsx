@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
-import { eventConfig, LUMA_REGISTRATION_URL } from "@/lib/config";
+import { eventConfig } from "@/lib/config";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Yuva Shakti Sangam | युवा शक्ति • राष्ट्र शक्ति",
-    description: "Where the energy of youth meets the responsibility of nation-building. 6 September 2026 at Maninagar, Ahmedabad. Register via Luma.",
+    description: "Where the energy of youth meets the responsibility of nation-building. 6 September 2026 at Maninagar, Ahmedabad. Register online for your official pass.",
     url: eventConfig.siteUrl,
     siteName: "Yuva Shakti Sangam",
     locale: "en_IN",
@@ -59,8 +59,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Yuva Shakti Sangam — 6 Sept 2026 • Ahmedabad",
-    description: "Where the energy of youth meets the responsibility of nation-building. On-ground games, drama, Samvaad & nation-building.",
+    title: "Yuva Shakti Sangam | युवा शक्ति • राष्ट्र शक्ति",
+    description: "Join Gujarat's biggest youth gathering. 6 Sept 2026 at Maninagar, Ahmedabad.",
   },
   robots: {
     index: true,
@@ -81,19 +81,19 @@ export default function RootLayout({
   const eventSchema = {
     "@context": "https://schema.org",
     "@type": "Event",
-    "name": "Yuva Shakti Sangam (युवा शक्ति • राष्ट्र शक्ति)",
-    "description": "A youth-focused gathering featuring on-ground games, cultural drama, open dialogue (Samvaad), and nation-building workshops.",
+    "name": eventConfig.name,
+    "description": eventConfig.taglineEnglish,
     "startDate": eventConfig.targetIsoDate,
     "endDate": eventConfig.endIsoDate,
     "eventStatus": "https://schema.org/EventScheduled",
     "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
     "location": {
       "@type": "Place",
-      "name": "Maninagar Venue",
+      "name": eventConfig.locationShort,
       "address": {
         "@type": "PostalAddress",
-        "addressLocality": "Maninagar",
-        "addressRegion": "Ahmedabad",
+        "addressLocality": "Ahmedabad",
+        "addressRegion": "Gujarat",
         "addressCountry": "IN"
       }
     },
@@ -104,10 +104,11 @@ export default function RootLayout({
     },
     "offers": {
       "@type": "Offer",
-      "url": LUMA_REGISTRATION_URL,
       "price": "50",
       "priceCurrency": "INR",
-      "availability": "https://schema.org/InStock"
+      "availability": "https://schema.org/InStock",
+      "url": `${eventConfig.siteUrl}/register`,
+      "validFrom": "2026-08-01T00:00:00+05:30"
     }
   };
 

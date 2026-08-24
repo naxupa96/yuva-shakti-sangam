@@ -3,8 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MessageSquare, ArrowUpRight, ArrowRight, Flame, Sparkles } from "lucide-react";
-import { LUMA_REGISTRATION_URL } from "@/lib/config";
+import { MessageSquare, ArrowRight, Flame, Sparkles } from "lucide-react";
 import { CornerOrnament, DevanagariWatermark } from "./Decorations";
 
 const discussionNodes = [
@@ -98,7 +97,7 @@ export default function Samvaad() {
           <div className="max-w-2xl mx-auto text-center space-y-4 relative z-10">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#17130E] text-[#FAF4EC] text-[11px] font-black uppercase tracking-wider">
               <Sparkles className="w-3 h-3 text-[#FFA000]" />
-              <span>SUBMIT VIA LUMA REGISTRATION</span>
+              <span>ASK IN REGISTRATION FORM</span>
             </div>
 
             <h3 className="text-2xl sm:text-4xl font-display font-black uppercase text-[#17130E] tracking-tight">
@@ -106,26 +105,17 @@ export default function Samvaad() {
             </h3>
 
             <p className="text-xs sm:text-sm text-[#5A4839] max-w-lg mx-auto leading-relaxed font-medium">
-              You can submit your questions and topics directly in the Luma registration form before the event, or raise them live during the open-mic dialogue on 6 September.
+              You can submit your questions and topics directly in the registration form before the event, or raise them live during the open-mic dialogue on 6 September.
             </p>
 
-            <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="pt-3 flex items-center justify-center">
               <Link
                 href="/register"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl btn-bhagwa-primary text-xs sm:text-sm font-black uppercase tracking-wider active:scale-95 transition-all shadow-bhagwa-sm"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl btn-bhagwa-primary text-xs sm:text-sm font-black uppercase tracking-wider active:scale-95 transition-all shadow-bhagwa-sm group"
               >
-                <span>REGISTER FOR SANGAM (₹50)</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>REGISTER & SUBMIT YOUR QUESTION</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <a
-                href={LUMA_REGISTRATION_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#1C1917] text-[#FAF4EC] text-xs font-bold uppercase tracking-wider hover:text-[#FFA000] transition-colors"
-              >
-                <span>OR VIA LUMA</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </a>
             </div>
           </div>
         </div>

@@ -1,8 +1,6 @@
 /**
  * Centralized configuration for Yuva Shakti Sangam.
  */
-export const LUMA_REGISTRATION_URL = "https://luma.com/rkfe66wo";
-
 export const eventConfig = {
   name: "Yuva Shakti Sangam",
   taglineHindi: "युवा शक्ति • राष्ट्र शक्ति",
@@ -22,7 +20,6 @@ export const eventConfig = {
   venueNote: "VENUE DETAILS COMING SOON",
   googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=Maninagar,+Ahmedabad,+Gujarat",
   registrationUrl: "/register",
-  lumaUrl: LUMA_REGISTRATION_URL,
   registrationFee: "₹50",
   registrationFeeAmount: 50,
   host: "Rashtriya Swayamsevak Sangh (RSS)",

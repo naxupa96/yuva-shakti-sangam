@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowUpRight, Mail, Phone, UserCheck } from "lucide-react";
-import { eventConfig, LUMA_REGISTRATION_URL } from "@/lib/config";
+import { eventConfig } from "@/lib/config";
 import { navItems } from "@/lib/data";
 
 export default function Footer() {

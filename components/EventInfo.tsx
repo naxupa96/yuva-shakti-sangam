@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { eventConfig, LUMA_REGISTRATION_URL } from "@/lib/config";
+import Link from "next/link";
+import { eventConfig } from "@/lib/config";
 import { faqs } from "@/lib/data";
-import { MapPin, Calendar, Clock, Navigation, ChevronDown, ExternalLink, Mail, Phone, MessageCircle, UserCheck } from "lucide-react";
+import { MapPin, Calendar, Clock, Navigation, ChevronDown, ExternalLink, Mail, Phone, MessageCircle, UserCheck, ArrowRight } from "lucide-react";
 import { CornerOrnament, DevanagariWatermark } from "./Decorations";
 
 export default function EventInfo() {
@@ -87,20 +88,18 @@ export default function EventInfo() {
                 Sunday evening gathering. Reserve your spot early to avoid last-minute rush.
               </p>
               <div className="p-3.5 rounded-2xl bg-[#FAF4EC] border border-[#292524]/10 text-xs font-bold text-[#1C1917]">
-                📅 Add to Calendar via Luma pass
+                📅 Sunday, 4:00 PM to 8:00 PM IST
               </div>
             </div>
 
             <div className="pt-6 mt-4 border-t border-[#292524]/10">
-              <a
-                href={LUMA_REGISTRATION_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/register"
                 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#E65100] hover:text-[#D84315] transition-colors"
               >
-                <span>RESERVE PASS VIA LUMA</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
+                <span>GET DIGITAL PASS (₹50)</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
           </div>
 

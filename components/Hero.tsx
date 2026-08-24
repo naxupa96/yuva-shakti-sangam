@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { LUMA_REGISTRATION_URL, eventConfig } from "@/lib/config";
+import { eventConfig } from "@/lib/config";
 import Countdown from "./Countdown";
 import { Calendar, Clock, MapPin, Sparkles, ArrowRight, Ticket, ShieldCheck, Users, Menu, X } from "lucide-react";
 
@@ -208,7 +208,7 @@ export default function Hero() {
                   <ShieldCheck className="w-4 h-4 text-[#F05A12]" />
                   <div className="text-left">
                     <span className="text-[10px] sm:text-xs font-black uppercase block leading-none">VERIFIED</span>
-                    <span className="text-[9px] sm:text-[10px] text-[#5A4839] block leading-tight">LUMA TICKET</span>
+                    <span className="text-[9px] sm:text-[10px] text-[#5A4839] block leading-tight">DIGITAL QR PASS</span>
                   </div>
                 </div>
 

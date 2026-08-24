@@ -13,6 +13,7 @@ export interface Participant {
   city: string;
   college?: string | null;
   referral_source?: string | null;
+  samvaad_question?: string | null;
   payment_method: PaymentMethod;
   payment_status: PaymentStatus;
   qr_token: string;
@@ -64,10 +65,11 @@ export interface RegistrationInput {
   name: string;
   email?: string;
   phone: string;
-  age: number;
+  age: number | "";
   city: string;
   college?: string;
   referral_source?: string;
+  samvaad_question?: string;
   payment_method: PaymentMethod;
 }
 

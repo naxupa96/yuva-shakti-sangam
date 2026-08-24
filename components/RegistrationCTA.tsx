@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowRight, Sparkles, ShieldCheck, Users, Ticket, Flame } from "lucide-react";
-import { eventConfig, LUMA_REGISTRATION_URL } from "@/lib/config";
+import { eventConfig } from "@/lib/config";
 import { CornerOrnament, MandalaMotif, DevanagariWatermark } from "./Decorations";
 
 export default function RegistrationCTA() {
@@ -74,7 +74,7 @@ export default function RegistrationCTA() {
               </div>
               <div className="text-left">
                 <span className="text-[11px] font-black text-[#1C1917] uppercase tracking-wider block">VERIFIED PASS</span>
-                <span className="text-[10px] text-[#57534E]">Instant Luma Ticket</span>
+                <span className="text-[10px] text-[#57534E]">Instant Digital Pass</span>
               </div>
             </div>
 

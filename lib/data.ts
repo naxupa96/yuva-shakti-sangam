@@ -460,7 +460,7 @@ export const journeySteps: JourneyStep[] = [
     time: "4:00 PM",
     stepNumber: "01",
     title: "Arrival & Tribal Welcome",
-    description: "Check-in with verified Luma QR code, collect your Sangam badge, and soak in the electric atmosphere of folk instruments and youth delegations.",
+    description: "Check-in with your verified digital QR pass, collect your Sangam badge, and soak in the electric atmosphere of folk instruments and youth delegations.",
     vibe: "Arrival Energy",
   },
   {
@@ -522,7 +522,7 @@ export const faqs: FAQItem[] = [
   {
     category: "Participation",
     question: "Is there any registration fee or ticket cost?",
-    answer: "The registration fee is ₹50 (nominal fee covering event badge, access, and materials). Entry is managed through verified digital tickets on Luma to maintain venue safety and logistics planning.",
+    answer: "The registration fee is ₹50 (nominal fee covering event badge, access, and materials). Entry is managed through verified digital QR tickets to maintain venue safety and logistics planning.",
   },
   {
     category: "Participation",
@@ -532,7 +532,7 @@ export const faqs: FAQItem[] = [
   {
     category: "Participation",
     question: "Can I bring my friends or college group?",
-    answer: "Yes, group participation is warmly encouraged. However, each friend must complete individual Luma registration so they receive their unique QR access pass.",
+    answer: "Yes, group participation is warmly encouraged. However, each friend must complete individual online registration so they receive their unique QR access pass.",
   },
   {
     category: "Organization",
@@ -552,6 +552,6 @@ export const faqs: FAQItem[] = [
   {
     category: "Logistics",
     question: "Where is the exact venue located?",
-    answer: "The Sangam takes place in Maninagar, Ahmedabad. Exact gate numbers and parking lot coordinates will be automatically emailed to all approved Luma registrants 10 days prior to the event.",
+    answer: "The Sangam takes place in Maninagar, Ahmedabad. Exact gate numbers and parking lot coordinates will be automatically shared with all registered attendees prior to the event.",
   },
 ];
