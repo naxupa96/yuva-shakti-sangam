@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -21,14 +21,26 @@ import {
   FileImage,
   ExternalLink,
   ScanLine,
+  ChevronDown,
+  Search,
+  X,
 } from "lucide-react";
 import { eventConfig } from "@/lib/config";
 import { CornerOrnament, MandalaMotif, DevanagariWatermark } from "@/components/Decorations";
 import { PaymentMethod, RegistrationInput } from "@/types/registration";
 
+const INTEREST_OPTIONS = [
+  { id: "service", label: "Service (Seva)", sub: "સેવા" },
+  { id: "association", label: "Association Work", sub: "સંગઠન કાર્ય" },
+  { id: "swadeshi", label: "Swadeshi", sub: "સ્વદેશી" },
+  { id: "environment", label: "Environment (Paryavaran)", sub: "પર્યાવરણ" },
+  { id: "publicity", label: "Publicity (Social Media)", sub: "સોશિયલ મીડિયા" },
+];
+
 export default function RegisterPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState<RegistrationInput>({
     name: "",
@@ -39,8 +51,12 @@ export default function RegisterPage() {
     college: "",
     referral_source: "",
     samvaad_question: "",
+    interests: [],
     payment_method: "online",
   });
+
+  const [interestDropdownOpen, setInterestDropdownOpen] = useState(false);
+  const [interestSearch, setInterestSearch] = useState("");
 
   const [screenshotBase64, setScreenshotBase64] = useState<string>("");
   const [screenshotFileName, setScreenshotFileName] = useState<string>("");
@@ -51,6 +67,35 @@ export default function RegisterPage() {
   const [ocrStatusText, setOcrStatusText] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showManualUtrField, setShowManualUtrField] = useState(false);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setInterestDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const toggleInterest = (label: string) => {
+    setFormData((prev) => {
+      const current = prev.interests || [];
+      const updated = current.includes(label)
+        ? current.filter((item) => item !== label)
+        : [...current, label];
+      return { ...prev, interests: updated };
+    });
+  };
+
+  const removeInterest = (label: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setFormData((prev) => ({
+      ...prev,
+      interests: (prev.interests || []).filter((item) => item !== label),
+    }));
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -384,6 +429,109 @@ export default function RegisterPage() {
                     placeholder="e.g. Gujarat University / LD College / Entrepreneur"
                     className="w-full px-4 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-[#1C1917] placeholder:text-[#5A4839]/50 focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 font-medium text-sm transition-all"
                   />
+                </div>
+
+                {/* Interested In Multi-Select Dropdown */}
+                <div className="sm:col-span-2 relative" ref={dropdownRef}>
+                  <label className="block text-xs font-black uppercase tracking-wider text-[#1C1917] mb-1.5 flex items-center justify-between">
+                    <span>Interested in</span>
+                    <span className="text-[#5A4839] font-normal text-[11px]">(Optional • Select one or more)</span>
+                  </label>
+
+                  {/* Dropdown Trigger Box */}
+                  <div
+                    onClick={() => setInterestDropdownOpen(!interestDropdownOpen)}
+                    className={`w-full min-h-[46px] px-4 py-2.5 rounded-xl bg-[#FAF4EC] border text-[#1C1917] font-medium text-sm transition-all cursor-pointer flex items-center justify-between gap-2 select-none ${
+                      interestDropdownOpen
+                        ? "border-[#E65100] ring-2 ring-[#E65100]/20"
+                        : "border-[#292524]/20 hover:border-[#292524]/40"
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-center gap-1.5 flex-1">
+                      {formData.interests && formData.interests.length > 0 ? (
+                        formData.interests.map((item) => (
+                          <span
+                            key={item}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#E65100]/10 border border-[#E65100]/30 text-[#E65100] text-xs font-bold"
+                          >
+                            <span>{item}</span>
+                            <button
+                              type="button"
+                              onClick={(e) => removeInterest(item, e)}
+                              className="hover:bg-[#E65100]/20 rounded p-0.5"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-[#5A4839]/50 text-sm">Select one or more</span>
+                      )}
+                    </div>
+                    <ChevronDown
+                      className={`w-4 h-4 text-[#5A4839] shrink-0 transition-transform duration-200 ${
+                        interestDropdownOpen ? "rotate-180 text-[#E65100]" : ""
+                      }`}
+                    />
+                  </div>
+
+                  {/* Popover Dropdown Menu */}
+                  {interestDropdownOpen && (
+                    <div className="absolute left-0 right-0 top-full mt-1.5 z-40 bg-[#FAF4EC] border border-[#292524]/20 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
+                      {/* Search inside dropdown */}
+                      <div className="p-2.5 bg-[#F2DFBD]/60 border-b border-[#292524]/10">
+                        <div className="relative">
+                          <Search className="w-4 h-4 text-[#5A4839] absolute left-3 top-1/2 -translate-y-1/2" />
+                          <input
+                            type="text"
+                            value={interestSearch}
+                            onChange={(e) => setInterestSearch(e.target.value)}
+                            placeholder="Search"
+                            className="w-full pl-9 pr-3 py-2 text-xs rounded-lg bg-[#FAF4EC] border border-[#292524]/20 text-[#1C1917] placeholder:text-[#5A4839]/50 focus:outline-none focus:border-[#E65100]"
+                            autoFocus
+                          />
+                        </div>
+                      </div>
+
+                      {/* Options List */}
+                      <div className="max-h-56 overflow-y-auto p-1.5 space-y-1">
+                        {INTEREST_OPTIONS.filter(
+                          (opt) =>
+                            opt.label.toLowerCase().includes(interestSearch.toLowerCase()) ||
+                            opt.sub.toLowerCase().includes(interestSearch.toLowerCase())
+                        ).map((opt) => {
+                          const isSelected = (formData.interests || []).includes(opt.label);
+                          return (
+                            <div
+                              key={opt.id}
+                              onClick={() => toggleInterest(opt.label)}
+                              className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-colors ${
+                                isSelected
+                                  ? "bg-[#E65100]/10 text-[#E65100] border border-[#E65100]/20"
+                                  : "text-[#1C1917] hover:bg-[#EAE0D0] border border-transparent"
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <div
+                                  className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                                    isSelected
+                                      ? "bg-[#E65100] border-[#E65100] text-white"
+                                      : "border-[#292524]/30 bg-white"
+                                  }`}
+                                >
+                                  {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                                </div>
+                                <span>{opt.label}</span>
+                              </div>
+                              <span className="text-[10px] text-[#5A4839]/70 font-medium">
+                                {opt.sub}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Question for Samvaad */}

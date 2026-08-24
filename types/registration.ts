@@ -14,6 +14,7 @@ export interface Participant {
   college?: string | null;
   referral_source?: string | null;
   samvaad_question?: string | null;
+  interests?: string[] | string | null;
   payment_method: PaymentMethod;
   payment_status: PaymentStatus;
   qr_token: string;
@@ -70,6 +71,7 @@ export interface RegistrationInput {
   college?: string;
   referral_source?: string;
   samvaad_question?: string;
+  interests?: string[];
   payment_method: PaymentMethod;
 }
 

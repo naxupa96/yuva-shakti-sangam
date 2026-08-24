@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
     const college = (body.college || "").trim();
     const referralSource = (body.referral_source || "").trim();
     const samvaadQuestion = (body.samvaad_question || "").trim();
+    const interests = Array.isArray(body.interests) ? body.interests : [];
     const paymentMethod = body.payment_method;
 
     if (!name || name.length < 2) {
@@ -62,8 +63,17 @@ export async function POST(req: NextRequest) {
     // 3. Generate Cryptographic QR Token
     const qrToken = `yss_${crypto.randomBytes(20).toString("hex")}`;
 
-    // 4. Create participant record in Supabase (with fallback if samvaad_question column isn't created yet)
+    // 4. Create participant record in Supabase
     let newParticipant: any = null;
+    const interestStr = interests.join(", ");
+    let combinedReferral = referralSource;
+    if (samvaadQuestion) {
+      combinedReferral = combinedReferral ? `${combinedReferral} | Q: ${samvaadQuestion}` : `Q: ${samvaadQuestion}`;
+    }
+    if (interestStr) {
+      combinedReferral = combinedReferral ? `${combinedReferral} | Interests: ${interestStr}` : `Interests: ${interestStr}`;
+    }
+
     const insertData: any = {
       name,
       phone,
@@ -71,7 +81,7 @@ export async function POST(req: NextRequest) {
       age,
       city,
       college: college || null,
-      referral_source: referralSource ? (samvaadQuestion ? `${referralSource} | Q: ${samvaadQuestion}` : referralSource) : (samvaadQuestion ? `Q: ${samvaadQuestion}` : null),
+      referral_source: combinedReferral || null,
       payment_method: paymentMethod,
       payment_status: "pending",
       qr_token: qrToken,
@@ -79,6 +89,9 @@ export async function POST(req: NextRequest) {
 
     if (samvaadQuestion) {
       insertData.samvaad_question = samvaadQuestion;
+    }
+    if (interests.length > 0) {
+      insertData.interests = interests;
     }
 
     const { data: inserted, error: insertError } = await supabase
@@ -88,8 +101,9 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (insertError) {
-      // Fallback without direct samvaad_question column if schema doesn't have it yet
+      // Fallback without dynamic columns if schema doesn't have them yet
       delete insertData.samvaad_question;
+      delete insertData.interests;
       const { data: fallbackInsert, error: fallbackError } = await supabase
         .from("participants")
         .insert(insertData)

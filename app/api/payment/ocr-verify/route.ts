@@ -157,6 +157,16 @@ export async function POST(req: NextRequest) {
 
       const qrToken = `yss_${crypto.randomBytes(20).toString("hex")}`;
       const samvaadQuestion = (body.samvaad_question || "").trim();
+      const interests = Array.isArray(body.interests) ? body.interests : [];
+      const interestStr = interests.join(", ");
+
+      let combinedReferral = referral_source ? referral_source.trim() : "";
+      if (samvaadQuestion) {
+        combinedReferral = combinedReferral ? `${combinedReferral} | Q: ${samvaadQuestion}` : `Q: ${samvaadQuestion}`;
+      }
+      if (interestStr) {
+        combinedReferral = combinedReferral ? `${combinedReferral} | Interests: ${interestStr}` : `Interests: ${interestStr}`;
+      }
 
       const insertData: any = {
         name: cleanName,
@@ -165,9 +175,7 @@ export async function POST(req: NextRequest) {
         age: numAge,
         city: cleanCity,
         college: college ? college.trim() : null,
-        referral_source: referral_source
-          ? (samvaadQuestion ? `${referral_source.trim()} | Q: ${samvaadQuestion}` : referral_source.trim())
-          : (samvaadQuestion ? `Q: ${samvaadQuestion}` : null),
+        referral_source: combinedReferral || null,
         payment_method: "online",
         payment_status: "paid",
         qr_token: qrToken,
@@ -175,6 +183,9 @@ export async function POST(req: NextRequest) {
 
       if (samvaadQuestion) {
         insertData.samvaad_question = samvaadQuestion;
+      }
+      if (interests.length > 0) {
+        insertData.interests = interests;
       }
 
       const { data: newParticipant, error: insertErr } = await supabase
@@ -185,6 +196,7 @@ export async function POST(req: NextRequest) {
 
       if (insertErr) {
         delete insertData.samvaad_question;
+        delete insertData.interests;
         const { data: fallbackParticipant, error: fallbackErr } = await supabase
           .from("participants")
           .insert(insertData)
