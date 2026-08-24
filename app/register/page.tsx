@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -14,20 +14,22 @@ import {
   CheckCircle2,
   Loader2,
   AlertCircle,
-  HelpCircle,
+  QrCode,
+  Copy,
+  Check,
+  UploadCloud,
+  FileImage,
+  ExternalLink,
+  ScanLine,
 } from "lucide-react";
 import { eventConfig, LUMA_REGISTRATION_URL } from "@/lib/config";
 import { CornerOrnament, MandalaMotif, DevanagariWatermark } from "@/components/Decorations";
 import { PaymentMethod, RegistrationInput } from "@/types/registration";
 
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
-
 export default function RegisterPage() {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState<RegistrationInput>({
     name: "",
     phone: "",
@@ -39,8 +41,15 @@ export default function RegisterPage() {
     payment_method: "online",
   });
 
+  const [screenshotBase64, setScreenshotBase64] = useState<string>("");
+  const [screenshotFileName, setScreenshotFileName] = useState<string>("");
+  const [manualUtr, setManualUtr] = useState<string>("");
+  const [copiedUpi, setCopiedUpi] = useState(false);
+
   const [loading, setLoading] = useState(false);
+  const [ocrStatusText, setOcrStatusText] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showManualUtrField, setShowManualUtrField] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -57,18 +66,37 @@ export default function RegisterPage() {
     setFormData((prev) => ({ ...prev, payment_method: method }));
   };
 
-  const loadRazorpayScript = (): Promise<boolean> => {
-    return new Promise((resolve) => {
-      if (window.Razorpay) {
-        resolve(true);
-        return;
-      }
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
+  const handleCopyUpi = () => {
+    if (eventConfig.upi?.id) {
+      navigator.clipboard.writeText(eventConfig.upi.id);
+      setCopiedUpi(true);
+      setTimeout(() => setCopiedUpi(false), 2500);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setErrorMessage("Please upload an image file (PNG, JPG, JPEG, WEBP).");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setErrorMessage("Image size exceeds 10MB. Please upload a smaller screenshot.");
+      return;
+    }
+
+    setScreenshotFileName(file.name);
+    setErrorMessage("");
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      setScreenshotBase64(base64);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,10 +122,61 @@ export default function RegisterPage() {
       return;
     }
 
+    if (formData.payment_method === "online") {
+      if (!screenshotBase64 && !manualUtr.trim()) {
+        setErrorMessage("Please upload your payment screenshot after completing the UPI payment.");
+        return;
+      }
+      if (manualUtr && !/^[0-9]{12}$/.test(manualUtr.trim())) {
+        setErrorMessage("UTR / UPI Ref Number must be exactly 12 digits.");
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
-      // 1. Submit registration
+      if (formData.payment_method === "online") {
+        setOcrStatusText("Analyzing payment screenshot with AI Vision...");
+
+        const response = await fetch("/api/payment/ocr-verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...formData,
+            phone: cleanPhone,
+            screenshot_base64: screenshotBase64,
+            manual_utr: manualUtr.trim() || undefined,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          if (data.require_manual_utr) {
+            setShowManualUtrField(true);
+            setErrorMessage(
+              data.error ||
+                "Could not automatically detect the 12-digit UTR from the screenshot. Please enter your 12-digit UTR below."
+            );
+          } else {
+            setErrorMessage(data.error || "Payment verification failed. Please try again.");
+          }
+          setLoading(false);
+          setOcrStatusText("");
+          return;
+        }
+
+        setOcrStatusText("Payment verified! Generating digital pass...");
+        const participant = data.participant;
+        router.push(
+          `/register/success?token=${participant.qr_token}&id=${participant.registration_id}&method=online&status=paid`
+        );
+        return;
+      }
+
+      // Cash payment registration
+      setOcrStatusText("Generating your cash entry pass...");
       const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -112,104 +191,23 @@ export default function RegisterPage() {
       if (!response.ok || !data.success) {
         setErrorMessage(data.error || "Registration could not be completed. Please try again.");
         setLoading(false);
+        setOcrStatusText("");
         return;
       }
 
       const participant = data.participant;
-
-      // 2. Handle Online vs. Cash
-      if (formData.payment_method === "online") {
-        const paymentOrder = data.payment_order;
-
-        if (paymentOrder?.mock_mode) {
-          // Dev / Test Mock verification
-          const verifyRes = await fetch("/api/payment/verify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              participant_id: participant.id,
-              order_id: paymentOrder.order_id,
-              payment_id: `mock_pay_${Date.now()}`,
-              signature: "mock_signature_valid",
-            }),
-          });
-          const verifyData = await verifyRes.json();
-          if (verifyData.success) {
-            router.push(`/register/success?token=${participant.qr_token}&id=${participant.registration_id}&method=online&status=paid`);
-            return;
-          }
-        }
-
-        // Live Razorpay Checkout
-        if (paymentOrder?.gateway === "razorpay") {
-          const scriptLoaded = await loadRazorpayScript();
-          if (!scriptLoaded) {
-            setErrorMessage("Failed to load payment gateway. Please try paying via Cash or refresh.");
-            setLoading(false);
-            return;
-          }
-
-          const options = {
-            key: paymentOrder.key_id,
-            amount: Math.round(paymentOrder.amount * 100),
-            currency: paymentOrder.currency || "INR",
-            name: eventConfig.name,
-            description: "Entry Pass Registration Fee",
-            order_id: paymentOrder.order_id,
-            prefill: {
-              name: participant.name,
-              contact: participant.phone,
-              email: participant.email || "",
-            },
-            theme: {
-              color: "#F05A12",
-            },
-            handler: async function (res: any) {
-              setLoading(true);
-              const verifyRes = await fetch("/api/payment/verify", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  participant_id: participant.id,
-                  order_id: res.razorpay_order_id || paymentOrder.order_id,
-                  payment_id: res.razorpay_payment_id,
-                  signature: res.razorpay_signature,
-                }),
-              });
-
-              const verifyData = await verifyRes.json();
-              if (verifyData.success) {
-                router.push(`/register/success?token=${participant.qr_token}&id=${participant.registration_id}&method=online&status=paid`);
-              } else {
-                setErrorMessage("Payment recorded but server verification pending. Check your ticket status.");
-                router.push(`/ticket/${participant.qr_token}`);
-              }
-            },
-            modal: {
-              ondismiss: function () {
-                setLoading(false);
-                setErrorMessage("Payment was not completed. You can re-attempt online payment or choose Cash at event.");
-              },
-            },
-          };
-
-          const rzp = new window.Razorpay(options);
-          rzp.open();
-          return;
-        }
-
-        // Fallback redirection for Cashfree/other hosted checkout
-        router.push(`/register/success?token=${participant.qr_token}&id=${participant.registration_id}&method=online&status=pending`);
-      } else {
-        // Cash payment registration
-        router.push(`/register/success?token=${participant.qr_token}&id=${participant.registration_id}&method=cash&status=pending`);
-      }
+      router.push(
+        `/register/success?token=${participant.qr_token}&id=${participant.registration_id}&method=cash&status=pending`
+      );
     } catch (err: any) {
       console.error("Submission error:", err);
       setErrorMessage("Network error during registration. Please check your connection and try again.");
       setLoading(false);
+      setOcrStatusText("");
     }
   };
+
+  const upiPayUrl = eventConfig.upi?.getUpiUrl?.() || `upi://pay?pa=${eventConfig.upi?.id}&pn=${encodeURIComponent(eventConfig.upi?.name || "")}&am=50&cu=INR&tn=Yuva%20Shakti%20Sangam`;
 
   return (
     <div className="min-h-screen bg-[#EAE0D0] bg-parchment-texture text-[#1C1917] selection:bg-[#E65100] selection:text-white py-8 sm:py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -407,7 +405,7 @@ export default function RegisterPage() {
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Online Option */}
+                {/* Online UPI Option */}
                 <div
                   onClick={() => handlePaymentMethodSelect("online")}
                   className={`cursor-pointer p-4 rounded-2xl border-2 transition-all relative ${
@@ -428,16 +426,16 @@ export default function RegisterPage() {
                     </div>
                     <div className="space-y-1">
                       <div className="flex items-center gap-1.5">
-                        <CreditCard className="w-4 h-4 text-[#E65100]" />
+                        <QrCode className="w-4 h-4 text-[#E65100]" />
                         <span className="text-sm font-black uppercase tracking-wider text-[#1C1917]">
-                          PAY ₹50 ONLINE
+                          PAY ₹50 VIA UPI QR
                         </span>
                       </div>
                       <p className="text-xs text-[#5A4839]">
-                        Instant confirmed digital QR pass via UPI (GPay, PhonePe, Paytm), Cards, or NetBanking.
+                        Scan QR code with Google Pay, PhonePe, or Paytm & upload screenshot. Instant pass activation!
                       </p>
                       <span className="inline-block text-[10px] font-black uppercase tracking-wider text-green-700 bg-green-100 px-2 py-0.5 rounded">
-                        ✓ INSTANT ENTRY ACTIVATION
+                        ✓ INSTANT AI CONFIRMATION
                       </span>
                     </div>
                   </div>
@@ -470,7 +468,7 @@ export default function RegisterPage() {
                         </span>
                       </div>
                       <p className="text-xs text-[#5A4839]">
-                        Get your QR ticket now. Pay ₹50 in cash to an authorized event volunteer upon arrival.
+                        Get your digital pass now. Pay ₹50 cash to an authorized volunteer at the entry counter.
                       </p>
                       <span className="inline-block text-[10px] font-black uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded">
                         ⏳ PAYMENT PENDING UNTIL ENTRY
@@ -480,6 +478,163 @@ export default function RegisterPage() {
                 </div>
               </div>
             </div>
+
+            {/* UPI QR & Screenshot Upload Section (when Online is selected) */}
+            {formData.payment_method === "online" && (
+              <div className="p-5 sm:p-6 rounded-2xl bg-[#FAF4EC] border-2 border-[#E65100]/30 space-y-6 animate-in fade-in duration-300">
+                <div className="text-center space-y-1">
+                  <span className="text-[11px] font-black uppercase tracking-widest text-[#E65100] block">
+                    STEP 1: SCAN & PAY ₹50
+                  </span>
+                  <h3 className="font-display font-black text-lg text-[#1C1917] uppercase">
+                    SCAN OFFICIAL UPI QR CODE
+                  </h3>
+                </div>
+
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  {/* QR Image Frame */}
+                  <div className="p-3 bg-white rounded-2xl border-2 border-[#1C1917]/20 shadow-md inline-block relative group">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={eventConfig.upi?.qrImageUrl || "/images/payment-qr.png"}
+                      alt="UPI Payment QR Code"
+                      className="w-52 h-52 sm:w-60 sm:h-60 object-contain rounded-lg"
+                    />
+                    <div className="text-center text-[10px] font-black text-[#5A4839] uppercase tracking-wider mt-2">
+                      Scan with any UPI App
+                    </div>
+                  </div>
+
+                  {/* Payee Details Pill */}
+                  <div className="w-full max-w-sm p-3.5 rounded-xl bg-white/80 border border-[#1C1917]/15 space-y-2 text-center text-xs">
+                    <div>
+                      <span className="text-[10px] font-bold text-[#5A4839] uppercase tracking-wider block">
+                        Account Holder Name
+                      </span>
+                      <span className="font-black text-[#1C1917] uppercase text-sm">
+                        {eventConfig.upi?.name || "KUSHAL GHANSHYAMBHAI"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-2 pt-1 border-t border-[#1C1917]/10">
+                      <span className="font-mono font-bold text-[#E65100] text-xs">
+                        {eventConfig.upi?.id || "7046232003@upi"}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleCopyUpi}
+                        className="px-2 py-1 rounded bg-[#FAF4EC] hover:bg-[#EAE0D0] text-[#1C1917] text-[10px] font-black uppercase flex items-center gap-1 border border-[#1C1917]/15"
+                      >
+                        {copiedUpi ? (
+                          <>
+                            <Check className="w-3 h-3 text-green-600" />
+                            <span>Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3 text-[#5A4839]" />
+                            <span>Copy UPI</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Mobile Direct Pay Link */}
+                  <div className="sm:hidden w-full max-w-sm">
+                    <a
+                      href={upiPayUrl}
+                      className="w-full py-2.5 px-4 rounded-xl bg-[#1C1917] text-white text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#24170D] transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 text-[#FFA000]" />
+                      <span>TAP TO PAY VIA GPAY / PHONEPE / PAYTM</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Screenshot Upload Dropzone */}
+                <div className="pt-4 border-t border-[#292524]/10 space-y-3">
+                  <div className="text-center">
+                    <span className="text-[11px] font-black uppercase tracking-widest text-[#E65100] block">
+                      STEP 2: UPLOAD PAYMENT SCREENSHOT
+                    </span>
+                    <p className="text-xs text-[#5A4839]">
+                      Our AI will automatically detect your 12-digit UTR and verify your payment in real-time.
+                    </p>
+                  </div>
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    accept="image/*"
+                    className="hidden"
+                  />
+
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`cursor-pointer p-6 rounded-2xl border-2 border-dashed transition-all text-center flex flex-col items-center justify-center gap-2 ${
+                      screenshotBase64
+                        ? "border-green-600 bg-green-50/50"
+                        : "border-[#E65100]/40 bg-white/60 hover:bg-white hover:border-[#E65100]"
+                    }`}
+                  >
+                    {screenshotBase64 ? (
+                      <div className="space-y-2 flex flex-col items-center">
+                        <div className="w-12 h-12 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
+                          <CheckCircle2 className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <span className="text-xs font-black uppercase tracking-wider text-green-800 block">
+                            SCREENSHOT READY FOR AI VERIFICATION
+                          </span>
+                          <span className="text-[11px] font-mono text-[#5A4839] block truncate max-w-xs">
+                            {screenshotFileName || "Payment Screenshot Selected"}
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-[#E65100] underline font-bold">
+                          Click to change screenshot
+                        </span>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="w-12 h-12 rounded-full bg-[#E65100]/10 text-[#E65100] flex items-center justify-center">
+                          <UploadCloud className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <span className="text-xs font-black uppercase tracking-wider text-[#1C1917] block">
+                            UPLOAD PAYMENT SCREENSHOT
+                          </span>
+                          <span className="text-[11px] text-[#5A4839]">
+                            PNG, JPG, or JPEG (Max 10MB)
+                          </span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Fallback Manual UTR Field */}
+                  {showManualUtrField && (
+                    <div className="p-4 rounded-xl bg-amber-50 border border-amber-300 space-y-2 animate-in fade-in">
+                      <label className="block text-xs font-black uppercase tracking-wider text-amber-900">
+                        12-Digit UPI Reference / UTR Number <span className="text-red-600">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={manualUtr}
+                        onChange={(e) => setManualUtr(e.target.value.replace(/\D/g, "").slice(0, 12))}
+                        placeholder="e.g. 423881923011"
+                        maxLength={12}
+                        className="w-full px-4 py-2.5 rounded-lg bg-white border border-amber-300 text-[#1C1917] font-mono text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                      <span className="text-[10px] text-amber-800 block">
+                        Found in your GPay / PhonePe / Paytm receipt as &quot;UPI Ref No&quot; or &quot;UTR&quot;.
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Submit CTA */}
             <div className="pt-6">
@@ -491,12 +646,14 @@ export default function RegisterPage() {
                 {loading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>GENERATING SECURE TICKET...</span>
+                    <span>{ocrStatusText || "PROCESSING VERIFICATION..."}</span>
                   </>
                 ) : (
                   <>
                     <span>
-                      {formData.payment_method === "online" ? "PROCEED TO PAY ₹50 ONLINE" : "COMPLETE REGISTRATION (PAY CASH AT EVENT)"}
+                      {formData.payment_method === "online"
+                        ? "VERIFY PAYMENT & GET TICKET"
+                        : "COMPLETE REGISTRATION (PAY CASH AT EVENT)"}
                     </span>
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
                   </>

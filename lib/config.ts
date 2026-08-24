@@ -28,6 +28,16 @@ export const eventConfig = {
   host: "Rashtriya Swayamsevak Sangh (RSS)",
   siteUrl: "https://yuvashaktisangam.org",
   email: "yuvashaktisangam2047@gmail.com",
+  upi: {
+    id: "7046232003@upi",
+    name: "KUSHAL GHANSHYAMBHAI",
+    amount: 50,
+    currency: "INR",
+    note: "Yuva Shakti Sangam Entry Pass",
+    qrImageUrl: "/images/payment-qr.png",
+    getUpiUrl: () =>
+      "upi://pay?pa=7046232003@upi&pn=KUSHAL%20GHANSHYAMBHAI&am=50&cu=INR&tn=Yuva%20Shakti%20Sangam%20Pass",
+  },
   coordinators: [
     {
       name: "Dhruvil Bhatt",
