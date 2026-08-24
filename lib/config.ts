@@ -25,6 +25,9 @@ export const eventConfig = {
   host: "Rashtriya Swayamsevak Sangh (RSS)",
   siteUrl: "https://yuvashaktisangam.org",
   email: "yuvashaktisangam2047@gmail.com",
+  instagramUrl: "https://www.instagram.com/yuvashaktisangam?igsi=NHhvdmIxNmo1bWVy",
+  instagramHandle: "@yuvashaktisangam",
+  logoUrl: "/images/logo.png",
   upi: {
     id: "7046232003@upi",
     name: "KUSHAL GHANSHYAMBHAI",

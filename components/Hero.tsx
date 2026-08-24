@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { eventConfig } from "@/lib/config";
 import Countdown from "./Countdown";
-import { Calendar, Clock, MapPin, Sparkles, ArrowRight, Ticket, ShieldCheck, Users, Menu, X } from "lucide-react";
+import { Calendar, Clock, MapPin, Sparkles, ArrowRight, Ticket, ShieldCheck, Users, Menu, X, Instagram } from "lucide-react";
 
 export default function Hero() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,9 +21,16 @@ export default function Hero() {
           <div className="flex items-center justify-between pb-4 sm:pb-6 border-b border-[#17130E]/10">
             {/* Left Brand Identity */}
             <div className="flex items-center gap-2.5 sm:gap-3">
-              {/* Om Emblem in rounded dark ink box */}
-              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-[#17130E] border border-[#F05A12]/40 flex items-center justify-center text-[#F05A12] text-2xl sm:text-3xl font-bold shadow-md shrink-0 select-none">
-                <span>ॐ</span>
+              {/* Official Logo Emblem */}
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-md shrink-0 border border-[#17130E]/20 bg-white/30 flex items-center justify-center p-0.5">
+                <Image
+                  src="/images/logo.png"
+                  alt="Yuva Shakti Sangam Official Logo"
+                  width={56}
+                  height={56}
+                  className="w-full h-full object-contain"
+                  priority
+                />
               </div>
 
               {/* Title & Slogan */}
@@ -41,9 +48,21 @@ export default function Hero() {
 
             {/* Right Action Buttons */}
             <div className="flex items-center gap-2 sm:gap-3">
+              {eventConfig.instagramUrl && (
+                <a
+                  href={eventConfig.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-xl bg-[#17130E] text-[#F2DFBD] hover:text-[#F05A12] hover:bg-[#24170D] transition-colors flex items-center justify-center shadow-sm"
+                  title="Follow us on Instagram @yuvashaktisangam"
+                >
+                  <Instagram className="w-4 h-4 sm:w-5 sm:h-5" />
+                </a>
+              )}
+
               <Link
                 href="/register"
-                className="px-5 sm:px-6 py-2.5 rounded-xl bg-[#F05A12] hover:bg-[#C8460B] text-white text-xs sm:text-sm font-black uppercase tracking-wider shadow-bhagwa-sm transition-all active:scale-95 flex items-center gap-1.5"
+                className="px-4 sm:px-6 py-2.5 rounded-xl bg-[#F05A12] hover:bg-[#C8460B] text-white text-xs sm:text-sm font-black uppercase tracking-wider shadow-bhagwa-sm transition-all active:scale-95 flex items-center gap-1.5"
               >
                 <span>REGISTER (₹50)</span>
               </Link>

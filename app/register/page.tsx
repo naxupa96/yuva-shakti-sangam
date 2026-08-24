@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -24,6 +25,7 @@ import {
   ChevronDown,
   Search,
   X,
+  Instagram,
 } from "lucide-react";
 import { eventConfig } from "@/lib/config";
 import { CornerOrnament, MandalaMotif, DevanagariWatermark } from "@/components/Decorations";
@@ -294,6 +296,18 @@ export default function RegisterPage() {
 
           {/* Header */}
           <div className="text-center space-y-3 mb-8">
+            {/* Official Logo */}
+            <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-full overflow-hidden border-2 border-[#E65100]/30 bg-white/40 shadow-md p-1">
+              <Image
+                src="/images/logo.png"
+                alt="Yuva Shakti Sangam"
+                width={96}
+                height={96}
+                className="w-full h-full object-contain"
+                priority
+              />
+            </div>
+
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1C1917] text-[#FAF4EC] text-xs font-black uppercase tracking-widest shadow-sm">
               <Sparkles className="w-3.5 h-3.5 text-[#FFA000]" />
               <span>OFFICIAL EVENT REGISTRATION</span>
@@ -835,13 +849,26 @@ export default function RegisterPage() {
           </form>
 
           {/* Coordinator Contact Support */}
-          <div className="mt-8 pt-6 border-t border-[#292524]/10 text-center text-xs text-[#5A4839] space-y-1">
+          <div className="mt-8 pt-6 border-t border-[#292524]/10 text-center text-xs text-[#5A4839] space-y-2">
             <p className="font-bold text-[#1C1917]">
               Need assistance with registration or payment?
             </p>
             <p className="text-[11px] text-[#5A4839]/80">
               WhatsApp Coordinators: Dhruvil (+91 90547 37915) &bull; Kushal (+91 70462 32003)
             </p>
+            {eventConfig.instagramUrl && (
+              <div className="pt-1">
+                <a
+                  href={eventConfig.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1C1917] text-[#FAF4EC] text-[11px] font-bold hover:text-[#FFA000] transition-colors"
+                >
+                  <Instagram className="w-3.5 h-3.5 text-[#FFA000]" />
+                  <span>Follow @yuvashaktisangam on Instagram</span>
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

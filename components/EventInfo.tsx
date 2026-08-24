@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { eventConfig } from "@/lib/config";
 import { faqs } from "@/lib/data";
-import { MapPin, Calendar, Clock, Navigation, ChevronDown, ExternalLink, Mail, Phone, MessageCircle, UserCheck, ArrowRight } from "lucide-react";
+import { MapPin, Calendar, Clock, Navigation, ChevronDown, ExternalLink, Mail, Phone, MessageCircle, UserCheck, ArrowRight, Instagram } from "lucide-react";
 import { CornerOrnament, DevanagariWatermark } from "./Decorations";
 
 export default function EventInfo() {
@@ -16,11 +16,11 @@ export default function EventInfo() {
 
   return (
     <section id="event-info" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#EAE0D0] bg-parchment-texture relative overflow-hidden border-b border-[#292524]/10">
-      <DevanagariWatermark text="स्थान" className="top-10 left-4 text-[12rem] sm:text-[18rem] text-[#292524]/5" />
+      <DevanagariWatermark text="सूचना" className="top-10 left-6 text-[14rem] sm:text-[22rem] text-[#292524]/5" />
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
+        <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1C1917] text-[#FAF4EC] text-xs font-black uppercase tracking-widest shadow-sm">
             <MapPin className="w-3.5 h-3.5 text-[#E65100]" />
             <span>LOGISTICS &amp; PLANNING</span>
@@ -38,7 +38,7 @@ export default function EventInfo() {
         {/* 3 Logistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {/* Card 1: Location */}
-          <div className="p-8 rounded-3xl bg-[#F5EBE1] border border-[#292524]/15 hover:border-[#E65100]/60 transition-all flex flex-col justify-between group shadow-parchment-card">
+          <div className="p-8 rounded-3xl bg-[#F5EBE1] border border-[#292524]/15 hover:border-[#E65100]/60 transition-all flex flex-col justify-between group shadow-parchment-card relative">
             <CornerOrnament className="absolute top-2 right-2 opacity-20 text-[#E65100]" />
             <div>
               <div className="w-14 h-14 rounded-2xl bg-[#FAF4EC] border border-[#292524]/10 flex items-center justify-center text-[#E65100] mb-6 shadow-sm">
@@ -150,7 +150,7 @@ export default function EventInfo() {
               <p className="text-xs text-[#A8A29E] leading-relaxed">
                 Have questions regarding registration, delegation, volunteering, or venue access? Reach out to our organizing team.
               </p>
-              <div className="pt-2">
+              <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center gap-3">
                 <a
                   href={`mailto:${eventConfig.email}`}
                   className="inline-flex items-center gap-2 text-xs font-bold text-[#E65100] hover:underline"
@@ -158,6 +158,17 @@ export default function EventInfo() {
                   <Mail className="w-4 h-4" />
                   <span>{eventConfig.email}</span>
                 </a>
+                {eventConfig.instagramUrl && (
+                  <a
+                    href={eventConfig.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#241F1A] border border-[#3E3832] text-xs font-bold text-[#FAF4EC] hover:text-[#E65100] transition-colors"
+                  >
+                    <Instagram className="w-3.5 h-3.5 text-[#E65100]" />
+                    <span>{eventConfig.instagramHandle || "@yuvashaktisangam"}</span>
+                  </a>
+                )}
               </div>
             </div>
 

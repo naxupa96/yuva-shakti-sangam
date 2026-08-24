@@ -2,8 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import Image from "next/image";
+import { Menu, X, ArrowUpRight, Instagram } from "lucide-react";
 import { navItems } from "@/lib/data";
+import { eventConfig } from "@/lib/config";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,9 +35,15 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Brand Emblem & Name */}
           <a href="#" className="flex items-center gap-3 group">
-            {/* Om Emblem Badge */}
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-[#17130E] border border-[#F05A12]/40 flex items-center justify-center text-[#F05A12] text-xl sm:text-2xl font-bold shadow-sm">
-              <span>ॐ</span>
+            {/* Official Logo Emblem */}
+            <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full overflow-hidden shadow-sm shrink-0 border border-[#17130E]/15 bg-white/20">
+              <Image
+                src="/images/logo.png"
+                alt="Yuva Shakti Sangam Logo"
+                width={52}
+                height={52}
+                className="w-full h-full object-contain"
+              />
             </div>
 
             {/* Typography */}

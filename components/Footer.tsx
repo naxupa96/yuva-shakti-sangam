@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowUpRight, Mail, Phone, UserCheck } from "lucide-react";
+import Image from "next/image";
+import { ArrowUpRight, Mail, Phone, UserCheck, Instagram } from "lucide-react";
 import { eventConfig } from "@/lib/config";
 import { navItems } from "@/lib/data";
 
@@ -14,8 +15,14 @@ export default function Footer() {
           {/* Brand & Event Identity */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#241F1A] border border-[#E65100]/40 flex items-center justify-center text-[#E65100] font-bold text-xl">
-                <span>ॐ</span>
+              <div className="w-12 h-12 rounded-full overflow-hidden border border-[#E65100]/40 bg-white/10 shrink-0 p-0.5">
+                <Image
+                  src="/images/logo.png"
+                  alt="Yuva Shakti Sangam Logo"
+                  width={48}
+                  height={48}
+                  className="w-full h-full object-contain"
+                />
               </div>
               <span className="font-display font-black text-xl text-[#FAF4EC] uppercase tracking-wider">
                 YUVA <span className="text-[#E65100]">SHAKTI</span> SANGAM
@@ -27,6 +34,22 @@ export default function Footer() {
             <p className="text-xs text-[#A8A29E] leading-relaxed">
               {eventConfig.taglineEnglish}
             </p>
+
+            {/* Instagram Follow Badge */}
+            {eventConfig.instagramUrl && (
+              <div className="pt-1">
+                <a
+                  href={eventConfig.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#241F1A] border border-[#3E3832] text-xs font-bold text-[#FAF4EC] hover:text-[#E65100] hover:border-[#E65100]/50 transition-all shadow-sm group"
+                >
+                  <Instagram className="w-4 h-4 text-[#E65100] group-hover:scale-110 transition-transform" />
+                  <span>{eventConfig.instagramHandle || "@yuvashaktisangam"}</span>
+                </a>
+              </div>
+            )}
+
             <div className="pt-2 text-[11px] text-[#78716C] space-y-1">
               <p>📍 {eventConfig.location}</p>
               <p>📅 {eventConfig.dateDisplay} • {eventConfig.timeDisplay}</p>
