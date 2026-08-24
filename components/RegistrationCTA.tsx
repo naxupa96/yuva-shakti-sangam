@@ -39,14 +39,21 @@ export default function RegistrationCTA() {
           </h2>
 
           {/* Supporting Text */}
-          <div className="text-sm sm:text-lg text-[#57534E] max-w-lg mx-auto space-y-1 mb-8 font-medium">
-            <p>Bring your questions.</p>
-            <p>Bring your energy.</p>
+          <div className="text-sm sm:text-lg text-[#57534E] max-w-lg mx-auto space-y-1 mb-6 font-medium">
+            <p>Bring your questions. Bring your energy.</p>
             <p className="text-[#E65100] font-bold">Bring your ideas for Bharat.</p>
           </div>
 
+          {/* Inclusions Pill */}
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 py-2 px-4 rounded-2xl bg-[#1C1917] text-[#FAF4EC] text-xs font-black uppercase tracking-wider mb-8 shadow-sm">
+            <Sparkles className="w-4 h-4 text-[#FFA000]" />
+            <span>OFFICIAL ID CARD PROVIDED</span>
+            <span>•</span>
+            <span className="text-[#FFA000]">HIGH TEA INCLUDED</span>
+          </div>
+
           {/* High-Impact CTA Button */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto mb-10">
+          <div className="flex flex-col items-center justify-center gap-2 max-w-md mx-auto mb-10">
             <Link
               href="/register"
               className="w-full py-4 px-8 rounded-xl btn-bhagwa-primary text-base sm:text-lg font-black uppercase tracking-wider flex items-center justify-center gap-3 active:scale-95 transition-all group"
@@ -54,6 +61,9 @@ export default function RegistrationCTA() {
               <span>JOIN THE SANGAM (₹50)</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
             </Link>
+            <span className="text-[11px] font-bold text-[#57534E]">
+              📍 Shree Saurashtra Patel Samaj, Maninagar, Ahmedabad
+            </span>
           </div>
 
           {/* Benefit / Trust Strip */}

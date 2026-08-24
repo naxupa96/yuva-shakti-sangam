@@ -36,7 +36,7 @@ export default function EventInfo() {
         </div>
 
         {/* 3 Logistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* Card 1: Location */}
           <div className="p-8 rounded-3xl bg-[#F5EBE1] border border-[#292524]/15 hover:border-[#E65100]/60 transition-all flex flex-col justify-between group shadow-parchment-card relative">
             <CornerOrnament className="absolute top-2 right-2 opacity-20 text-[#E65100]" />
@@ -45,16 +45,16 @@ export default function EventInfo() {
                 <MapPin className="w-7 h-7" />
               </div>
               <span className="text-[10px] font-black text-[#E65100] uppercase tracking-widest block mb-1">
-                LOCATION &amp; CITY
+                VENUE &amp; LOCATION
               </span>
-              <h3 className="font-display font-black text-2xl text-[#1C1917] uppercase tracking-tight mb-2">
-                Maninagar, Ahmedabad
+              <h3 className="font-display font-black text-xl sm:text-2xl text-[#1C1917] uppercase tracking-tight mb-2">
+                Shree Saurashtra Patel Samaj
               </h3>
               <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed mb-4">
-                Gujarat, India. Well-connected by Ahmedabad Metro, BRTS, and local transit.
+                Isanpur Rd, Chandranagar Society, Basant Nagar, Maninagar, Ahmedabad, Gujarat.
               </p>
               <div className="p-3.5 rounded-2xl bg-[#FAF4EC] border border-[#292524]/10 text-xs font-bold text-[#E65100]">
-                📍 {eventConfig.venueNote}
+                📍 Maninagar, Ahmedabad
               </div>
             </div>
 
@@ -134,6 +134,30 @@ export default function EventInfo() {
               </a>
             </div>
           </div>
+        </div>
+
+        {/* Pass Inclusions Highlight Banner */}
+        <div className="mb-16 p-6 sm:p-7 rounded-2xl bg-[#FAF4EC] border-2 border-[#E65100]/30 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-xl bg-[#E65100] text-white flex items-center justify-center font-display font-black text-lg shrink-0 shadow-sm">
+              ₹50
+            </div>
+            <div className="space-y-0.5 text-center sm:text-left">
+              <h4 className="font-display font-black text-base sm:text-lg text-[#1C1917] uppercase tracking-wide">
+                DELEGATE PASS INCLUSIONS
+              </h4>
+              <p className="text-xs sm:text-sm text-[#57534E]">
+                <strong className="text-[#E65100]">Official Delegate ID Card</strong> will be provided upon check-in &bull; <strong className="text-[#E65100]">High Tea & Refreshments</strong> included for all delegates.
+              </p>
+            </div>
+          </div>
+
+          <Link
+            href="/register"
+            className="px-6 py-3 rounded-xl bg-[#E65100] hover:bg-[#FF6D00] text-white text-xs font-black uppercase tracking-wider shadow-bhagwa-sm transition-all active:scale-95 shrink-0"
+          >
+            REGISTER NOW
+          </Link>
         </div>
 
         {/* Contact & Helpline Panel */}

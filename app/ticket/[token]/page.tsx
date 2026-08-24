@@ -248,6 +248,23 @@ export default function TicketPage({
                 </button>
               </div>
 
+              {/* Delegate Inclusions Notice */}
+              <div className="p-3.5 rounded-xl bg-[#FAF4EC] border border-[#E65100]/25 text-[11px] text-[#5A4839] space-y-1 text-left">
+                <div className="font-bold text-[#1C1917] flex items-center gap-1.5">
+                  <span className="text-[#E65100]">★</span>
+                  <span>Pass Inclusions &amp; Instructions:</span>
+                </div>
+                <p>
+                  &bull; <strong>Delegate ID Card:</strong> Please collect your physical ID Card at the registration / welcome desk by showing this QR.
+                </p>
+                <p>
+                  &bull; <strong>High Tea &amp; Refreshments:</strong> Included for all registered attendees.
+                </p>
+                <p>
+                  &bull; <strong>Venue:</strong> Shree Saurashtra Patel Samaj, Isanpur Rd, Basant Nagar, Maninagar, Ahmedabad.
+                </p>
+              </div>
+
               {/* Event Timing strip */}
               <div className="pt-4 border-t border-[#292524]/10 flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-[#5A4839]">
                 <div className="flex items-center gap-1.5">
@@ -260,7 +277,7 @@ export default function TicketPage({
                 </div>
                 <div className="flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-[#E65100]" />
-                  <span>Maninagar, Ahmedabad</span>
+                  <span>Shree Saurashtra Patel Samaj, Maninagar</span>
                 </div>
               </div>
             </div>

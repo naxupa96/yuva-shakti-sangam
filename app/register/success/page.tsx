@@ -250,6 +250,23 @@ function SuccessContent() {
             </button>
           </div>
 
+          {/* Delegate Inclusions Notice */}
+          <div className="p-3.5 rounded-xl bg-[#FAF4EC] border border-[#E65100]/25 text-[11px] text-[#5A4839] space-y-1 text-left max-w-2xl mx-auto mb-6">
+            <div className="font-bold text-[#1C1917] flex items-center gap-1.5">
+              <span className="text-[#E65100]">★</span>
+              <span>Pass Inclusions &amp; Venue Details:</span>
+            </div>
+            <p>
+              &bull; <strong>Delegate ID Card:</strong> Official ID badge will be issued at the check-in welcome counter upon scanning this QR.
+            </p>
+            <p>
+              &bull; <strong>High Tea &amp; Refreshments:</strong> Included for all registered attendees.
+            </p>
+            <p>
+              &bull; <strong>Venue:</strong> Shree Saurashtra Patel Samaj, Isanpur Rd, Chandranagar Society, Basant Nagar, Maninagar, Ahmedabad.
+            </p>
+          </div>
+
           {/* Event Quick Logistics */}
           <div className="pt-6 border-t border-[#292524]/10 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto text-xs font-bold text-[#1C1917]">
             <div className="p-3 rounded-xl bg-[#FAF4EC] flex items-center gap-2 justify-center">
@@ -262,7 +279,7 @@ function SuccessContent() {
             </div>
             <div className="p-3 rounded-xl bg-[#FAF4EC] flex items-center gap-2 justify-center">
               <MapPin className="w-4 h-4 text-[#E65100]" />
-              <span>{eventConfig.locationShort}</span>
+              <span>Shree Saurashtra Patel Samaj, Maninagar</span>
             </div>
           </div>
 

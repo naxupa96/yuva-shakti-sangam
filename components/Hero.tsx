@@ -166,9 +166,9 @@ export default function Hero() {
                   <Clock className="w-4 h-4 text-[#F05A12] shrink-0 stroke-[2.5]" />
                   <span>{eventConfig.timeDisplay}</span>
                 </div>
-                <div className="flex items-center gap-2.5">
-                  <MapPin className="w-4 h-4 text-[#F05A12] shrink-0 stroke-[2.5]" />
-                  <span>{eventConfig.locationShort.toUpperCase()}</span>
+                <div className="flex items-start gap-2.5">
+                  <MapPin className="w-4 h-4 text-[#F05A12] shrink-0 stroke-[2.5] mt-0.5" />
+                  <span className="leading-snug">{eventConfig.venueName.toUpperCase()} • MANINAGAR</span>
                 </div>
               </div>
             </div>
@@ -197,13 +197,20 @@ export default function Hero() {
               </div>
 
               <div className="text-xs sm:text-sm font-medium text-[#5A4839] space-y-0.5">
-                <p>Bring your questions.</p>
-                <p>Bring your energy.</p>
+                <p>Bring your questions. Bring your energy.</p>
                 <p className="text-[#F05A12] font-bold">Bring your ideas for Bharat.</p>
               </div>
 
+              {/* Pass Inclusions Pill */}
+              <div className="inline-flex flex-wrap items-center gap-2 py-1.5 px-3 rounded-xl bg-[#17130E] text-[#FAF4EC] text-[11px] font-black uppercase tracking-wider">
+                <Sparkles className="w-3.5 h-3.5 text-[#FFA000]" />
+                <span>OFFICIAL ID CARD PROVIDED</span>
+                <span>•</span>
+                <span className="text-[#FFA000]">HIGH TEA INCLUDED</span>
+              </div>
+
               {/* Large Saffron CTA Button */}
-              <div className="pt-2">
+              <div className="pt-1">
                 <Link
                   href="/register"
                   className="w-full py-4 px-6 rounded-xl btn-bhagwa-primary text-sm sm:text-base font-black uppercase tracking-wider flex items-center justify-center gap-2 group"

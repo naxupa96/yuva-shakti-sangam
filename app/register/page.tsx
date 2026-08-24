@@ -330,10 +330,15 @@ export default function RegisterPage() {
               <span>{eventConfig.locationShort}</span>
             </div>
 
-            {/* Fee Banner */}
-            <div className="mt-4 inline-block py-2 px-6 rounded-2xl bg-[#E65100]/10 border border-[#E65100]/30 text-[#E65100]">
-              <span className="text-xs font-black uppercase tracking-widest block text-[#5A4839]">REGISTRATION PASS</span>
+            {/* Fee Banner with Inclusions */}
+            <div className="mt-4 inline-flex flex-col items-center py-3 px-6 rounded-2xl bg-[#E65100]/10 border border-[#E65100]/30 text-[#E65100] max-w-lg">
+              <span className="text-[11px] font-black uppercase tracking-widest block text-[#5A4839]">OFFICIAL DELEGATE PASS</span>
               <span className="text-2xl sm:text-3xl font-display font-black">₹50 ONLY</span>
+              <div className="mt-2 pt-2 border-t border-[#E65100]/20 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-bold text-[#1C1917]">
+                <span className="flex items-center gap-1 text-[#E65100]">✓ Official Delegate ID Card Provided</span>
+                <span className="text-[#5A4839]">&bull;</span>
+                <span className="flex items-center gap-1 text-[#E65100]">✓ High Tea &amp; Refreshments Included</span>
+              </div>
             </div>
           </div>
 

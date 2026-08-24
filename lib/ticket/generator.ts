@@ -142,17 +142,21 @@ export async function generateTicketPdf(participant: Participant, siteUrl?: stri
   }
 
   // 6. Footer event instructions
-  const footerY = statusY + 14;
+  const footerY = statusY + 13;
   doc.setTextColor(23, 19, 14);
-  doc.setFontSize(7);
+  doc.setFontSize(6.5);
   doc.setFont("helvetica", "bold");
-  doc.text("06 SEPTEMBER 2026 * 4:00 PM - 8:00 PM", pageWidth / 2, footerY, { align: "center" });
+  doc.text("SHREE SAURASHTRA PATEL SAMAJ, MANINAGAR", pageWidth / 2, footerY, { align: "center" });
+
+  doc.setTextColor(240, 90, 18);
+  doc.setFontSize(6);
+  doc.setFont("helvetica", "bold");
+  doc.text("* ID CARD PROVIDED AT DESK  *  HIGH TEA INCLUDED *", pageWidth / 2, footerY + 3.8, { align: "center" });
 
   doc.setTextColor(90, 72, 57);
-  doc.setFontSize(6);
+  doc.setFontSize(5.5);
   doc.setFont("helvetica", "normal");
-  doc.text("Show this QR code at the entrance verification desk.", pageWidth / 2, footerY + 4, { align: "center" });
-  doc.text("Helpline: +91 90547 37915 / +91 70462 32003", pageWidth / 2, footerY + 7.5, { align: "center" });
+  doc.text("06 Sept 2026 (4 PM - 8 PM) | Helpline: +91 90547 37915 / +91 70462 32003", pageWidth / 2, footerY + 7.2, { align: "center" });
 
   return doc.output("blob");
 }

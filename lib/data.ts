@@ -521,8 +521,8 @@ export const faqs: FAQItem[] = [
   },
   {
     category: "Participation",
-    question: "Is there any registration fee or ticket cost?",
-    answer: "The registration fee is ₹50 (nominal fee covering event badge, access, and materials). Entry is managed through verified digital QR tickets to maintain venue safety and logistics planning.",
+    question: "Is there any registration fee, and what is included?",
+    answer: "The registration pass is ₹50 (nominal fee). Your pass includes an Official Delegate ID Card, High Tea & Refreshments, complete access to ground games arena, cultural drama performances, and open-floor participation in Yuva Samvaad.",
   },
   {
     category: "Participation",
@@ -546,12 +546,12 @@ export const faqs: FAQItem[] = [
   },
   {
     category: "Logistics",
-    question: "Will dinner or refreshments be provided?",
-    answer: "Yes. Traditional high-energy refreshments will be available upon arrival, and a full community meal (Sahabhoj) will be shared together after 7:45 PM.",
+    question: "Will refreshments and ID cards be provided?",
+    answer: "Yes! All registered delegates will be provided with an Official Delegate ID Card upon check-in and complimentary High Tea & Refreshments during the event.",
   },
   {
     category: "Logistics",
     question: "Where is the exact venue located?",
-    answer: "The Sangam takes place in Maninagar, Ahmedabad. Exact gate numbers and parking lot coordinates will be automatically shared with all registered attendees prior to the event.",
+    answer: "The event is hosted at Shree Saurashtra Patel Samaj Maninagar (Isanpur Rd, Chandranagar Society, Basant Nagar, Maninagar, Ahmedabad, Gujarat). It is easily accessible via Ahmedabad Metro and BRTS.",
   },
 ];
