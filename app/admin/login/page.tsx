@@ -1,14 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import Link from "next/link";
 import { Lock, Mail, ArrowRight, Loader2, ShieldCheck, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { CornerOrnament, MandalaMotif } from "@/components/Decorations";
 
-export default function AdminLoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTarget = searchParams.get("redirect") || "/admin";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,8 +27,15 @@ export default function AdminLoginPage() {
 
     try {
       const supabase = createClient();
+      let formattedEmail = email.trim();
+      if (formattedEmail === "yuvashakti@admin" || formattedEmail === "yuvashakti") {
+        formattedEmail = "yuvashakti@admin.com";
+      } else if (!formattedEmail.includes("@")) {
+        formattedEmail = `${formattedEmail}@admin.com`;
+      }
+
       const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: formattedEmail,
         password: password,
       });
 
@@ -35,7 +46,8 @@ export default function AdminLoginPage() {
       }
 
       if (data.user) {
-        router.push("/admin");
+        // Force full refresh to activate cookie session in middleware
+        window.location.href = redirectTarget.startsWith("/admin") ? redirectTarget : "/admin";
       }
     } catch (err: any) {
       console.error("Login error:", err);
@@ -93,11 +105,12 @@ export default function AdminLoginPage() {
               <div className="relative">
                 <Mail className="w-4 h-4 text-[#5A4839] absolute left-3.5 top-3.5" />
                 <input
-                  type="email"
+                  type="text"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="organizer@yuvashaktisangam.org"
+                  placeholder="yuvashakti@admin.com or organizer email"
+                  autoComplete="username"
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-sm font-medium text-[#1C1917] focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20"
                 />
               </div>
@@ -149,3 +162,23 @@ export default function AdminLoginPage() {
     </div>
   );
 }
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#EAE0D0] bg-parchment-texture flex items-center justify-center p-6 text-[#1C1917]">
+          <div className="p-8 rounded-3xl bg-[#F5EBE1] border border-[#292524]/20 flex items-center gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-[#E65100]" />
+            <span className="text-xs font-bold uppercase tracking-wider text-[#5A4839]">
+              Loading Staff Portal...
+            </span>
+          </div>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
+  );
+}
+

@@ -36,3 +36,9 @@ next-env.d.ts
 # social media assets
 /social-media-posts
 
+# scratch & temp files
+temp_*
+test_*
+scratch_*
+loc_qr.png
+reg_qr.png

@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+     width="100%" height="100%" viewBox="0 0 3600 3600" version="1.1">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800;900&amp;family=Noto+Sans+Gujarati:wght@600;700;800;900&amp;display=swap');
+      .font-guj { font-family: 'Noto Sans Gujarati', 'Nirmala UI', 'Shruti', sans-serif; }
+      .font-cinzel { font-family: 'Cinzel', 'Times New Roman', serif; }
+      .font-sans { font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; }
+    </style>
+
+    <!-- Master Gradients -->
+    <radialGradient id="bgGradE" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#FFFDF7"/>
+      <stop offset="35%" stop-color="#FEF5E3"/>
+      <stop offset="70%" stop-color="#F7E5C3"/>
+      <stop offset="100%" stop-color="#E9CE9B"/>
+    </radialGradient>
+
+    <linearGradient id="saffronHeaderGradE" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#B83505"/>
+      <stop offset="25%" stop-color="#E8590C"/>
+      <stop offset="50%" stop-color="#F76707"/>
+      <stop offset="75%" stop-color="#E8590C"/>
+      <stop offset="100%" stop-color="#B83505"/>
+    </linearGradient>
+
+    <linearGradient id="titleRedGradE" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8A0012"/>
+      <stop offset="40%" stop-color="#B81424"/>
+      <stop offset="80%" stop-color="#70000E"/>
+      <stop offset="100%" stop-color="#4A0009"/>
+    </linearGradient>
+
+    <linearGradient id="goldMetallicE" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DFC07B"/>
+      <stop offset="25%" stop-color="#FCEFC7"/>
+      <stop offset="50%" stop-color="#C69537"/>
+      <stop offset="75%" stop-color="#F8E5A7"/>
+      <stop offset="100%" stop-color="#A27320"/>
+    </linearGradient>
+
+    <linearGradient id="darkNavyCardE" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1B140E"/>
+      <stop offset="50%" stop-color="#120D08"/>
+      <stop offset="100%" stop-color="#0A0704"/>
+    </linearGradient>
+
+    <linearGradient id="badgePillGradE" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D9480F"/>
+      <stop offset="50%" stop-color="#FA5252"/>
+      <stop offset="100%" stop-color="#D9480F"/>
+    </linearGradient>
+
+    <linearGradient id="cardGradE" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#FBF4E8"/>
+    </linearGradient>
+
+    <filter id="heavyShadowE" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+    <filter id="textGlowE" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#E8590C" flood-opacity="0.4"/>
+    </filter>
+    <filter id="badgeShadowE" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+
+    <g id="vectorFlagE">
+      <path d="M 0 0 L 80 25 L 45 45 L 90 70 L 0 90 Z" fill="#F76707"/>
+      <line x1="0" y1="0" x2="0" y2="110" stroke="#FFEAA7" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="0" cy="0" r="6" fill="#FFEAA7"/>
+    </g>
+
+    <g id="cornerFlourishE">
+      <path d="M 0 0 L 140 0 C 140 45, 105 80, 60 80 C 40 80, 20 60, 20 40 L 20 140 L 0 140 Z" fill="url(#goldMetallicE)"/>
+      <path d="M 15 15 L 120 15 C 105 35, 80 50, 45 50 L 45 120 L 15 120 Z" fill="#996515" opacity="0.85"/>
+      <circle cx="50" cy="50" r="12" fill="#E8590C"/>
+      <circle cx="50" cy="50" r="6" fill="#FCEFC7"/>
+      <path d="M 0 0 L 160 0 L 160 15 L 15 15 L 15 160 L 0 160 Z" fill="url(#goldMetallicE)"/>
+    </g>
+
+    <g id="iconSportsE">
+      <circle cx="50" cy="20" r="14" fill="#E8590C"/>
+      <path d="M 45 36 L 55 36 L 68 55 L 85 52 M 45 42 L 30 55 L 20 75 M 50 48 L 50 72 L 65 92 M 50 68 L 35 92" stroke="#E8590C" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </g>
+    <g id="iconSamvaadE">
+      <rect x="15" y="15" width="70" height="50" rx="12" fill="#B81424"/>
+      <polygon points="35,65 45,78 55,65" fill="#B81424"/>
+      <circle cx="35" cy="40" r="5" fill="#FFFFFF"/>
+      <circle cx="50" cy="40" r="5" fill="#FFFFFF"/>
+      <circle cx="65" cy="40" r="5" fill="#FFFFFF"/>
+    </g>
+    <g id="iconStageE">
+      <path d="M 20 25 C 20 65, 80 65, 80 25 Z" fill="#C69537"/>
+      <circle cx="38" cy="38" r="5" fill="#181411"/>
+      <circle cx="62" cy="38" r="5" fill="#181411"/>
+      <path d="M 40 52 Q 50 60 60 52" stroke="#181411" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <path d="M 50 15 L 50 25 M 35 18 L 38 25 M 65 18 L 62 25" stroke="#E8590C" stroke-width="3"/>
+    </g>
+    <g id="iconTeaE">
+      <path d="M 22 35 L 78 35 C 75 75, 25 75, 22 35 Z" fill="#2B8A3E"/>
+      <path d="M 75 42 C 90 42, 90 60, 72 62" stroke="#2B8A3E" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <line x1="16" y1="80" x2="84" y2="80" stroke="#2B8A3E" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 38 25 Q 42 16 38 10 M 50 25 Q 54 16 50 10 M 62 25 Q 66 16 62 10" stroke="#E8590C" stroke-width="3" stroke-linecap="round" fill="none"/>
+    </g>
+  </defs>
+
+  <rect x="0" y="0" width="3600" height="3600" fill="url(#bgGradE)"/>
+
+  <!-- Master Border Frame -->
+  <rect x="50" y="50" width="3500" height="3500" rx="30" fill="none" stroke="url(#goldMetallicE)" stroke-width="28"/>
+  <rect x="80" y="80" width="3440" height="3440" rx="20" fill="none" stroke="#5E000C" stroke-width="6"/>
+  <rect x="96" y="96" width="3408" height="3408" rx="16" fill="none" stroke="url(#goldMetallicE)" stroke-width="4" stroke-dasharray="24,12"/>
+
+  <!-- 4 Corner Flourishes -->
+  <g transform="translate(98, 98)"><use xlink:href="#cornerFlourishE"/></g>
+  <g transform="translate(3502, 98) scale(-1, 1)"><use xlink:href="#cornerFlourishE"/></g>
+  <g transform="translate(98, 3502) scale(1, -1)"><use xlink:href="#cornerFlourishE"/></g>
+  <g transform="translate(3502, 3502) scale(-1, -1)"><use xlink:href="#cornerFlourishE"/></g>
+
+  <!-- 1. HEADER SECTION -->
+  <g id="headerSectionE">
+    <rect x="100" y="100" width="3400" height="260" rx="14" fill="url(#saffronHeaderGradE)" filter="url(#badgeShadowE)"/>
+    <rect x="100" y="352" width="3400" height="12" fill="url(#goldMetallicE)"/>
+
+    <g transform="translate(320, 230)">
+      <circle cx="0" cy="0" r="95" fill="#FFEAA7" stroke="url(#goldMetallicE)" stroke-width="8"/>
+      <circle cx="0" cy="0" r="82" fill="#E8590C"/>
+      <text x="0" y="38" class="font-guj" font-size="110" font-weight="900" fill="#FFFDF7" text-anchor="middle">ॐ</text>
+    </g>
+
+    <text x="1850" y="210" class="font-cinzel" font-size="76" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="4">
+      RASHTRIYA SWAYAMSEVAK SANGH
+    </text>
+    <text x="1850" y="295" class="font-cinzel" font-size="46" font-weight="800" fill="#FFEFB8" text-anchor="middle" letter-spacing="8">
+      MANINAGAR NAGAR • AHMEDABAD
+    </text>
+
+    <g transform="translate(3280, 230)">
+      <circle cx="0" cy="0" r="95" fill="#FFEAA7" stroke="url(#goldMetallicE)" stroke-width="8"/>
+      <circle cx="0" cy="0" r="82" fill="#E8590C"/>
+      <g transform="translate(-45, -50)">
+        <use xlink:href="#vectorFlagE"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- 2. HERO TITLE SECTION -->
+  <g id="heroTitleSectionE">
+    <g transform="translate(1800, 460)">
+      <rect x="-620" y="-45" width="1240" height="90" rx="45" fill="url(#badgePillGradE)" filter="url(#badgeShadowE)"/>
+      <rect x="-614" y="-39" width="1228" height="78" rx="39" fill="none" stroke="#FFEFB8" stroke-width="3"/>
+      <text x="0" y="16" class="font-sans" font-size="38" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="4">
+        🚩 NATION FIRST • YOUTH POWER, NATION POWER 🚩
+      </text>
+    </g>
+
+    <text x="1806" y="736" class="font-cinzel" font-size="180" font-weight="900" fill="#3D0008" text-anchor="middle" letter-spacing="8">
+      YUVA SHAKTI SANGAM
+    </text>
+    <text x="1800" y="730" class="font-cinzel" font-size="180" font-weight="900" fill="url(#titleRedGradE)" stroke="#5E000C" stroke-width="4" text-anchor="middle" letter-spacing="8" filter="url(#textGlowE)">
+      YUVA SHAKTI SANGAM
+    </text>
+
+    <text x="1800" y="850" class="font-guj" font-size="74" font-weight="900" fill="#B81424" text-anchor="middle" letter-spacing="8">
+      યુવા શક્તિ સંગમ
+    </text>
+
+    <g transform="translate(1800, 960)">
+      <line x1="-1200" y1="0" x2="-450" y2="0" stroke="url(#goldMetallicE)" stroke-width="6"/>
+      <circle cx="-450" cy="0" r="10" fill="#E8590C"/>
+      <text x="0" y="14" class="font-sans" font-size="44" font-weight="800" fill="#181411" text-anchor="middle" letter-spacing="2">
+        A Historic Conclave of Youth for National Rejuvenation &amp; Character Building
+      </text>
+      <circle cx="450" cy="0" r="10" fill="#E8590C"/>
+      <line x1="450" y1="0" x2="1200" y2="0" stroke="url(#goldMetallicE)" stroke-width="6"/>
+    </g>
+
+    <g transform="translate(1800, 1075)">
+      <rect x="-1400" y="-55" width="2800" height="110" rx="16" fill="#FFFFFF" stroke="#DFC07B" stroke-width="4" filter="url(#badgeShadowE)"/>
+      <text x="0" y="12" class="font-sans" font-size="38" font-weight="800" fill="#5E000C" text-anchor="middle" letter-spacing="1">
+        “India doesn't just need young people. <tspan fill="#E8590C">India needs young people who CARE.</tspan>”
+      </text>
+    </g>
+  </g>
+
+  <!-- 3. HIGHLIGHTS / 4 PILLARS -->
+  <g id="pillarsSectionE" transform="translate(0, 1170)">
+    <text x="1800" y="60" class="font-cinzel" font-size="46" font-weight="900" fill="#B81424" text-anchor="middle" letter-spacing="4">
+      ❖ KEY EVENT HIGHLIGHTS ❖
+    </text>
+
+    <!-- CARD 1 -->
+    <g transform="translate(180, 100)">
+      <rect x="0" y="0" width="760" height="360" rx="20" fill="url(#cardGradE)" stroke="#DFC07B" stroke-width="5" filter="url(#badgeShadowE)"/>
+      <rect x="0" y="0" width="760" height="12" rx="6" fill="#E8590C"/>
+      <circle cx="380" cy="85" r="52" fill="#FFE8D6" stroke="#E8590C" stroke-width="4"/>
+      <g transform="translate(330, 35)"><use xlink:href="#iconSportsE"/></g>
+      <text x="380" y="185" class="font-sans" font-size="38" font-weight="900" fill="#181411" text-anchor="middle">
+        GROUND SPORTS
+      </text>
+      <text x="380" y="230" class="font-guj" font-size="28" font-weight="800" fill="#E8590C" text-anchor="middle">
+        પરંપરાગત રમતો
+      </text>
+      <text x="380" y="285" class="font-sans" font-size="25" font-weight="600" fill="#5C4B3D" text-anchor="middle">
+        High-energy traditional sports
+      </text>
+      <text x="380" y="325" class="font-sans" font-size="25" font-weight="700" fill="#B81424" text-anchor="middle">
+        Physical Vigor • Team Spirit
+      </text>
+    </g>
+
+    <!-- CARD 2 -->
+    <g transform="translate(1000, 100)">
+      <rect x="0" y="0" width="760" height="360" rx="20" fill="url(#cardGradE)" stroke="#DFC07B" stroke-width="5" filter="url(#badgeShadowE)"/>
+      <rect x="0" y="0" width="760" height="12" rx="6" fill="#B81424"/>
+      <circle cx="380" cy="85" r="52" fill="#FFE3E3" stroke="#B81424" stroke-width="4"/>
+      <g transform="translate(330, 35)"><use xlink:href="#iconSamvaadE"/></g>
+      <text x="380" y="185" class="font-sans" font-size="38" font-weight="900" fill="#181411" text-anchor="middle">
+        YOUTH SAMVAAD
+      </text>
+      <text x="380" y="230" class="font-guj" font-size="28" font-weight="800" fill="#B81424" text-anchor="middle">
+        યુવા સંવાદ
+      </text>
+      <text x="380" y="285" class="font-sans" font-size="25" font-weight="600" fill="#5C4B3D" text-anchor="middle">
+        Profound dialogue on nation-building
+      </text>
+      <text x="380" y="325" class="font-sans" font-size="25" font-weight="700" fill="#E8590C" text-anchor="middle">
+        Vision • Purpose • Dedication
+      </text>
+    </g>
+
+    <!-- CARD 3 -->
+    <g transform="translate(1820, 100)">
+      <rect x="0" y="0" width="760" height="360" rx="20" fill="url(#cardGradE)" stroke="#DFC07B" stroke-width="5" filter="url(#badgeShadowE)"/>
+      <rect x="0" y="0" width="760" height="12" rx="6" fill="#C69537"/>
+      <circle cx="380" cy="85" r="52" fill="#FFF3D6" stroke="#C69537" stroke-width="4"/>
+      <g transform="translate(330, 35)"><use xlink:href="#iconStageE"/></g>
+      <text x="380" y="185" class="font-sans" font-size="38" font-weight="900" fill="#181411" text-anchor="middle">
+        STAGE SHOWCASE
+      </text>
+      <text x="380" y="230" class="font-guj" font-size="28" font-weight="800" fill="#A27320" text-anchor="middle">
+        સાંસ્કૃતિક પ્રસ્તુતિ
+      </text>
+      <text x="380" y="285" class="font-sans" font-size="25" font-weight="600" fill="#5C4B3D" text-anchor="middle">
+        Patriotic songs, martial arts &amp; drama
+      </text>
+      <text x="380" y="325" class="font-sans" font-size="25" font-weight="700" fill="#B81424" text-anchor="middle">
+        Grand Concluding Ceremony
+      </text>
+    </g>
+
+    <!-- CARD 4 -->
+    <g transform="translate(2640, 100)">
+      <rect x="0" y="0" width="760" height="360" rx="20" fill="url(#cardGradE)" stroke="#DFC07B" stroke-width="5" filter="url(#badgeShadowE)"/>
+      <rect x="0" y="0" width="760" height="12" rx="6" fill="#2B8A3E"/>
+      <circle cx="380" cy="85" r="52" fill="#EBFBEE" stroke="#2B8A3E" stroke-width="4"/>
+      <g transform="translate(330, 35)"><use xlink:href="#iconTeaE"/></g>
+      <text x="380" y="185" class="font-sans" font-size="38" font-weight="900" fill="#181411" text-anchor="middle">
+        HIGH TEA &amp; MEAL
+      </text>
+      <text x="380" y="230" class="font-guj" font-size="28" font-weight="800" fill="#2B8A3E" text-anchor="middle">
+        અલ્પાહાર / સહભોજ
+      </text>
+      <text x="380" y="285" class="font-sans" font-size="25" font-weight="600" fill="#5C4B3D" text-anchor="middle">
+        Delicious refreshments &amp; fellowship
+      </text>
+      <text x="380" y="325" class="font-sans" font-size="25" font-weight="700" fill="#E8590C" text-anchor="middle">
+        Network &amp; Recharge
+      </text>
+    </g>
+  </g>
+
+  <!-- 4. LOGISTICS BOX -->
+  <g id="logisticsSectionE" transform="translate(180, 1690)">
+    <rect x="0" y="0" width="3240" height="780" rx="26" fill="url(#darkNavyCardE)" stroke="url(#goldMetallicE)" stroke-width="8" filter="url(#heavyShadowE)"/>
+    <rect x="12" y="12" width="3216" height="756" rx="20" fill="none" stroke="#DFC07B" stroke-width="2" stroke-dasharray="20,10"/>
+
+    <g transform="translate(80, 80)">
+      <!-- DATE -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="1380" height="260" rx="16" fill="#251B12" stroke="#E8590C" stroke-width="4"/>
+        <rect x="30" y="30" width="200" height="200" rx="14" fill="#E8590C"/>
+        <text x="130" y="105" class="font-cinzel" font-size="52" font-weight="900" fill="#FFFFFF" text-anchor="middle">SEPT</text>
+        <text x="130" y="200" class="font-cinzel" font-size="95" font-weight="900" fill="#FFFFFF" text-anchor="middle">06</text>
+        
+        <text x="270" y="80" class="font-cinzel" font-size="34" font-weight="800" fill="#FFEAA7" letter-spacing="2">
+          EVENT DATE
+        </text>
+        <text x="270" y="150" class="font-sans" font-size="56" font-weight="900" fill="#FFFFFF">
+          Sunday, 06 September 2026
+        </text>
+        <text x="270" y="215" class="font-guj" font-size="36" font-weight="700" fill="#F8E5A7">
+          ૦૬ સપ્ટેમ્બર ૨૦૨૬, રવિવાર
+        </text>
+      </g>
+
+      <!-- TIME -->
+      <g transform="translate(0, 310)">
+        <rect x="0" y="0" width="1380" height="260" rx="16" fill="#251B12" stroke="#C69537" stroke-width="4"/>
+        <rect x="30" y="30" width="200" height="200" rx="14" fill="#C69537"/>
+        <circle cx="130" cy="130" r="70" fill="#181411" stroke="#FFFFFF" stroke-width="6"/>
+        <line x1="130" y1="130" x2="130" y2="85" stroke="#FFEAA7" stroke-width="8" stroke-linecap="round"/>
+        <line x1="130" y1="130" x2="165" y2="130" stroke="#FFEAA7" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="130" cy="130" r="8" fill="#E8590C"/>
+        
+        <text x="270" y="80" class="font-cinzel" font-size="34" font-weight="800" fill="#FFEAA7" letter-spacing="2">
+          EVENT TIME
+        </text>
+        <text x="270" y="150" class="font-sans" font-size="56" font-weight="900" fill="#FFFFFF">
+          4:00 PM to 8:00 PM IST
+        </text>
+        <text x="270" y="215" class="font-guj" font-size="36" font-weight="700" fill="#F8E5A7">
+          સાંજે ૪:૦૦ થી રાત્રે ૮:૦૦ કલાક સુધી
+        </text>
+      </g>
+    </g>
+
+    <line x1="1560" y1="60" x2="1560" y2="720" stroke="url(#goldMetallicE)" stroke-width="4" stroke-dasharray="16,8"/>
+
+    <!-- Right: Venue -->
+    <g transform="translate(1640, 80)">
+      <rect x="0" y="0" width="1500" height="570" rx="16" fill="#251B12" stroke="url(#goldMetallicE)" stroke-width="4"/>
+      
+      <g transform="translate(40, 40)">
+        <rect x="0" y="0" width="320" height="60" rx="10" fill="#E8590C"/>
+        <text x="160" y="42" class="font-cinzel" font-size="30" font-weight="900" fill="#FFFFFF" text-anchor="middle">
+          🏛️ OFFICIAL VENUE
+        </text>
+      </g>
+
+      <text x="40" y="175" class="font-sans" font-size="52" font-weight="900" fill="#FFFFFF">
+        Shree Saurashtra Patel Samaj Hall
+      </text>
+      <text x="40" y="235" class="font-guj" font-size="40" font-weight="800" fill="#FFEFB8">
+        સૌરાષ્ટ્ર પટેલ સમાજની વાડી, મણિનગર
+      </text>
+
+      <line x1="40" y1="275" x2="1450" y2="275" stroke="#DFC07B" stroke-width="2"/>
+
+      <g transform="translate(40, 330)">
+        <text x="0" y="0" class="font-sans" font-size="34" font-weight="800" fill="#FFEAA7">
+          📍 Landmark &amp; Navigation:
+        </text>
+        <text x="0" y="55" class="font-sans" font-size="32" font-weight="600" fill="#F1F3F5">
+          • Beside Chandranagar Society, Isanpur Road
+        </text>
+        <text x="0" y="110" class="font-sans" font-size="32" font-weight="600" fill="#F1F3F5">
+          • Opp. Suryanagar Police Chowki, Near Siddheshwar Mahadev
+        </text>
+        <text x="0" y="165" class="font-sans" font-size="36" font-weight="800" fill="#E8590C">
+          Maninagar, Ahmedabad - 380008 (Gujarat)
+        </text>
+      </g>
+    </g>
+
+    <g transform="translate(80, 680)">
+      <rect x="0" y="0" width="3080" height="70" rx="12" fill="#E8590C"/>
+      <text x="1540" y="48" class="font-sans" font-size="32" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
+        🎟️ REGISTRATION / ENTRY PASS: ONLY ₹50 (Includes Delegate ID Badge + Welcome Kit + High Tea)
+      </text>
+    </g>
+  </g>
+
+  <!-- 5. BOTTOM SECTION: QR CODES & HELPLINE -->
+  <g id="bottomCtaSectionE" transform="translate(180, 2520)">
+    <rect x="0" y="0" width="3240" height="930" rx="26" fill="#FFFFFF" stroke="#DFC07B" stroke-width="6" filter="url(#heavyShadowE)"/>
+
+    <!-- LEFT: LOCATION QR -->
+    <g transform="translate(70, 70)">
+      <rect x="0" y="0" width="760" height="790" rx="20" fill="#FFFDF7" stroke="#181411" stroke-width="4"/>
+      <rect x="0" y="0" width="760" height="85" rx="16" fill="#181411"/>
+      <text x="380" y="58" class="font-cinzel" font-size="34" font-weight="900" fill="#FFEAA7" text-anchor="middle">
+        📍 GOOGLE MAPS LOCATION
+      </text>
+      
+      <g transform="translate(140, 130)">
+        <rect x="-20" y="-20" width="520" height="520" rx="12" fill="#FFFFFF" stroke="#DFC07B" stroke-width="3"/>
+        <image x="0" y="0" width="480" height="480" xlink:href="data:image/png;base64,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"/>
+      </g>
+
+      <text x="380" y="700" class="font-sans" font-size="32" font-weight="900" fill="#E8590C" text-anchor="middle">
+        Scan for Venue Map Pin
+      </text>
+      <text x="380" y="745" class="font-guj" font-size="26" font-weight="700" fill="#5C4B3D" text-anchor="middle">
+        સ્થળ માટે QR સ્કેન કરો
+      </text>
+    </g>
+
+    <!-- CENTER: INVITATION & HELPLINE -->
+    <g transform="translate(880, 60)">
+      <text x="740" y="70" class="font-cinzel" font-size="48" font-weight="900" fill="#B81424" text-anchor="middle">
+        ❖ CORDIAL INVITATION ❖
+      </text>
+      <text x="740" y="130" class="font-sans" font-size="34" font-weight="700" fill="#181411" text-anchor="middle">
+        Open to all young men &amp; women aged 18 to 35 years
+      </text>
+
+      <g transform="translate(40, 170)">
+        <rect x="0" y="0" width="1400" height="230" rx="16" fill="#FFF9EE" stroke="#E9CE9B" stroke-width="3"/>
+        <text x="700" y="65" class="font-sans" font-size="32" font-weight="700" fill="#2B2017" text-anchor="middle">
+          Join thousands of proactive youth in this historic movement
+        </text>
+        <text x="700" y="125" class="font-sans" font-size="32" font-weight="700" fill="#2B2017" text-anchor="middle">
+          guided by the supreme ideal of "Nation First".
+        </text>
+        <text x="700" y="185" class="font-sans" font-size="34" font-weight="900" fill="#E8590C" text-anchor="middle">
+          We warmly look forward to your dignified presence.
+        </text>
+      </g>
+
+      <g transform="translate(40, 430)">
+        <rect x="0" y="0" width="1400" height="375" rx="16" fill="#181411" stroke="#DFC07B" stroke-width="4"/>
+        
+        <text x="700" y="60" class="font-cinzel" font-size="34" font-weight="800" fill="#FFEAA7" text-anchor="middle" letter-spacing="3">
+          OFFICIAL PORTAL &amp; REGISTRATION
+        </text>
+        <text x="700" y="125" class="font-sans" font-size="48" font-weight="900" fill="#38D9A9" text-anchor="middle" letter-spacing="2">
+          yuvashaktisangam.org
+        </text>
+
+        <line x1="80" y1="160" x2="1320" y2="160" stroke="#495057" stroke-width="2"/>
+
+        <text x="700" y="215" class="font-sans" font-size="32" font-weight="800" fill="#FFA94D" text-anchor="middle">
+          📞 HELPLINE &amp; COORDINATION:
+        </text>
+        
+        <!-- Contact 1 -->
+        <g transform="translate(100, 255)">
+          <rect x="0" y="0" width="560" height="85" rx="10" fill="#2B2017" stroke="#E8590C" stroke-width="2"/>
+          <text x="280" y="38" class="font-sans" font-size="28" font-weight="800" fill="#FFFFFF" text-anchor="middle">Dhruvil Bhatt</text>
+          <text x="280" y="70" class="font-sans" font-size="28" font-weight="800" fill="#FFEAA7" text-anchor="middle">+91 90547 37915</text>
+        </g>
+
+        <!-- Contact 2 -->
+        <g transform="translate(740, 255)">
+          <rect x="0" y="0" width="560" height="85" rx="10" fill="#2B2017" stroke="#E8590C" stroke-width="2"/>
+          <text x="280" y="38" class="font-sans" font-size="28" font-weight="800" fill="#FFFFFF" text-anchor="middle">Kushal Patel</text>
+          <text x="280" y="70" class="font-sans" font-size="28" font-weight="800" fill="#FFEAA7" text-anchor="middle">+91 70462 32003</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- RIGHT: REGISTRATION QR -->
+    <g transform="translate(2410, 70)">
+      <rect x="0" y="0" width="760" height="790" rx="20" fill="#FFFDF7" stroke="#E8590C" stroke-width="5"/>
+      <rect x="0" y="0" width="760" height="85" rx="16" fill="#E8590C"/>
+      <text x="380" y="58" class="font-cinzel" font-size="34" font-weight="900" fill="#FFFFFF" text-anchor="middle">
+        🎟️ ONLINE REGISTRATION
+      </text>
+      
+      <g transform="translate(140, 130)">
+        <rect x="-20" y="-20" width="520" height="520" rx="12" fill="#FFFFFF" stroke="#DFC07B" stroke-width="3"/>
+        <image x="0" y="0" width="480" height="480" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAuQAAALkCAIAAADIxrcyAAARHklEQVR4nO3YQarcOgJA0UpTKzDUwPtfnAcGb+H1/EO6w9NPdBWdMy8kS7Lroh9fX18vAICq/8yeAADA/yJWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAEDae9bA5+eYNTS/6Lqf5fbXnPtrteIercj+UjtXI9ysAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBA2vu1oOt+Zk9hGefnmDKuPfozezRrnVccd8V15tfZo/7/wgg3KwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkPZ+beb8HK/VXPfzWs2sdZ61ViPjjqzVius8MueRcWfNmb4V9/da8H9hhJsVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIe8+eAH+n636+/dvzc0z57cicd7PiOo/Mebf3yLtAjZsVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIe8+eAH+n83N8+7fX/UwZd9acR37Ln7HiHs16j1ZcK/rcrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQNr7tZnrfmZPYQsj63x+jtdOZ2PW886y4tkYGXfW846Mu9t3crfnXZGbFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASHu/FnR+jtlT4Dfu0XU/y52NFZ93xXUesdvzjph1rkbstke7cbMCAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABp71kDX/cza2jizs8x5VyNjDuL98g6/02cZ37GzQoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKT9+Pr6mj0H/o/zc0xZo+t+tnre3Yzs725ncjcj+zvrXBm3v84j3KwAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAEDae9bA5+f49m+v+3mtNudZVlyrkTmvOO6K+7vbnFd890d4B61zjZsVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIe78WdH6Ob//2up8pv531vCO/HTGyVrP2d9ZazeJ5/+53f9acZ407wnejz80KAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkvWcNfN3Pt397fo5/dS5/YtyR591tnXfbo5E5r/i8u1lxj2a9+84kP+NmBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0t6zBj4/x7d/e93PVuOOmDXuLCvu0YpmrdXI/o5Y8WysuEcrfiedyT/DzQoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKS9Xws6P8e3f3vdz786l/q4u1nxbKw45xEjcx5Zq93mPGK3551l1rt/LvjNcbMCAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABp79eCrvt57eT8HLOnwG+023neba1G5jzy7s8al7/7bMziZgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLeswa+7mfW0FuZtc7n55gy7orPOzLn3dZ5xIprteI6ewf763xO+l6NcLMCAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABp71kDn5/j27+97mfKuCNG5rzi865o1pmcZdacZ63zinu02zd2tzM54tzs2+5mBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0t6zBr7u59u/PT/HcuPOmvPIb0fMet5ZVtxfe9S32/s7Mu6IFb85u3GzAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAae9ZA5+f49u/ve5nq3FHzHreEbPWasSKZ2PF92jErHFH7HY2dpvziGuz53WzAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAae/ZE+D3uu5nq3HPz7HVuCPrPDLnWfvLn7HieZ417m7fnFncrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQNr7taDzc3z7t9f9TBl3xKxxR6y4zrOed7c9mrVWK855hP3t2+07OcLNCgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApP34+vqaMvD5OV47ue5nylrNGndFK+7RiFn7u9vzrrhWu63ziq4Fz8YINysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJD2fi3oup8p456fY7nnHZnziuu821rtZrezMeubM2LF78aKzs2+V25WAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAg7f3azPk5Xju57mfKWo2MO2K3Oc8ya61mjTvLbu/vbus84tpsj9ysAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBA2o+vr68pA5+fY8q4/Lrrfpbb3xXnPOt5R4ys1aw5j/C8/Izz/Ge4WQEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgLT3rIGv+5k1NKSMvAvn53jNsNv7u9vz7rZWs96jWeOuyM0KAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkvWcNfH6OWUPzi677mfLbEc7V373OI+dqxbOx2/OOzHnFb86s/b0mrdUINysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJD2fi3oup/ZU1jG+TmWG3fW/o6MO2udZ63VbvvLn7HbHs36bqzIzQoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKS9X5s5P8drNdf9vHaasz36u9dq1vPOeo9mzXnWO7jbmVzxXJ0LvkduVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIO09ewLwT9f9LLco5+eYPYUtzDobs/Z31rgj6zwy51nj7vbuXwt+Y92sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBA2nv2BOCfzs/x7UW57seC/oG1GtmjFfd31riz1mq3PVrxec/N3kE3KwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkPZ+bea6n9lT4Dc6P4f1ja/VyDs4MmfvvrWqnQ3n+de5WQEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgLT3a0Hn55g9BdjadT+vnb4buz3vilbcoxHnZufZzQoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKT9+Pr6mj0HAICfcrMCAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgCQJlYAgDSxAgCkiRUAIE2sAABpYgUASBMrAECaWAEA0sQKAJAmVgCANLECAKSJFQAgTawAAGliBQBIEysAQJpYAQDSxAoAkCZWAIA0sQIApIkVACBNrAAAaWIFAEgTKwBAmlgBANLECgDwKvsvTubyj6CyQRUAAAAASUVORK5CYII="/>
+      </g>
+
+      <text x="380" y="700" class="font-sans" font-size="32" font-weight="900" fill="#B81424" text-anchor="middle">
+        Scan to Register Online
+      </text>
+      <text x="380" y="745" class="font-guj" font-size="26" font-weight="700" fill="#5C4B3D" text-anchor="middle">
+        રજીસ્ટ્રેશન માટે QR સ્કેન કરો
+      </text>
+    </g>
+  </g>
+
+  <!-- Grommets -->
+  <circle cx="150" cy="150" r="14" fill="#A27320" stroke="#FFFFFF" stroke-width="4"/>
+  <circle cx="850" cy="150" r="14" fill="#A27320" stroke="#FFFFFF" stroke-width="4"/>
+  <circle cx="1800" cy="150" r="14" fill="#A27320" stroke="#FFFFFF" stroke-width="4"/>
+  <circle cx="2750" cy="150" r="14" fill="#A27320" stroke="#FFFFFF" stroke-width="4"/>
+  <circle cx="3450" cy="150" r="14" fill="#A27320" stroke="#FFFFFF" stroke-width="4"/>
+
+  <circle cx="150" cy="3450" r="14" fill="#A27320" stroke="#FFFFFF" stroke-width="4"/>
+  <circle cx="850" cy="3450" r="14" fill="#A27320" stroke="#FFFFFF" stroke-width="4"/>
+  <circle cx="1800" cy="3450" r="14" fill="#A27320" stroke="#FFFFFF" stroke-width="4"/>
+  <circle cx="2750" cy="3450" r="14" fill="#A27320" stroke="#FFFFFF" stroke-width="4"/>
+  <circle cx="3450" cy="3450" r="14" fill="#A27320" stroke="#FFFFFF" stroke-width="4"/>
+
+  <circle cx="150" cy="1800" r="14" fill="#A27320" stroke="#FFFFFF" stroke-width="4"/>
+  <circle cx="3450" cy="1800" r="14" fill="#A27320" stroke="#FFFFFF" stroke-width="4"/>
+</svg>

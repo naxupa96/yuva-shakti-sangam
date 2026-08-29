@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yuva Shakti Sangam — 10x10 Foot Master Poster &amp; CDR Kit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --saffron: #E8590C;
+      --gold: #C69537;
+      --maroon: #8A0012;
+      --dark-ink: #0F0C0A;
+      --card-bg: #1B1511;
+      --accent-green: #2B8A3E;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0D0B09;
+      color: #F8F9FA;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: linear-gradient(135deg, #1C1510 0%, #2D1A10 100%);
+      border-bottom: 2px solid var(--gold);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .brand-title {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: #FFEAA7;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-title span {
+      background: var(--saffron);
+      color: #FFF;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: 1px;
+    }
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn {
+      background: var(--saffron);
+      color: #FFF;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      border: 1px solid var(--gold);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn:hover {
+      background: #FA5252;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(232, 89, 12, 0.4);
+    }
+    .btn-secondary {
+      background: #2B2017;
+      color: #FFEAA7;
+      border-color: #5C4B3D;
+    }
+    .btn-secondary:hover {
+      background: #3D2D20;
+    }
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 24px;
+      padding: 24px 32px;
+      max-width: 1800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    @media (max-width: 1100px) {
+      main { grid-template-columns: 1fr; }
+    }
+    .preview-container {
+      background: #14100D;
+      border: 2px solid #382D24;
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .poster-viewport {
+      width: 100%;
+      max-width: 820px;
+      aspect-ratio: 1 / 1;
+      border: 8px solid var(--gold);
+      border-radius: 8px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      position: relative;
+      overflow: hidden;
+      background: #000;
+    }
+    .poster-viewport img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border: none;
+      display: block;
+    }
+    .specs-sidebar {
+      background: var(--card-bg);
+      border: 1.5px solid #382D24;
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .specs-card {
+      background: #120D0A;
+      border: 1px solid #2B2017;
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .specs-card h3 {
+      font-size: 15px;
+      color: #FFEAA7;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .specs-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13.5px;
+    }
+    .specs-list li {
+      display: flex;
+      justify-content: space-between;
+      color: #C5BAAF;
+      border-bottom: 1px dashed #2B2017;
+      padding-bottom: 4px;
+    }
+    .specs-list li strong {
+      color: #FFFFFF;
+    }
+    .file-download-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .file-item {
+      background: #251B14;
+      border: 1px solid #4A3728;
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-decoration: none;
+      color: #FFF;
+      font-size: 13.5px;
+      transition: all 0.2s;
+    }
+    .file-item:hover {
+      background: #3A2B1F;
+      border-color: var(--gold);
+    }
+    .badge-fmt {
+      background: var(--maroon);
+      color: #FFF;
+      font-weight: 800;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand-title">
+      🚩 Yuva Shakti Sangam <span>10×10 FT MASTER POSTER</span>
+    </div>
+    <div class="controls">
+      <button class="btn btn-secondary" onclick="toggleEdition('guj')">Gujarati Edition</button>
+      <button class="btn btn-secondary" onclick="toggleEdition('eng')">English Edition</button>
+      <a id="cdrBtn" href="Yuva_Shakti_Sangam_10x10ft_Gujarati.cdr" class="btn" download>📥 Download .CDR</a>
+      <a id="pdfBtn" href="Yuva_Shakti_Sangam_10x10ft_Gujarati_PrintReady.pdf" class="btn btn-secondary" target="_blank">📄 Open PDF</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="preview-container">
+      <div style="margin-bottom: 16px; color: #FFEAA7; font-weight: 700; font-size: 15px;">
+        📐 True 1:1 Scale Proof (120 Inches × 120 Inches / 10×10 Feet)
+      </div>
+      <div class="poster-viewport">
+        <img id="posterImg" src="Yuva_Shakti_Sangam_10x10ft_Gujarati_Preview.png" alt="Yuva Shakti Sangam 10x10ft Poster Proof">
+      </div>
+      <div style="margin-top: 16px; font-size: 13px; color: #A69280; text-align: center;">
+        💡 Designed for Large-Format Hoardings, Public Crossroads, Society Gates &amp; Exhibition Entrance • 50+ Meter Readability
+      </div>
+    </div>
+
+    <div class="specs-sidebar">
+      <div class="specs-card">
+        <h3>📐 Banner Specifications</h3>
+        <ul class="specs-list">
+          <li><span>Dimensions:</span> <strong>10 × 10 Feet (120″ × 120″)</strong></li>
+          <li><span>Metric Size:</span> <strong>3048 mm × 3048 mm</strong></li>
+          <li><span>Aspect Ratio:</span> <strong>1:1 (Square Format)</strong></li>
+          <li><span>Color Profile:</span> <strong>CMYK &amp; High-Gamut RGB</strong></li>
+          <li><span>Bleed Margin:</span> <strong>2.0 Inches all sides</strong></li>
+          <li><span>Eyelet Spacing:</span> <strong>Every 2.0 Feet (12 Grommets)</strong></li>
+          <li><span>Recommended Media:</span> <strong>Star Flex / Frontlit Vinyl</strong></li>
+        </ul>
+      </div>
+
+      <div class="specs-card">
+        <h3>📦 Print-Ready Files Kit</h3>
+        <div class="file-download-box">
+          <a href="Yuva_Shakti_Sangam_10x10ft_Gujarati.cdr" class="file-item" download>
+            <div>
+              <span class="badge-fmt">CDR</span>
+              <strong>Gujarati Master (.cdr)</strong>
+            </div>
+            <span>Download</span>
+          </a>
+          <a href="Yuva_Shakti_Sangam_10x10ft_Gujarati_PrintReady.pdf" class="file-item" target="_blank">
+            <div>
+              <span class="badge-fmt">PDF</span>
+              <strong>10x10ft Print-Ready PDF</strong>
+            </div>
+            <span>View</span>
+          </a>
+          <a href="Yuva_Shakti_Sangam_10x10ft_Gujarati.svg" class="file-item" download>
+            <div>
+              <span class="badge-fmt">SVG</span>
+              <strong>Master Vector (.svg)</strong>
+            </div>
+            <span>Export</span>
+          </a>
+          <a href="Yuva_Shakti_Sangam_10x10ft_English.cdr" class="file-item" download>
+            <div>
+              <span class="badge-fmt">CDR</span>
+              <strong>English Master (.cdr)</strong>
+            </div>
+            <span>Download</span>
+          </a>
+          <a href="Yuva_Shakti_Sangam_10x10ft_English_PrintReady.pdf" class="file-item" target="_blank">
+            <div>
+              <span class="badge-fmt">PDF</span>
+              <strong>English Print-Ready PDF</strong>
+            </div>
+            <span>View</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="specs-card">
+        <h3>🖨️ Flex Printer Operator Guide</h3>
+        <p style="font-size: 12.5px; color: #C5BAAF; line-height: 1.6;">
+          1. <strong>CorelDRAW Workflow:</strong> Open <code>.cdr</code> directly or import <code>.svg</code> / <code>.pdf</code>. Set layout to 120″ × 120″.<br>
+          2. <strong>Direct RIP:</strong> Feed <code>_PrintReady.pdf</code> directly into ColorGATE, PhotoPRINT, Roland VersaWorks, or Onyx RIP at 100% scale.<br>
+          3. <strong>Finishing:</strong> Double-fold hem with standard brass eyelets on 12 marked grommet points.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function toggleEdition(lang) {
+      const img = document.getElementById('posterImg');
+      const cdrBtn = document.getElementById('cdrBtn');
+      const pdfBtn = document.getElementById('pdfBtn');
+      if (lang === 'eng') {
+        img.src = 'Yuva_Shakti_Sangam_10x10ft_English_Preview.png';
+        cdrBtn.href = 'Yuva_Shakti_Sangam_10x10ft_English.cdr';
+        pdfBtn.href = 'Yuva_Shakti_Sangam_10x10ft_English_PrintReady.pdf';
+      } else {
+        img.src = 'Yuva_Shakti_Sangam_10x10ft_Gujarati_Preview.png';
+        cdrBtn.href = 'Yuva_Shakti_Sangam_10x10ft_Gujarati.cdr';
+        pdfBtn.href = 'Yuva_Shakti_Sangam_10x10ft_Gujarati_PrintReady.pdf';
+      }
+    }
+  </script>
+</body>
+</html>
