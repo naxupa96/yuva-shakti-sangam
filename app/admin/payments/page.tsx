@@ -98,9 +98,18 @@ export default function AdminPaymentsPage() {
         if (data.metrics) {
           setMetrics(data.metrics);
         }
+      } else {
+        setFeedback({
+          message: data.error || "Could not retrieve ledger records. Please click Refresh.",
+          type: "error",
+        });
       }
     } catch (err) {
       console.error("Payments fetch error:", err);
+      setFeedback({
+        message: "Server connection error. Please ensure Next.js dev server is running and click Refresh.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
