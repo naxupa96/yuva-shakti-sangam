@@ -174,7 +174,21 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 6. Cash Registration flow
+    // 6. Cash Registration flow - record in payments ledger
+    try {
+      await supabase.from("payments").insert({
+        participant_id: newParticipant.id,
+        method: "cash",
+        amount: 50,
+        currency: "INR",
+        status: "pending",
+        gateway: "manual_cash",
+        notes: "Pending on-ground cash collection at gate",
+      });
+    } catch (payErr) {
+      console.error("Failed to insert cash payment ledger row:", payErr);
+    }
+
     return NextResponse.json({
       success: true,
       participant: newParticipant,
