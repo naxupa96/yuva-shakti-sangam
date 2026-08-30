@@ -64,9 +64,15 @@ export default function AdminDashboardPage() {
   }, []);
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    window.location.href = "/admin/login";
+    try {
+      await fetch("/api/admin/logout", { method: "POST" });
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      window.location.href = "/admin/login";
+    }
   };
 
   return (
