@@ -1,15 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminToken, getAdminCookieName, getAdminCredentials } from "@/lib/auth/admin";
-import { getAdminClient } from "@/lib/supabase/admin";
+import {
+  createAdminToken,
+  getAdminCookieName,
+  getAdminCredentials,
+  ADMIN_SESSION_DURATION,
+} from "@/lib/auth/admin";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { username, password, rememberMe } = body;
+    const { username, password } = body;
 
     if (!username || !password) {
       return NextResponse.json(
-        { success: false, error: "Username/Email and password are required." },
+        { success: false, error: "Username and password are required." },
         { status: 400 }
       );
     }
@@ -18,63 +22,30 @@ export async function POST(req: NextRequest) {
     const trimmedPassword = String(password).trim();
     const creds = getAdminCredentials();
 
-    let authenticated = false;
-    let authUser = "admin";
+    // Strict validation: Only yuva@2047 with bharatmatakijai
+    const isMatchingUsername = trimmedUsername.toLowerCase() === creds.username.toLowerCase();
+    const isMatchingPassword = trimmedPassword === creds.password;
 
-    // 1. Check against organizer admin credentials
-    const isMatchingUsername =
-      trimmedUsername.toLowerCase() === creds.username.toLowerCase() ||
-      creds.aliases.some((alias) => alias.toLowerCase() === trimmedUsername.toLowerCase());
-
-    if (isMatchingUsername && trimmedPassword === creds.password) {
-      authenticated = true;
-      authUser = trimmedUsername;
-    }
-
-    // 2. Fallback: check Supabase Auth if credentials weren't master credentials
-    if (!authenticated) {
-      try {
-        const supabase = getAdminClient();
-        let formattedEmail = trimmedUsername;
-        if (!formattedEmail.includes("@")) {
-          formattedEmail = `${formattedEmail}@admin.com`;
-        }
-
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: formattedEmail,
-          password: trimmedPassword,
-        });
-
-        if (!error && data?.user) {
-          authenticated = true;
-          authUser = data.user.email || trimmedUsername;
-        }
-      } catch (sbErr) {
-        // Supabase Auth check failed, ignore
-      }
-    }
-
-    if (!authenticated) {
+    if (!isMatchingUsername || !isMatchingPassword) {
       return NextResponse.json(
         {
           success: false,
-          error: "Invalid organizer credentials. Please verify username and password.",
+          error: "Invalid username or password.",
         },
         { status: 401 }
       );
     }
 
-    // Generate signed admin session token (7 days or 24 hours)
-    const duration = rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24 * 7;
-    const token = await createAdminToken(authUser, duration);
+    // Generate signed admin session token valid for 1 full year
+    const token = await createAdminToken(creds.username, ADMIN_SESSION_DURATION);
 
     const response = NextResponse.json({
       success: true,
       message: "Admin authentication successful.",
-      user: { username: authUser },
+      user: { username: creds.username },
     });
 
-    // Set secure HTTP-only cookie
+    // Set secure, persistent HTTP-only cookie
     response.cookies.set({
       name: getAdminCookieName(),
       value: token,
@@ -82,7 +53,7 @@ export async function POST(req: NextRequest) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: duration,
+      maxAge: ADMIN_SESSION_DURATION,
     });
 
     return response;

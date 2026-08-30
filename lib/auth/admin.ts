@@ -6,16 +6,17 @@
 const SESSION_COOKIE_NAME = "admin_session";
 const DEFAULT_SECRET = "yuva-shakti-sangam-secure-admin-secret-2026";
 
+// 1 Year Session Duration (365 days)
+export const ADMIN_SESSION_DURATION = 60 * 60 * 24 * 365;
+
 export function getAdminCookieName() {
   return SESSION_COOKIE_NAME;
 }
 
 export function getAdminCredentials() {
   return {
-    username: process.env.ADMIN_USERNAME || "admin",
-    // Also accepts alias usernames
-    aliases: ["yuvashakti", "organizer", "yuvashakti@admin.com", "admin@yuvashaktisangam.org"],
-    password: process.env.ADMIN_PASSWORD || "YuvaShakti@2026",
+    username: process.env.ADMIN_USERNAME || "yuva@2047",
+    password: process.env.ADMIN_PASSWORD || "bharatmatakijai",
   };
 }
 
@@ -49,9 +50,9 @@ function hexToBuffer(hex: string): ArrayBuffer {
 }
 
 /**
- * Creates a cryptographically signed session token for admin
+ * Creates a cryptographically signed session token for admin (default 1 year)
  */
-export async function createAdminToken(username: string, durationSeconds: number = 60 * 60 * 24 * 7): Promise<string> {
+export async function createAdminToken(username: string, durationSeconds: number = ADMIN_SESSION_DURATION): Promise<string> {
   const exp = Date.now() + durationSeconds * 1000;
   const payload = JSON.stringify({ u: username, exp, role: "admin" });
   const encoder = new TextEncoder();

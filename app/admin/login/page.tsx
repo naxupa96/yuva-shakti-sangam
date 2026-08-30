@@ -25,7 +25,6 @@ function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -45,7 +44,6 @@ function LoginForm() {
         body: JSON.stringify({
           username: username.trim(),
           password: password,
-          rememberMe,
         }),
       });
 
@@ -167,22 +165,10 @@ function LoginForm() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-1">
-              <label className="flex items-center gap-2 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#E65100] focus:ring-[#E65100] border-[#292524]/30"
-                />
-                <span className="text-xs font-bold text-[#5A4839]">Remember Session</span>
-              </label>
-            </div>
-
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 px-6 rounded-xl btn-bhagwa-primary text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-bhagwa-sm active:scale-95 transition-all disabled:opacity-60 cursor-pointer"
+              className="w-full mt-2 py-3.5 px-6 rounded-xl btn-bhagwa-primary text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-bhagwa-sm active:scale-95 transition-all disabled:opacity-60 cursor-pointer"
             >
               {loading ? (
                 <>
