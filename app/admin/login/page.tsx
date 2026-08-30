@@ -13,7 +13,6 @@ import {
   AlertCircle,
   Eye,
   EyeOff,
-  KeyRound,
   Shield,
 } from "lucide-react";
 import { CornerOrnament, MandalaMotif } from "@/components/Decorations";
@@ -71,11 +70,6 @@ function LoginForm() {
     }
   };
 
-  const fillQuickCredentials = () => {
-    setUsername("admin");
-    setPassword("YuvaShakti@2026");
-  };
-
   return (
     <div className="min-h-screen bg-[#EAE0D0] bg-parchment-texture text-[#1C1917] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden selection:bg-[#E65100] selection:text-white">
       {/* Ambient background decoration */}
@@ -108,7 +102,7 @@ function LoginForm() {
               ORGANIZER PORTAL
             </h1>
             <p className="text-xs font-bold text-[#5A4839] uppercase tracking-wider">
-              Yuva Shakti Sangam • 06 Sep 2026
+              Yuva Shakti Sangam • Authorized Personnel Only
             </p>
           </div>
 
@@ -140,16 +134,16 @@ function LoginForm() {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="admin or organizer email"
+                  placeholder="Enter organizer username or email"
                   autoComplete="username"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-sm font-medium text-[#1C1917] placeholder:text-[#5A4839]/50 focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-sm font-medium text-[#1C1917] placeholder:text-[#5A4839]/40 focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 transition-all"
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-black uppercase tracking-wider text-[#1C1917] mb-1.5">
-                Organizer Password
+                Password
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-[#5A4839] absolute left-3.5 top-3.5" />
@@ -160,13 +154,13 @@ function LoginForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   autoComplete="current-password"
-                  className="w-full pl-10 pr-11 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-sm font-medium text-[#1C1917] placeholder:text-[#5A4839]/50 focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 transition-all"
+                  className="w-full pl-10 pr-11 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-sm font-medium text-[#1C1917] placeholder:text-[#5A4839]/40 focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   tabIndex={-1}
-                  className="absolute right-3.5 top-3.5 text-[#5A4839] hover:text-[#1C1917] transition-colors focus:outline-none"
+                  className="absolute right-3.5 top-3.5 text-[#5A4839] hover:text-[#1C1917] transition-colors focus:outline-none cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -197,31 +191,12 @@ function LoginForm() {
                 </>
               ) : (
                 <>
-                  <span>UNLOCK COMMAND CENTER</span>
+                  <span>SIGN IN TO ADMIN</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
           </form>
-
-          {/* Quick Credential Hint Banner */}
-          <div className="mt-6 p-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/10 text-center space-y-1">
-            <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-[#5A4839]">
-              <KeyRound className="w-3.5 h-3.5 text-[#E65100]" />
-              <span>Organizer Credentials</span>
-            </div>
-            <p className="text-[11px] text-[#5A4839]/80 font-mono">
-              Username: <span className="font-bold text-[#1C1917]">admin</span> | Password:{" "}
-              <span className="font-bold text-[#1C1917]">YuvaShakti@2026</span>
-            </p>
-            <button
-              type="button"
-              onClick={fillQuickCredentials}
-              className="text-[10px] font-black uppercase tracking-wider text-[#E65100] hover:underline pt-0.5 inline-block"
-            >
-              Auto-fill Credentials
-            </button>
-          </div>
 
           <div className="mt-6 pt-4 border-t border-[#292524]/10 text-center">
             <Link
