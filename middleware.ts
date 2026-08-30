@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { getAdminCookieName, verifyAdminToken } from "@/lib/auth/admin";
+import { getVolunteerCookieName, verifyVolunteerToken } from "@/lib/auth/volunteer";
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -8,27 +9,77 @@ export async function middleware(request: NextRequest) {
   });
 
   const pathname = request.nextUrl.pathname;
-  const isLoginPage = pathname === "/admin/login";
+
+  // 1. Volunteer route logic
+  const isVolunteerLoginPage = pathname === "/volunteer/login";
+  const isVolunteerRoute = pathname.startsWith("/volunteer");
+  const isVolunteerApiRoute = pathname.startsWith("/api/volunteer");
+  const isVolunteerAuthApi =
+    pathname === "/api/volunteer/login" ||
+    pathname === "/api/volunteer/logout" ||
+    pathname === "/api/volunteer/session";
+
+  if (isVolunteerAuthApi) {
+    return supabaseResponse;
+  }
+
+  // Check admin session (admin can also access volunteer area)
+  const adminCookie = request.cookies.get(getAdminCookieName())?.value;
+  const { valid: isAdminTokenValid } = await verifyAdminToken(adminCookie);
+
+  // Check volunteer session
+  const volunteerCookie = request.cookies.get(getVolunteerCookieName())?.value;
+  const { valid: isVolunteerTokenValid } = await verifyVolunteerToken(volunteerCookie);
+
+  const isVolunteerAuthenticated = isVolunteerTokenValid || isAdminTokenValid;
+
+  // Protect Volunteer API routes
+  if (isVolunteerApiRoute && !isVolunteerAuthenticated) {
+    return NextResponse.json(
+      { success: false, error: "Unauthorized. Volunteer access required." },
+      { status: 401 }
+    );
+  }
+
+  // Protect Volunteer Pages
+  if (isVolunteerRoute) {
+    if (!isVolunteerLoginPage && !isVolunteerAuthenticated) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/volunteer/login";
+      if (pathname !== "/volunteer") {
+        redirectUrl.searchParams.set("redirect", pathname);
+      }
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    if (isVolunteerLoginPage && isVolunteerAuthenticated) {
+      const redirectParam = request.nextUrl.searchParams.get("redirect");
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = redirectParam && redirectParam.startsWith("/volunteer") ? redirectParam : "/volunteer";
+      redirectUrl.search = "";
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    return supabaseResponse;
+  }
+
+  // 2. Admin route logic
+  const isAdminLoginPage = pathname === "/admin/login";
   const isAdminRoute = pathname.startsWith("/admin");
   const isAdminApiRoute = pathname.startsWith("/api/admin");
-  const isAuthApiRoute =
+  const isAdminAuthApi =
     pathname === "/api/admin/login" ||
     pathname === "/api/admin/logout" ||
     pathname === "/api/admin/session";
 
-  // Allow public auth API endpoints without verification
-  if (isAuthApiRoute) {
+  if (isAdminAuthApi) {
     return supabaseResponse;
   }
 
-  // Check 1: Admin signed session cookie
-  const adminCookie = request.cookies.get(getAdminCookieName())?.value;
-  const { valid: isAdminTokenValid } = await verifyAdminToken(adminCookie);
+  let isAdminAuthenticated = isAdminTokenValid;
 
-  let isAuthenticated = isAdminTokenValid;
-
-  // Check 2: Supabase Auth session as fallback
-  if (!isAuthenticated) {
+  // Supabase Auth session fallback for admin
+  if (!isAdminAuthenticated) {
     try {
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://xoxklwtgbrohierzfztj.supabase.co";
       const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
@@ -55,23 +106,23 @@ export async function middleware(request: NextRequest) {
       } = await supabase.auth.getUser();
 
       if (user) {
-        isAuthenticated = true;
+        isAdminAuthenticated = true;
       }
     } catch (err) {
-      // Supabase user fetch failed, proceed with isAuthenticated = false
+      // Supabase fetch failed
     }
   }
 
-  // 1. Protect Admin API endpoints
-  if (isAdminApiRoute && !isAuthenticated) {
+  // Protect Admin API endpoints
+  if (isAdminApiRoute && !isAdminAuthenticated) {
     return NextResponse.json(
       { success: false, error: "Unauthorized. Admin session required." },
       { status: 401 }
     );
   }
 
-  // 2. Protect Admin Frontend Pages (Redirect unauthenticated users to /admin/login)
-  if (isAdminRoute && !isLoginPage && !isAuthenticated) {
+  // Protect Admin Frontend Pages
+  if (isAdminRoute && !isAdminLoginPage && !isAdminAuthenticated) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/admin/login";
     if (pathname !== "/admin") {
@@ -80,8 +131,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // 3. Prevent logged-in admin from staying on /admin/login
-  if (isLoginPage && isAuthenticated) {
+  // Prevent logged-in admin from staying on /admin/login
+  if (isAdminLoginPage && isAdminAuthenticated) {
     const redirectParam = request.nextUrl.searchParams.get("redirect");
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = redirectParam && redirectParam.startsWith("/admin") ? redirectParam : "/admin";
@@ -96,5 +147,7 @@ export const config = {
   matcher: [
     "/admin/:path*",
     "/api/admin/:path*",
+    "/volunteer/:path*",
+    "/api/volunteer/:path*",
   ],
 };
