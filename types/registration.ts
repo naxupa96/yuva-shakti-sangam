@@ -101,4 +101,6 @@ export interface DashboardStats {
   cash_revenue: number;
   total_revenue: number;
   pending_cash_amount: number;
+  total_questions?: number;
+  checked_in_questions?: number;
 }

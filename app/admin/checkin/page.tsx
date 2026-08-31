@@ -16,9 +16,11 @@ import {
   Volume2,
   VolumeX,
   Zap,
+  MessageSquareQuote,
 } from "lucide-react";
 import { Html5Qrcode } from "html5-qrcode";
 import { Participant } from "@/types/registration";
+import { extractQuestion } from "@/lib/participant-helpers";
 
 export default function CheckinPage() {
   const [tab, setTab] = useState<"scan" | "search">("scan");
@@ -423,6 +425,18 @@ export default function CheckinPage() {
                   <span className="font-bold text-green-400">₹50 — {scannedParticipant.payment_method.toUpperCase()} PAID</span>
                 </div>
               </div>
+
+              {extractQuestion(scannedParticipant) && (
+                <div className="mt-2 p-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-left">
+                  <div className="flex items-center gap-1 font-bold text-[10px] uppercase text-[#FFA000]">
+                    <MessageSquareQuote className="w-3 h-3" />
+                    <span>Submitted Samvaad Question</span>
+                  </div>
+                  <p className="text-[11px] text-white/90 italic mt-0.5 line-clamp-2">
+                    &ldquo;{extractQuestion(scannedParticipant)}&rdquo;
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -485,6 +499,18 @@ export default function CheckinPage() {
                   <span className="font-bold text-amber-400">₹50 — NOT PAID</span>
                 </div>
               </div>
+
+              {extractQuestion(scannedParticipant) && (
+                <div className="mt-2 p-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-left">
+                  <div className="flex items-center gap-1 font-bold text-[10px] uppercase text-[#FFA000]">
+                    <MessageSquareQuote className="w-3 h-3" />
+                    <span>Submitted Samvaad Question</span>
+                  </div>
+                  <p className="text-[11px] text-white/90 italic mt-0.5 line-clamp-2">
+                    &ldquo;{extractQuestion(scannedParticipant)}&rdquo;
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">

@@ -9,7 +9,7 @@ export async function GET(_req: NextRequest) {
     const [participantsRes, paymentsRes] = await Promise.all([
       supabase
         .from("participants")
-        .select("id, payment_status, payment_method, checked_in"),
+        .select("id, payment_status, payment_method, checked_in, referral_source"),
       supabase
         .from("payments")
         .select("amount, status, method"),
@@ -29,6 +29,14 @@ export async function GET(_req: NextRequest) {
     const total_checked_in = participants.filter((p) => p.checked_in === true).length;
     const check_in_percentage =
       total_paid > 0 ? Number(((total_checked_in / total_paid) * 100).toFixed(1)) : 0;
+
+    const questionParticipants = participants.filter((p: any) => {
+      const q = (p.samvaad_question || "").trim();
+      const ref = p.referral_source || "";
+      return q.length > 0 || /(?:^|\|\s*)Q:\s*[^|]+/i.test(ref);
+    });
+    const total_questions = questionParticipants.length;
+    const checked_in_questions = questionParticipants.filter((p) => p.checked_in === true).length;
 
     let online_paid_count = 0;
     let online_revenue = 0;
@@ -91,6 +99,8 @@ export async function GET(_req: NextRequest) {
       cash_revenue,
       total_revenue,
       pending_cash_amount,
+      total_questions,
+      checked_in_questions,
     };
 
     return NextResponse.json({

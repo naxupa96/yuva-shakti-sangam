@@ -13,6 +13,7 @@ import {
   LogOut,
   ShieldCheck,
   ExternalLink,
+  MessageSquareQuote,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -114,6 +115,7 @@ export default function AdminLayout({
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/checkin", label: "Check-in Scanner", icon: QrCode },
     { href: "/admin/participants", label: "Participants", icon: Users },
+    { href: "/admin/questions", label: "Questions", icon: MessageSquareQuote },
     { href: "/admin/payments", label: "Payments", icon: CreditCard },
   ];
 

@@ -16,6 +16,7 @@ import {
   TrendingUp,
   AlertCircle,
   LogOut,
+  MessageSquareQuote,
 } from "lucide-react";
 import { DashboardStats } from "@/types/registration";
 import { createClient } from "@/lib/supabase/client";
@@ -35,6 +36,8 @@ export default function AdminDashboardPage() {
     cash_revenue: 0,
     total_revenue: 0,
     pending_cash_amount: 0,
+    total_questions: 0,
+    checked_in_questions: 0,
   });
 
   const [loading, setLoading] = useState(true);
@@ -91,7 +94,7 @@ export default function AdminDashboardPage() {
               YUVA <span className="text-[#F05A12]">SHAKTI</span> SANGAM
             </h1>
             <p className="text-xs text-[#FAF4EC]/70 mt-0.5">
-              06 September 2026 • Maninagar, Ahmedabad • Live Attendance & Revenue
+              06 September 2026 • Maninagar, Ahmedabad • Live Attendance & Dialogue
             </p>
           </div>
 
@@ -124,18 +127,18 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Core Metric Overview Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5">
           {/* Card 1: Registered Total */}
-          <div className="p-5 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-parchment-card space-y-2 relative overflow-hidden">
+          <div className="p-4 sm:p-5 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-parchment-card space-y-2 relative overflow-hidden">
             <CornerOrnament className="absolute top-2 right-2 text-[#E65100]/20 -scale-x-100" />
             <div className="flex items-center justify-between text-[#5A4839]">
-              <span className="text-[11px] font-black uppercase tracking-wider">TOTAL REGISTERED</span>
+              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider">REGISTERED</span>
               <Users className="w-4 h-4 text-[#E65100]" />
             </div>
-            <div className="text-3xl sm:text-4xl font-display font-black text-[#1C1917]">
+            <div className="text-2xl sm:text-3xl font-display font-black text-[#1C1917]">
               {stats.total_registered.toLocaleString()}
             </div>
-            <div className="text-[11px] text-[#5A4839] flex items-center gap-1.5 font-medium">
+            <div className="text-[10px] text-[#5A4839] flex items-center gap-1 font-medium truncate">
               <span className="font-bold text-green-700">{stats.total_paid} Paid</span>
               <span>•</span>
               <span className="text-amber-700">{stats.total_pending} Pending</span>
@@ -143,48 +146,71 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Card 2: Attendance / Checked In */}
-          <div className="p-5 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-parchment-card space-y-2 relative overflow-hidden">
+          <div className="p-4 sm:p-5 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-parchment-card space-y-2 relative overflow-hidden">
             <CornerOrnament className="absolute top-2 right-2 text-[#E65100]/20 -scale-x-100" />
             <div className="flex items-center justify-between text-[#5A4839]">
-              <span className="text-[11px] font-black uppercase tracking-wider">CHECKED IN</span>
+              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider">CHECKED IN</span>
               <CheckCircle2 className="w-4 h-4 text-green-600" />
             </div>
-            <div className="text-3xl sm:text-4xl font-display font-black text-[#1C1917]">
+            <div className="text-2xl sm:text-3xl font-display font-black text-[#1C1917]">
               {stats.total_checked_in.toLocaleString()}
             </div>
-            <div className="text-[11px] text-green-700 font-bold flex items-center gap-1">
-              <TrendingUp className="w-3.5 h-3.5" />
-              <span>{stats.check_in_percentage}% Attendance Rate</span>
+            <div className="text-[10px] text-green-700 font-bold flex items-center gap-1 truncate">
+              <TrendingUp className="w-3 h-3" />
+              <span>{stats.check_in_percentage}% Attendance</span>
             </div>
           </div>
 
-          {/* Card 3: Total Revenue Collected */}
-          <div className="p-5 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-parchment-card space-y-2 relative overflow-hidden">
+          {/* Card 3: Questions Asked */}
+          <Link
+            href="/admin/questions"
+            className="p-4 sm:p-5 rounded-2xl bg-amber-50/90 border-2 border-[#FFA000]/60 hover:border-[#E65100] shadow-parchment-card space-y-2 relative overflow-hidden transition-all group cursor-pointer"
+          >
             <CornerOrnament className="absolute top-2 right-2 text-[#E65100]/20 -scale-x-100" />
             <div className="flex items-center justify-between text-[#5A4839]">
-              <span className="text-[11px] font-black uppercase tracking-wider">TOTAL COLLECTED</span>
+              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#E65100]">
+                SAMVAAD Qs
+              </span>
+              <MessageSquareQuote className="w-4 h-4 text-[#E65100] group-hover:scale-110 transition-transform" />
+            </div>
+            <div className="text-2xl sm:text-3xl font-display font-black text-[#E65100]">
+              {(stats.total_questions || 0).toLocaleString()}
+            </div>
+            <div className="text-[10px] text-[#5A4839] font-bold flex items-center gap-1">
+              <span className="text-emerald-700">
+                {stats.checked_in_questions || 0} In Venue
+              </span>
+              <span>• View &rarr;</span>
+            </div>
+          </Link>
+
+          {/* Card 4: Total Revenue Collected */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-parchment-card space-y-2 relative overflow-hidden">
+            <CornerOrnament className="absolute top-2 right-2 text-[#E65100]/20 -scale-x-100" />
+            <div className="flex items-center justify-between text-[#5A4839]">
+              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider">COLLECTED</span>
               <ShieldCheck className="w-4 h-4 text-[#FFA000]" />
             </div>
-            <div className="text-3xl sm:text-4xl font-display font-black text-[#1C1917]">
+            <div className="text-2xl sm:text-3xl font-display font-black text-[#1C1917]">
               ₹{stats.total_revenue.toLocaleString("en-IN")}
             </div>
-            <div className="text-[11px] text-[#5A4839] font-medium">
-              ₹50 entry fee per participant
+            <div className="text-[10px] text-[#5A4839] font-medium truncate">
+              ₹50 entry fee
             </div>
           </div>
 
-          {/* Card 4: Pending Cash at Gate */}
-          <div className="p-5 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-parchment-card space-y-2 relative overflow-hidden">
+          {/* Card 5: Pending Cash at Gate */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-parchment-card space-y-2 relative overflow-hidden col-span-2 lg:col-span-1">
             <CornerOrnament className="absolute top-2 right-2 text-[#E65100]/20 -scale-x-100" />
             <div className="flex items-center justify-between text-[#5A4839]">
-              <span className="text-[11px] font-black uppercase tracking-wider">PENDING CASH</span>
+              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider">PENDING CASH</span>
               <Clock className="w-4 h-4 text-amber-600" />
             </div>
-            <div className="text-3xl sm:text-4xl font-display font-black text-amber-700">
+            <div className="text-2xl sm:text-3xl font-display font-black text-amber-700">
               ₹{stats.pending_cash_amount.toLocaleString("en-IN")}
             </div>
-            <div className="text-[11px] text-amber-800 font-medium">
-              {stats.cash_pending_count} registrations to collect at gate
+            <div className="text-[10px] text-amber-800 font-medium truncate">
+              {stats.cash_pending_count} to collect at gate
             </div>
           </div>
         </div>
@@ -256,7 +282,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Quick Management Shortcuts */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
             href="/admin/checkin"
             className="p-5 rounded-2xl bg-[#1C1917] text-[#FAF4EC] hover:bg-[#24170D] transition-all flex items-center justify-between shadow-lg group"
@@ -273,6 +299,24 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <ArrowUpRight className="w-4 h-4 text-[#FFA000] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+          </Link>
+
+          <Link
+            href="/admin/questions"
+            className="p-5 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 hover:border-[#F05A12] transition-all flex items-center justify-between shadow-parchment-card group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#E65100] text-white flex items-center justify-center">
+                <MessageSquareQuote className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-sm font-display font-black uppercase block text-[#1C1917]">
+                  SAMVAAD QUESTIONS
+                </span>
+                <span className="text-[10px] text-[#5A4839]">Open mic dialogue & topics</span>
+              </div>
+            </div>
+            <ArrowUpRight className="w-4 h-4 text-[#F05A12] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </Link>
 
           <Link
@@ -315,3 +359,4 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
