@@ -149,9 +149,9 @@ export async function generateTicketPdf(participant: Participant, siteUrl?: stri
   doc.text("SHREE SAURASHTRA PATEL SAMAJ, MANINAGAR", pageWidth / 2, footerY, { align: "center" });
 
   doc.setTextColor(240, 90, 18);
-  doc.setFontSize(6);
+  doc.setFontSize(5.5);
   doc.setFont("helvetica", "bold");
-  doc.text("* ID CARD PROVIDED AT DESK  *  HIGH TEA INCLUDED *", pageWidth / 2, footerY + 3.8, { align: "center" });
+  doc.text("* ID CARD PROVIDED * HIGH TEA INCLUDED * E-CERTIFICATE PROVIDED *", pageWidth / 2, footerY + 3.8, { align: "center" });
 
   doc.setTextColor(90, 72, 57);
   doc.setFontSize(5.5);

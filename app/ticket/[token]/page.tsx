@@ -261,6 +261,9 @@ export default function TicketPage({
                   &bull; <strong>High Tea &amp; Refreshments:</strong> Included for all registered attendees.
                 </p>
                 <p>
+                  &bull; <strong>E-Certificate:</strong> Official digital certificate of participation will be issued post-event.
+                </p>
+                <p>
                   &bull; <strong>Venue:</strong> Shree Saurashtra Patel Samaj, Isanpur Rd, Basant Nagar, Maninagar, Ahmedabad.
                 </p>
               </div>

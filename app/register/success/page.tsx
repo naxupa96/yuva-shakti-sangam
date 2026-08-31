@@ -263,6 +263,9 @@ function SuccessContent() {
               &bull; <strong>High Tea &amp; Refreshments:</strong> Included for all registered attendees.
             </p>
             <p>
+              &bull; <strong>Official E-Certificate:</strong> Verifiable digital certificate of participation will be issued post-event.
+            </p>
+            <p>
               &bull; <strong>Venue:</strong> Shree Saurashtra Patel Samaj, Isanpur Rd, Chandranagar Society, Basant Nagar, Maninagar, Ahmedabad.
             </p>
           </div>

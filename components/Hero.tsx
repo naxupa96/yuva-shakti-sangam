@@ -202,9 +202,11 @@ export default function Hero() {
               </div>
 
               {/* Pass Inclusions Pill */}
-              <div className="inline-flex flex-wrap items-center gap-2 py-1.5 px-3 rounded-xl bg-[#17130E] text-[#FAF4EC] text-[11px] font-black uppercase tracking-wider">
+              <div className="inline-flex flex-wrap items-center justify-center gap-2 py-1.5 px-3 rounded-xl bg-[#17130E] text-[#FAF4EC] text-[11px] font-black uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5 text-[#FFA000]" />
-                <span>OFFICIAL ID CARD PROVIDED</span>
+                <span>OFFICIAL ID CARD</span>
+                <span>•</span>
+                <span>E-CERTIFICATE</span>
                 <span>•</span>
                 <span className="text-[#FFA000]">HIGH TEA INCLUDED</span>
               </div>

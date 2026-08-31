@@ -47,7 +47,9 @@ export default function RegistrationCTA() {
           {/* Inclusions Pill */}
           <div className="inline-flex flex-wrap items-center justify-center gap-2 py-2 px-4 rounded-2xl bg-[#1C1917] text-[#FAF4EC] text-xs font-black uppercase tracking-wider mb-8 shadow-sm">
             <Sparkles className="w-4 h-4 text-[#FFA000]" />
-            <span>OFFICIAL ID CARD PROVIDED</span>
+            <span>OFFICIAL ID CARD</span>
+            <span>•</span>
+            <span>E-CERTIFICATE PROVIDED</span>
             <span>•</span>
             <span className="text-[#FFA000]">HIGH TEA INCLUDED</span>
           </div>

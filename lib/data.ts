@@ -522,7 +522,7 @@ export const faqs: FAQItem[] = [
   {
     category: "Participation",
     question: "Is there any registration fee, and what is included?",
-    answer: "The registration pass is ₹50 (nominal fee). Your pass includes an Official Delegate ID Card, High Tea & Refreshments, complete access to ground games arena, cultural drama performances, and open-floor participation in Yuva Samvaad.",
+    answer: "The registration pass is ₹50 (nominal fee). Your pass includes an Official Delegate ID Card, High Tea & Refreshments, Official E-Certificate of Participation, complete access to ground games arena, cultural drama performances, and open-floor participation in Yuva Samvaad.",
   },
   {
     category: "Participation",
@@ -546,8 +546,8 @@ export const faqs: FAQItem[] = [
   },
   {
     category: "Logistics",
-    question: "Will refreshments and ID cards be provided?",
-    answer: "Yes! All registered delegates will be provided with an Official Delegate ID Card upon check-in and complimentary High Tea & Refreshments during the event.",
+    question: "Will refreshments, ID cards, and certificates be provided?",
+    answer: "Yes! All registered delegates will be provided with an Official Delegate ID Card upon check-in, complimentary High Tea & Refreshments during the event, and an Official Verifiable E-Certificate of Participation.",
   },
   {
     category: "Logistics",

@@ -147,7 +147,7 @@ export default function EventInfo() {
                 DELEGATE PASS INCLUSIONS
               </h4>
               <p className="text-xs sm:text-sm text-[#57534E]">
-                <strong className="text-[#E65100]">Official Delegate ID Card</strong> will be provided upon check-in &bull; <strong className="text-[#E65100]">High Tea & Refreshments</strong> included for all delegates.
+                <strong className="text-[#E65100]">Official Delegate ID Card</strong> provided upon check-in &bull; <strong className="text-[#E65100]">High Tea & Refreshments</strong> included &bull; <strong className="text-[#E65100]">E-Certificate of Participation</strong> awarded to all delegates.
               </p>
             </div>
           </div>

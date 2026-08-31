@@ -27,6 +27,7 @@ export const eventConfig = {
   inclusions: [
     "Official Delegate ID Card",
     "High Tea & Refreshments",
+    "Official E-Certificate of Participation",
     "Full Zone & Sports Access",
     "Open Samvaad Participation",
   ],
