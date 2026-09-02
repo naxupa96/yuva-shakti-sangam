@@ -40,6 +40,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "Please select at least one area under 'Interested in'." }, { status: 400 });
     }
 
+    if (!referralSource || referralSource.length < 2) {
+      return NextResponse.json({ success: false, error: "Please provide a reference (referred by / source)." }, { status: 400 });
+    }
+
     if (paymentMethod !== "online" && paymentMethod !== "cash") {
       return NextResponse.json({ success: false, error: "Invalid payment method selected." }, { status: 400 });
     }

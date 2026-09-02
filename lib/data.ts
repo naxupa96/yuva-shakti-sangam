@@ -5,6 +5,7 @@ export interface NavItem {
 
 export const navItems: NavItem[] = [
   { label: "The Big Idea", href: "#big-idea" },
+  { label: "Chief Guest", href: "#chief-guest" },
   { label: "Why Attend", href: "#why-attend" },
   { label: "Experience", href: "#experience" },
   { label: "Samvaad", href: "#samvaad" },
@@ -480,8 +481,8 @@ export const journeySteps: JourneyStep[] = [
   {
     time: "6:15 PM",
     stepNumber: "04",
-    title: "Yuva Samvaad — Unfiltered Keynote & Q&A",
-    description: "Straightforward perspectives from leading youth thinkers and senior leadership. Direct audience mic handoffs—no sugarcoated corporate speeches.",
+    title: "Yuva Samvaad — Keynote by Rupesh Makwana & Q&A",
+    description: "Keynote address by Chief Guest Rupesh Makwana (Guinness Record Holder & Ultra-Athlete) on nation-building, fitness, and anti-addiction, followed by open-floor unfiltered dialogue.",
     vibe: "Intellectual Rigor",
   },
   {
@@ -555,3 +556,235 @@ export const faqs: FAQItem[] = [
     answer: "The event is hosted at Shree Saurashtra Patel Samaj Maninagar (Isanpur Rd, Chandranagar Society, Basant Nagar, Maninagar, Ahmedabad, Gujarat). It is easily accessible via Ahmedabad Metro and BRTS.",
   },
 ];
+
+export interface ChiefGuestRecord {
+  id: string;
+  badge: string;
+  title: string;
+  metric: string;
+  description: string;
+  year: string;
+  iconName: string;
+}
+
+export interface ChiefGuestInitiative {
+  id: string;
+  title: string;
+  titleGujarati: string;
+  tagline: string;
+  description: string;
+  image: string;
+  impactTag: string;
+}
+
+export interface ChiefGuestGalleryItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  category: "Award" | "Record" | "Seva" | "Poster";
+}
+
+export interface ChiefGuestData {
+  name: string;
+  nameGujarati: string;
+  title: string;
+  titleGujarati: string;
+  location: string;
+  mottoGujarati: string;
+  mottoEnglish: string;
+  missionStatement: string;
+  missionSince: string;
+  coachingCredentials: string;
+  bioSummary: string;
+  keyStats: {
+    label: string;
+    value: string;
+    sublabel: string;
+  }[];
+  awards: string[];
+  records: ChiefGuestRecord[];
+  initiatives: ChiefGuestInitiative[];
+  gallery: ChiefGuestGalleryItem[];
+}
+
+export const chiefGuestData: ChiefGuestData = {
+  name: "Rupesh Makwana",
+  nameGujarati: "રૂપેશ મકવાણા",
+  title: "Guinness World Record Holder, National Athlete & Coach",
+  titleGujarati: "ગિનીસ વર્લ્ડ રેકોર્ડ હોલ્ડર, રાષ્ટ્રીય એથ્લેટ અને કોચ",
+  location: "Ahmedabad, Gujarat",
+  mottoGujarati: "મારો સંકલ્પ રાષ્ટ્ર પ્રથમ",
+  mottoEnglish: "My Resolution: Nation First",
+  missionStatement: "Working for Nation's Youth & Leading the 'SAVE YOUTH SAVE NATION' movement to cultivate fitness, character, discipline, and addiction-free youth.",
+  missionSince: "2017",
+  coachingCredentials: "NSNIS Patiala 6-Week Diploma in Sports Coaching (Netaji Subhash National Institute of Sports, 2021)",
+  bioSummary: "Rupesh Makwana is a trailblazing ultra-endurance athlete and dedicated sports coach from Ahmedabad who etched India's name into the Guinness Book of World Records by traversing the massive 6,000 km Golden Quadrilateral on foot in just 88 days. Beyond world records, he embodies true Rashtra Seva—having trained hundreds of underprivileged youths for free since 2018 and educating slum children with the timeless wisdom of the Bhagavad Gita.",
+  keyStats: [
+    {
+      value: "6,000 KM",
+      label: "Guinness World Record",
+      sublabel: "Golden Quadrilateral on foot in 88 days",
+    },
+    {
+      value: "75 Hours",
+      label: "Non-Stop Marathon",
+      sublabel: "375 km for Azadi Ka Amrit Mahotsav",
+    },
+    {
+      value: "1,000 KM",
+      label: "Ahmedabad to Delhi",
+      sublabel: "Nasha Mukti & Youth Awareness Run",
+    },
+    {
+      value: "Since 2018",
+      label: "Free Youth Coaching",
+      sublabel: "Empowering underprivileged aspirants",
+    },
+  ],
+  awards: [
+    "Gujarat Gaurav Ratna Award",
+    "Guinness Book of World Records Holder",
+    "World Book of Records Holder",
+    "India Book of Records Holder",
+    "3-Time National Cross Country Player",
+  ],
+  records: [
+    {
+      id: "guinness-6000km",
+      badge: "Guinness World Record (2023)",
+      title: "Fastest Travel of Indian Golden Quadrilateral on Foot (Male)",
+      metric: "6,000 KM in 88 Days 1 Hr 28 Sec",
+      year: "2023",
+      iconName: "Trophy",
+      description: "Officially verified Guinness World Record: Covered Delhi – Mumbai – Chennai – Kolkata – Delhi on foot from 21 Feb 2023 to 20 May 2023.",
+    },
+    {
+      id: "world-book-75hrs",
+      badge: "World & India Book of Records",
+      title: "Longest Non-Stop Marathon for 75 Years of Independence",
+      metric: "75 Hours Non-Stop (375 KM)",
+      year: "2022/2023",
+      iconName: "Flame",
+      description: "Non-stop running marathon for 75 continuous hours covering 375 km from Ahmedabad to Pal to celebrate Azadi Ka Amrit Mahotsav.",
+    },
+    {
+      id: "ahmedabad-delhi-1000k",
+      badge: "National Awareness Run",
+      title: "Ahmedabad to Delhi Youth De-addiction & Fitness Run",
+      metric: "1,000 KM",
+      year: "2018",
+      iconName: "Zap",
+      description: "1,000 km run carrying the message of drug-free youth ('Nasha Mukti'). Personally lauded by Union Minister Dr. Mansukh Mandaviya in New Delhi.",
+    },
+    {
+      id: "bhilwara-1000k",
+      badge: "Endurance Expedition",
+      title: "Run Across Bhilwara, Rajasthan",
+      metric: "1,000 KM",
+      year: "2020",
+      iconName: "Compass",
+      description: "Endurance run across Bhilwara district in Rajasthan promoting health, endurance, and youth self-reliance.",
+    },
+    {
+      id: "city-100k",
+      badge: "Ultra Distance",
+      title: "100 KM Non-Stop City Runs across Ahmedabad",
+      metric: "100 KM in 10h 17m",
+      year: "2017 & 2023",
+      iconName: "Clock",
+      description: "Clocked 100 km across Ahmedabad in 11:00 hrs (2017) and improved to a lightning 10 hrs 17 mins in 2023.",
+    },
+    {
+      id: "tata-ultra-50k",
+      badge: "National Ultra Finisher",
+      title: "TATA Ultra Marathon 50 KM Finisher",
+      metric: "50 KM in 4:59:00",
+      year: "2024",
+      iconName: "Medal",
+      description: "Successfully finished the demanding Tata Ultra Marathon 50 KM in under 5 hours (4:59:00).",
+    },
+    {
+      id: "national-athlete",
+      badge: "National Level",
+      title: "3-Time National Player in Cross Country",
+      metric: "3x National Athlete",
+      year: "Career",
+      iconName: "Award",
+      description: "Represented Gujarat in national cross-country championships, competing against top athletes across India.",
+    },
+  ],
+  initiatives: [
+    {
+      id: "free-youth-training",
+      title: "Free Athletic & Physical Training for Underprivileged Youth",
+      titleGujarati: "ગરીબ અને આર્થિક રીતે નબળા યુવાનો માટે નિઃશુલ્ક શારીરિક તાલીમ",
+      tagline: "Building Future Soldiers, Police Officers & Champions",
+      description: "Since 2018, Rupesh Makwana has been providing intensive physical fitness coaching free of cost to young men and women whose families cannot afford private academies. Many students have successfully entered defense and police forces.",
+      image: "/images/chief-guest/youth-training.jpg",
+      impactTag: "Free Coaching Since 2018",
+    },
+    {
+      id: "slum-education-gita",
+      title: "Education & Bhagvat Gita Gyan for Slum Children",
+      titleGujarati: "ઝૂંપડપટ્ટીના બાળકો માટે શિક્ષણ અને શ્રીમદ્ ભગવદ્ ગીતા જ્ઞાન",
+      tagline: "Character Building at the Grassroots",
+      description: "Empowering children in slum settlements near Dastan Circle, Naroda (Ahmedabad) by providing primary education, literacy support, nutritious snacks, and teaching sacred Bhagavad Gita shlokas and ethical values.",
+      image: "/images/chief-guest/slum-education.jpg",
+      impactTag: "Dastan Circle, Naroda",
+    },
+    {
+      id: "save-youth-save-nation",
+      title: "'Save Youth Save Nation' & Drug-Free Bharat Campaign",
+      titleGujarati: "'સેવ યુથ સેવ નેશન' અને નશા મુક્ત ભારત અભિયાન",
+      tagline: "Channelizing Youth Energy Toward Nation Building",
+      description: "Leading an anti-addiction and mental wellness crusade since 2017. Using marathons, school sessions, and public rallies to warn youth about substance abuse and inspire daily fitness routines.",
+      image: "/images/chief-guest/minister-meeting.jpg",
+      impactTag: "Nationwide Movement Since 2017",
+    },
+  ],
+  gallery: [
+    {
+      id: "poster",
+      title: "Official Chief Guest Poster",
+      subtitle: "Yuva Shakti Sangam Maninagar Announcement",
+      image: "/images/chief-guest/rupesh-makwana-poster.png",
+      category: "Poster",
+    },
+    {
+      id: "guinness-record",
+      title: "Guinness World Record & Gujarat Gaurav Ratna",
+      subtitle: "6,000 km Golden Quadrilateral on Foot",
+      image: "/images/chief-guest/guinness-record-award.png",
+      category: "Record",
+    },
+    {
+      id: "world-certificates",
+      title: "World Book & India Book of Records Certificates",
+      subtitle: "75 Hours Continuous Non-Stop Marathon",
+      image: "/images/chief-guest/world-record-certificates.png",
+      category: "Record",
+    },
+    {
+      id: "recognition",
+      title: "National Recognition & Minister Felicitation",
+      subtitle: "Commendation by Union Minister Dr. Mansukh Mandaviya",
+      image: "/images/chief-guest/records-recognition.png",
+      category: "Award",
+    },
+    {
+      id: "social-work",
+      title: "Grassroots Seva & Slum Education Initiatives",
+      subtitle: "Free Fitness Coaching & Bhagvat Gita Classes",
+      image: "/images/chief-guest/social-work-initiatives.png",
+      category: "Seva",
+    },
+    {
+      id: "award-ceremony",
+      title: "Gujarat Gaurav Ratna Award Ceremony",
+      subtitle: "Honored on Stage for Exemplary Feats",
+      image: "/images/chief-guest/award-stage.jpg",
+      category: "Award",
+    },
+  ],
+};

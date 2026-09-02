@@ -175,6 +175,10 @@ export default function RegisterPage() {
       setInterestDropdownOpen(true);
       return;
     }
+    if (!formData.referral_source || !formData.referral_source.trim()) {
+      setErrorMessage("Please enter a Reference or how you heard about Yuva Shakti Sangam.");
+      return;
+    }
 
     if (formData.payment_method === "online") {
       if (!screenshotBase64 && !manualUtr.trim()) {
@@ -581,19 +585,44 @@ export default function RegisterPage() {
                   />
                 </div>
 
-                {/* Referral source */}
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-black uppercase tracking-wider text-[#1C1917] mb-1.5">
-                    How did you hear about Yuva Shakti Sangam? <span className="text-[#5A4839] font-normal">(Optional)</span>
+                {/* Reference / Referral Source (Compulsory) */}
+                <div className="sm:col-span-2 space-y-2">
+                  <label className="block text-xs font-black uppercase tracking-wider text-[#1C1917] mb-1.5 flex items-center justify-between">
+                    <span>
+                      Reference / Referred By (સંદર્ભ) <span className="text-[#E65100]">*</span>
+                    </span>
+                    <span className="text-[#E65100] font-bold text-[11px]">(Required)</span>
                   </label>
                   <input
                     type="text"
                     name="referral_source"
+                    required
                     value={formData.referral_source}
                     onChange={handleChange}
-                    placeholder="e.g. Friend, Instagram, College poster, WhatsApp"
+                    placeholder="e.g. Friend's Name / Swayamsevak / Shakha / WhatsApp Group / Instagram / College"
                     className="w-full px-4 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-[#1C1917] placeholder:text-[#5A4839]/50 focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 font-medium text-sm transition-all"
                   />
+
+                  {/* Quick Select Suggestion Pills */}
+                  <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                    <span className="text-[10px] font-bold text-[#5A4839] uppercase mr-1">Quick Select:</span>
+                    {["Friend / Relative", "Swayamsevak / Volunteer", "Shakha", "WhatsApp Group", "Instagram", "College / Campus"].map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            referral_source: prev.referral_source ? `${prev.referral_source}, ${suggestion}` : suggestion,
+                          }));
+                          setErrorMessage("");
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-[#FAF4EC] hover:bg-[#EAE0D0] border border-[#292524]/15 text-[10px] font-bold text-[#1C1917] hover:border-[#E65100]/40 transition-colors"
+                      >
+                        + {suggestion}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

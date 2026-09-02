@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import BigIdea from "@/components/BigIdea";
+import ChiefGuest from "@/components/ChiefGuest";
 import WhyAttend from "@/components/WhyAttend";
 import Experience from "@/components/Experience";
 import WhatCanYouDo from "@/components/WhatCanYouDo";
@@ -31,7 +32,10 @@ export default function Home() {
       {/* 2. Editorial Statement "The Big Idea" */}
       <BigIdea />
 
-      {/* 3. Four Core Dimensions: Think, Connect, Experience, Act */}
+      {/* 3. Chief Guest & Keynote Speaker Spotlight */}
+      <ChiefGuest />
+
+      {/* 4. Four Core Dimensions: Think, Connect, Experience, Act */}
       <WhyAttend />
 
       {/* 4. What Awaits You (Games, Drama, Samvaad, Community) */}

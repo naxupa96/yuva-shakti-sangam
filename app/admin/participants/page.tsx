@@ -569,9 +569,9 @@ export default function AdminParticipantsPage() {
                 {extractReferralSource(selectedParticipant) && (
                   <div className="pt-2 border-t border-[#292524]/10">
                     <span className="text-[10px] uppercase font-bold text-[#5A4839] block">
-                      How they heard about Yuva Shakti Sangam
+                      Reference / Referred By (સંદર્ભ)
                     </span>
-                    <span className="text-xs font-medium text-[#1C1917] mt-0.5 block">
+                    <span className="text-xs font-bold text-[#1C1917] mt-0.5 block">
                       {extractReferralSource(selectedParticipant)}
                     </span>
                   </div>

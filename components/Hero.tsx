@@ -82,12 +82,12 @@ export default function Hero() {
             <div className="my-3 p-4 rounded-2xl bg-[#17130E] text-[#F2DFBD] text-xs font-bold uppercase tracking-wider space-y-2 animate-in fade-in duration-150 border border-[#F05A12]/30">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                 <a href="#big-idea" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">The Big Idea</a>
+                <a href="#chief-guest" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] text-[#FFA000] hover:text-[#F05A12] transition-colors">Chief Guest</a>
                 <a href="#why-attend" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Why Attend</a>
                 <a href="#experience" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Experience</a>
                 <a href="#samvaad" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Yuva Samvaad</a>
                 <a href="#what-can-you-do" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Action Areas</a>
                 <a href="#about-rss" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">About RSS</a>
-                <a href="#timeline" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Timeline</a>
                 <a href="#event-info" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Venue & FAQ</a>
               </div>
             </div>
@@ -156,8 +156,8 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Event Poster Metadata */}
-              <div className="space-y-2 pt-1 text-[#17130E] font-display font-black text-xs sm:text-sm uppercase tracking-wider">
+              {/* Event Poster Metadata & Chief Guest Callout */}
+              <div className="space-y-2.5 pt-1 text-[#17130E] font-display font-black text-xs sm:text-sm uppercase tracking-wider">
                 <div className="flex items-center gap-2.5">
                   <Calendar className="w-4 h-4 text-[#F05A12] shrink-0 stroke-[2.5]" />
                   <span>{eventConfig.dateDisplay}</span>
@@ -169,6 +169,20 @@ export default function Hero() {
                 <div className="flex items-start gap-2.5">
                   <MapPin className="w-4 h-4 text-[#F05A12] shrink-0 stroke-[2.5] mt-0.5" />
                   <span className="leading-snug">{eventConfig.venueName.toUpperCase()} • MANINAGAR</span>
+                </div>
+
+                {/* Chief Guest Spotlight Pill */}
+                <div className="pt-1">
+                  <a
+                    href="#chief-guest"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#17130E] text-[#FAF4EC] hover:bg-[#24170D] transition-colors border border-[#F05A12]/40 shadow-sm group"
+                  >
+                    <span className="w-2 h-2 rounded-full bg-[#F05A12] animate-pulse" />
+                    <span className="text-[10px] sm:text-[11px] font-bold text-[#FFA000] uppercase">Chief Guest:</span>
+                    <span className="text-[11px] sm:text-xs font-black uppercase text-white group-hover:text-[#F05A12] transition-colors">
+                      Rupesh Makwana (Guinness Record Holder)
+                    </span>
+                  </a>
                 </div>
               </div>
             </div>

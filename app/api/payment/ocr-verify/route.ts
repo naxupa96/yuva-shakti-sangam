@@ -142,6 +142,11 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: false, error: "Please select at least one area under 'Interested in'." }, { status: 400 });
       }
 
+      const cleanReferral = (referral_source || "").trim();
+      if (!cleanReferral || cleanReferral.length < 2) {
+        return NextResponse.json({ success: false, error: "Please provide a reference (referred by / source)." }, { status: 400 });
+      }
+
       // Check if already paid
       const { data: existingActive } = await supabase
         .from("participants")
