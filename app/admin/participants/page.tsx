@@ -333,7 +333,7 @@ export default function AdminParticipantsPage() {
                             </button>
 
                             <Link
-                              href={`/ticket/${p.qr_token}`}
+                              href={`/ticket/${p.qr_token}?view=1`}
                               target="_blank"
                               className="p-1.5 rounded-lg bg-[#1C1917] text-[#FAF4EC] hover:text-[#FFA000] text-[11px] font-bold"
                               title="View Digital Ticket"
@@ -582,7 +582,7 @@ export default function AdminParticipantsPage() {
             {/* Modal Actions */}
             <div className="p-4 bg-[#F5EBE1] border-t border-[#292524]/15 flex items-center justify-between gap-3">
               <Link
-                href={`/ticket/${selectedParticipant.qr_token}`}
+                href={`/ticket/${selectedParticipant.qr_token}?view=1`}
                 target="_blank"
                 className="px-4 py-2 rounded-xl bg-[#1C1917] text-[#FAF4EC] hover:text-[#FFA000] text-xs font-black uppercase tracking-wider inline-flex items-center gap-1.5"
               >

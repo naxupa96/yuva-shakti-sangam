@@ -134,12 +134,12 @@ export default function VolunteerScannerPage() {
       } else if (p.payment_status === "paid") {
         setScanState("paid");
         playFeedbackSound("success");
-      } else if (p.payment_method === "cash" && p.payment_status === "pending") {
+      } else if (p.payment_status === "pending") {
         setScanState("cash_pending");
         playFeedbackSound("warning");
       } else {
         setScanState("invalid");
-        setErrorMessage("Payment status pending online verification.");
+        setErrorMessage("Payment status invalid or refunded.");
         playFeedbackSound("error");
       }
     } catch (err: any) {
@@ -265,6 +265,19 @@ export default function VolunteerScannerPage() {
       stopScanner();
     };
   }, [facingMode]);
+
+  // Handle direct scan redirection (e.g. when volunteer scans with native phone camera)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const scanParam = params.get("scan") || params.get("token") || params.get("query");
+      if (scanParam) {
+        handleLookup(scanParam);
+        // Clean up URL parameter to avoid re-triggering on refresh
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    }
+  }, []);
 
   const toggleTorch = async () => {
     if (scannerRef.current && scannerRef.current.isScanning) {

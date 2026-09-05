@@ -10,6 +10,43 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
+  // 0. Ticket Route Logic (/ticket/:token)
+  // When a normal person scans the ID card QR code with their regular phone camera,
+  // it opens https://yuvashaktisangam.me/ticket/<token>. We redirect them to the main website homepage.
+  // Volunteer check-in portal (/volunteer) operates internally via camera JS without navigating here.
+  // If a logged-in volunteer scans with their native camera, route them straight to check-in confirmation.
+  if (pathname.startsWith("/ticket/")) {
+    const token = pathname.replace("/ticket/", "").split("/")[0];
+
+    // Allow viewing ticket page if explicitly requested via ?view=1 (e.g. from admin panel)
+    if (request.nextUrl.searchParams.get("view") === "1" || request.nextUrl.searchParams.get("preview") === "true") {
+      return supabaseResponse;
+    }
+
+    const volunteerCookie = request.cookies.get(getVolunteerCookieName())?.value;
+    const { valid: isVolunteerTokenValid } = await verifyVolunteerToken(volunteerCookie);
+
+    const adminCookie = request.cookies.get(getAdminCookieName())?.value;
+    const { valid: isAdminTokenValid } = await verifyAdminToken(adminCookie);
+
+    if (isVolunteerTokenValid) {
+      const volunteerUrl = request.nextUrl.clone();
+      volunteerUrl.pathname = "/volunteer";
+      volunteerUrl.search = `?scan=${encodeURIComponent(token)}`;
+      return NextResponse.redirect(volunteerUrl);
+    }
+
+    if (isAdminTokenValid) {
+      return supabaseResponse;
+    }
+
+    // Normal person scanning the QR code: redirect to the homepage!
+    const homeUrl = request.nextUrl.clone();
+    homeUrl.pathname = "/";
+    homeUrl.search = "";
+    return NextResponse.redirect(homeUrl);
+  }
+
   // 1. Volunteer route logic
   const isVolunteerLoginPage = pathname === "/volunteer/login";
   const isVolunteerRoute = pathname.startsWith("/volunteer");
@@ -149,5 +186,6 @@ export const config = {
     "/api/admin/:path*",
     "/volunteer/:path*",
     "/api/volunteer/:path*",
+    "/ticket/:path*",
   ],
 };

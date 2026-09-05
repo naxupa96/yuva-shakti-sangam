@@ -32,7 +32,7 @@ export const eventConfig = {
     "Open Samvaad Participation",
   ],
   host: "Rashtriya Swayamsevak Sangh (RSS)",
-  siteUrl: "https://yuvashaktisangam.org",
+  siteUrl: "https://yuvashaktisangam.me",
   email: "yuvashaktisangam2047@gmail.com",
   instagramUrl: "https://www.instagram.com/yuvashaktisangam?igsi=NHhvdmIxNmo1bWVy",
   instagramHandle: "@yuvashaktisangam",

@@ -164,10 +164,10 @@ export class CashfreeProvider implements PaymentProvider {
           customer_id: params.customer?.phone || `cust_${Date.now()}`,
           customer_name: params.customer?.name || "Participant",
           customer_phone: params.customer?.phone || "9999999999",
-          customer_email: params.customer?.email || "attendee@yuvashaktisangam.org",
+          customer_email: params.customer?.email || "attendee@yuvashaktisangam.me",
         },
         order_meta: {
-          return_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://yuvashaktisangam.org"}/register/success?order_id={order_id}`,
+          return_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://yuvashaktisangam.me"}/register/success?order_id={order_id}`,
         },
         order_note: params.receipt,
       }),

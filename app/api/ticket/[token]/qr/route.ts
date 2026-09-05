@@ -32,7 +32,7 @@ export async function GET(
       return new NextResponse("Ticket not found or invalid token", { status: 404 });
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || eventConfig.siteUrl || "https://yuvashaktisangam.org";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || eventConfig.siteUrl || "https://yuvashaktisangam.me";
     const qrTarget = `${siteUrl}/ticket/${participant.qr_token}`;
 
     const pngBuffer = await QRCode.toBuffer(qrTarget, {

@@ -129,7 +129,7 @@ export default function CheckinPage() {
       } else if (p.payment_status === "paid") {
         setScanState("paid");
         playFeedbackSound("success");
-      } else if (p.payment_method === "cash" && p.payment_status === "pending") {
+      } else if (p.payment_status === "pending") {
         setScanState("cash_pending");
         playFeedbackSound("warning");
       } else {

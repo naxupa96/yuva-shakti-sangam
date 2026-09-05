@@ -22,7 +22,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # Generate Vector QR Codes / Base64 Data
 LOC_URL = "https://www.google.com/maps/search/?api=1&query=Shree+Saurashtra+Patel+Samaj+Maninagar,+Isanpur+Rd,+Chandranagar+Society,+Basant+Nagar,+Maninagar,+Ahmedabad"
-REG_URL = "https://yuvashaktisangam.org"
+REG_URL = "https://yuvashaktisangam.me"
 
 def create_qr_base64(data):
     qr = qrcode.QRCode(
@@ -535,7 +535,7 @@ def build_gujarati_svg():
           OFFICIAL WEBSITE &amp; REGISTRATION
         </text>
         <text x="700" y="125" class="font-sans" font-size="48" font-weight="900" fill="#38D9A9" text-anchor="middle" letter-spacing="2">
-          yuvashaktisangam.org
+          yuvashaktisangam.me
         </text>
 
         <line x1="80" y1="160" x2="1320" y2="160" stroke="#495057" stroke-width="2"/>
@@ -1024,7 +1024,7 @@ def build_english_svg():
           OFFICIAL PORTAL &amp; REGISTRATION
         </text>
         <text x="700" y="125" class="font-sans" font-size="48" font-weight="900" fill="#38D9A9" text-anchor="middle" letter-spacing="2">
-          yuvashaktisangam.org
+          yuvashaktisangam.me
         </text>
 
         <line x1="80" y1="160" x2="1320" y2="160" stroke="#495057" stroke-width="2"/>

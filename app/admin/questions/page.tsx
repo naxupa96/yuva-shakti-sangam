@@ -483,7 +483,7 @@ export default function AdminQuestionsPage() {
                         </a>
 
                         <Link
-                          href={`/ticket/${p.qr_token}`}
+                          href={`/ticket/${p.qr_token}?view=1`}
                           target="_blank"
                           className="p-1.5 rounded-lg bg-[#1C1917] text-[#FAF4EC] hover:text-[#FFA000] transition-colors"
                           title="View Digital Pass"

@@ -12,7 +12,7 @@ export interface GenerateTicketOptions {
  * Generate a high-resolution QR code Data URL from token
  */
 export async function generateQrDataUrl(qrToken: string, siteUrl?: string): Promise<string> {
-  const base = siteUrl || process.env.NEXT_PUBLIC_SITE_URL || "https://yuvashaktisangam.org";
+  const base = siteUrl || process.env.NEXT_PUBLIC_SITE_URL || "https://yuvashaktisangam.me";
   // The QR code contains the secure ticket link
   const qrTarget = `${base}/ticket/${qrToken}`;
 
