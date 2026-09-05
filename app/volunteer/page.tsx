@@ -21,8 +21,11 @@ import {
   X,
   Check,
   ArrowRight,
+  QrCode,
+  IndianRupee,
 } from "lucide-react";
 import { Html5Qrcode } from "html5-qrcode";
+import QRCode from "qrcode";
 import { Participant } from "@/types/registration";
 
 export default function VolunteerScannerPage() {
@@ -34,6 +37,13 @@ export default function VolunteerScannerPage() {
   const [torchOn, setTorchOn] = useState(false);
   const [facingMode, setFacingMode] = useState<"environment" | "user">("environment");
   const [sessionCheckins, setSessionCheckins] = useState(0);
+  const [operatorName, setOperatorName] = useState<string>("Swayamsevak");
+  const [sessionCash, setSessionCash] = useState<number>(0);
+  const [sessionOnline, setSessionOnline] = useState<number>(0);
+  const [paymentChoice, setPaymentChoice] = useState<"cash" | "upi">("cash");
+  const [upiQrUrl, setUpiQrUrl] = useState<string>("");
+  const [utrInput, setUtrInput] = useState<string>("");
+  const [confirmingOnline, setConfirmingOnline] = useState<boolean>(false);
 
   const [scannedParticipant, setScannedParticipant] = useState<Participant | null>(null);
   const [scanState, setScanState] = useState<
@@ -200,6 +210,7 @@ export default function VolunteerScannerPage() {
       if (data.success) {
         setScanState("checked_in_success");
         setSessionCheckins((c) => c + 1);
+        setSessionCash((c) => c + 50);
         playFeedbackSound("success");
       } else {
         setErrorMessage(data.error || "Cash recording failed.");
@@ -213,12 +224,73 @@ export default function VolunteerScannerPage() {
     }
   };
 
+  const handleSpotOnlinePayment = async () => {
+    if (!scannedParticipant) return;
+    setConfirmingOnline(true);
+
+    try {
+      const res = await fetch("/api/checkin/spot-online-pay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          participant_id: scannedParticipant.id,
+          utr: utrInput,
+          notes: "On-spot venue UPI verified",
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setScanState("checked_in_success");
+        setSessionCheckins((c) => c + 1);
+        setSessionOnline((c) => c + 50);
+        playFeedbackSound("success");
+      } else {
+        setErrorMessage(data.error || "Online verification failed.");
+        playFeedbackSound("error");
+      }
+    } catch (err) {
+      setErrorMessage("Network error recording online payment.");
+      playFeedbackSound("error");
+    } finally {
+      setConfirmingOnline(false);
+    }
+  };
+
   const resetScan = () => {
     setScannedParticipant(null);
     setScanState("idle");
     setErrorMessage("");
     setSearchQuery("");
+    setUtrInput("");
+    setPaymentChoice("cash");
   };
+
+  // Fetch logged-in volunteer/admin operator identity
+  useEffect(() => {
+    fetch("/api/volunteer/session")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.authenticated && data?.user?.username) {
+          setOperatorName(data.user.username);
+        }
+      })
+      .catch((e) => console.warn("Session check error:", e));
+  }, []);
+
+  // Generate UPI QR Code dynamically for on-spot payment
+  useEffect(() => {
+    if (scannedParticipant && scanState === "cash_pending") {
+      const regId = scannedParticipant.registration_id || "YSS";
+      const upiUrl = `upi://pay?pa=7046232003@upi&pn=KUSHAL%20GHANSHYAMBHAI&am=50&cu=INR&tn=YSS%20Pass%20${regId}`;
+      QRCode.toDataURL(upiUrl, { width: 240, margin: 1 })
+        .then((url) => setUpiQrUrl(url))
+        .catch((err) => console.error("Error generating UPI QR:", err));
+    } else {
+      setUpiQrUrl("");
+    }
+  }, [scannedParticipant, scanState]);
 
   // Camera Management
   const startScanner = async () => {
@@ -304,27 +376,45 @@ export default function VolunteerScannerPage() {
   return (
     <div className="min-h-screen bg-[#14100D] text-[#FAF4EC] flex flex-col justify-between selection:bg-[#E65100] selection:text-white">
       {/* Top Volunteer Header Bar */}
-      <header className="px-4 py-3 bg-[#1C140E] border-b border-white/10 flex items-center justify-between z-20 shadow-md">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-[#E65100] text-white flex items-center justify-center font-display font-black text-xs shadow-md">
+      <header className="px-3 sm:px-4 py-2.5 sm:py-3 bg-[#1C140E] border-b border-white/10 flex items-center justify-between z-20 shadow-md">
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-[#E65100] text-white flex items-center justify-center font-display font-black text-xs shadow-md shrink-0">
             YS
           </div>
           <div>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               <span className="text-[10px] font-mono font-bold tracking-wider text-[#FFA000] uppercase">
-                SWAYAMSEVAK SCANNER
+                VOLUNTEER SCANNER
               </span>
             </div>
-            <p className="text-[11px] font-bold text-white/80">Gate Pass Desk</p>
+            <p className="text-[11px] font-bold text-white/90 flex items-center gap-1">
+              <span className="text-white/50 text-[10px]">OPERATOR:</span>
+              <span className="text-[#FFA000] font-mono text-[11px] font-bold truncate max-w-[120px] sm:max-w-[200px]">
+                {operatorName}
+              </span>
+            </p>
           </div>
         </div>
 
-        {/* Header Controls */}
-        <div className="flex items-center gap-2">
-          <div className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono text-green-400">
-            <CheckCircle2 className="w-3 h-3 text-green-400" />
-            <span>{sessionCheckins} checked-in</span>
+        {/* Header Controls & Live Counters */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Live counters badge */}
+          <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-[11px] font-mono">
+            <span className="text-green-400 flex items-center gap-1 font-bold">
+              <CheckCircle2 className="w-3 h-3" />
+              <span>{sessionCheckins}</span>
+            </span>
+            <span className="text-white/20">|</span>
+            <span className="text-[#FFA000] flex items-center gap-0.5 font-bold" title="Cash collected this session">
+              <Banknote className="w-3 h-3" />
+              <span>₹{sessionCash}</span>
+            </span>
+            <span className="text-white/20">|</span>
+            <span className="text-blue-400 flex items-center gap-0.5 font-bold" title="UPI verified this session">
+              <QrCode className="w-3 h-3" />
+              <span>₹{sessionOnline}</span>
+            </span>
           </div>
 
           <button
@@ -482,15 +572,45 @@ export default function VolunteerScannerPage() {
               )}
 
               {scanState === "cash_pending" && (
-                <div className="p-3.5 rounded-2xl bg-amber-900/40 border border-amber-500/40 text-amber-300 flex items-center gap-3">
-                  <Banknote className="w-8 h-8 text-amber-400 shrink-0" />
-                  <div>
-                    <h3 className="font-display font-black text-sm uppercase text-amber-400">
-                      ₹50 CASH ENTRY REQUIRED
-                    </h3>
-                    <p className="text-xs text-amber-200">
-                      Participant selected cash on arrival.
-                    </p>
+                <div className="space-y-3">
+                  <div className="p-3.5 rounded-2xl bg-amber-900/40 border border-amber-500/40 text-amber-300 flex items-center gap-3">
+                    <Banknote className="w-8 h-8 text-amber-400 shrink-0" />
+                    <div>
+                      <h3 className="font-display font-black text-sm uppercase text-amber-400">
+                        ₹50 ENTRY FEE REQUIRED
+                      </h3>
+                      <p className="text-xs text-amber-200">
+                        Choose payment method: Cash or UPI.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Payment Method Switcher Tabs */}
+                  <div className="grid grid-cols-2 gap-2 p-1 bg-[#1C140E] rounded-xl border border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => setPaymentChoice("cash")}
+                      className={`py-2 px-3 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        paymentChoice === "cash"
+                          ? "bg-[#FFA000] text-[#14100D] shadow-md font-black"
+                          : "text-white/60 hover:text-white"
+                      }`}
+                    >
+                      <Banknote className="w-4 h-4" />
+                      <span>Cash (₹50)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPaymentChoice("upi")}
+                      className={`py-2 px-3 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        paymentChoice === "upi"
+                          ? "bg-blue-600 text-white shadow-md font-black"
+                          : "text-white/60 hover:text-white"
+                      }`}
+                    >
+                      <QrCode className="w-4 h-4" />
+                      <span>Online UPI (₹50)</span>
+                    </button>
                   </div>
                 </div>
               )}
@@ -560,7 +680,7 @@ export default function VolunteerScannerPage() {
                   </button>
                 )}
 
-                {scanState === "cash_pending" && (
+                {scanState === "cash_pending" && paymentChoice === "cash" && (
                   <button
                     onClick={handleCollectCash}
                     disabled={collectingCash}
@@ -575,6 +695,56 @@ export default function VolunteerScannerPage() {
                       </>
                     )}
                   </button>
+                )}
+
+                {scanState === "cash_pending" && paymentChoice === "upi" && (
+                  <div className="space-y-3">
+                    <div className="p-3.5 rounded-2xl bg-[#1C140E] border border-blue-500/30 flex flex-col items-center text-center space-y-2.5">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-blue-300">
+                        Scan with GPay / PhonePe / Paytm / BHIM
+                      </p>
+
+                      <div className="p-2.5 bg-white rounded-2xl shadow-xl flex items-center justify-center">
+                        {upiQrUrl ? (
+                          <img src={upiQrUrl} alt="Venue UPI QR" className="w-44 h-44 rounded-lg" />
+                        ) : (
+                          <div className="w-44 h-44 flex items-center justify-center text-gray-400">
+                            <Loader2 className="w-6 h-6 animate-spin" />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="text-[11px] font-mono text-white/80">
+                        <p className="font-bold text-white">7046232003@upi</p>
+                        <p className="text-white/50 text-[10px]">KUSHAL GHANSHYAMBHAI • ₹50</p>
+                      </div>
+
+                      <div className="w-full">
+                        <input
+                          type="text"
+                          value={utrInput}
+                          onChange={(e) => setUtrInput(e.target.value)}
+                          placeholder="Optional: Enter UPI UTR / Ref No..."
+                          className="w-full px-3 py-2 rounded-xl bg-[#29201A] border border-white/15 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-blue-400 font-mono text-center"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handleSpotOnlinePayment}
+                      disabled={confirmingOnline}
+                      className="w-full py-4 px-6 rounded-2xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      {confirmingOnline ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-5 h-5" />
+                          <span>VERIFY ₹50 UPI & GRANT ENTRY</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 )}
 
                 {(scanState === "checked_in_success" || scanState === "already_checked_in") && (
@@ -617,9 +787,17 @@ export default function VolunteerScannerPage() {
       </main>
 
       {/* Bottom Compact Footer Bar */}
-      <footer className="px-4 py-2 bg-[#1C140E] border-t border-white/10 text-center text-[11px] font-mono text-white/50 z-20">
-        Yuva Shakti Sangam • Gate Clearance Terminal • Session Checked-in:{" "}
-        <span className="text-[#FFA000] font-bold">{sessionCheckins}</span>
+      <footer className="px-4 py-2.5 bg-[#1C140E] border-t border-white/10 text-[11px] font-mono text-white/60 z-20 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span>Duty: <strong className="text-white">{operatorName}</strong></span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span>Cash in Hand: <strong className="text-[#FFA000]">₹{sessionCash}</strong></span>
+          <span className="text-white/20">|</span>
+          <span>UPI Verified: <strong className="text-blue-400">₹{sessionOnline}</strong></span>
+          <span className="text-white/20">|</span>
+          <span>Check-ins: <strong className="text-green-400">{sessionCheckins}</strong></span>
+        </div>
       </footer>
     </div>
   );

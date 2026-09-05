@@ -122,7 +122,7 @@ function VolunteerLoginForm() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-xs font-black uppercase tracking-wider text-[#1C1917] mb-1.5">
-                Volunteer ID / Username
+                Your Name / Volunteer ID
               </label>
               <div className="relative">
                 <User className="w-4 h-4 text-[#5A4839] absolute left-3.5 top-3.5" />
@@ -131,7 +131,7 @@ function VolunteerLoginForm() {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter volunteer ID or username"
+                  placeholder="e.g. Rahul Sharma, Amit, Gate 1"
                   autoComplete="username"
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-sm font-medium text-[#1C1917] placeholder:text-[#5A4839]/40 focus:outline-none focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 transition-all"
                 />

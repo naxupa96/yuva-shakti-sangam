@@ -25,17 +25,21 @@ export async function POST(req: NextRequest) {
     let authenticated = false;
     let authUser = "Volunteer";
 
-    // 1. Check volunteer credentials
-    const isVolunteerUser = creds.usernames.includes(trimmedUsername);
     const isVolunteerPass = trimmedPassword === creds.password;
-
-    // 2. Also allow admin credentials
-    const isAdminUser = trimmedUsername === "yuva@2047";
     const isAdminPass = trimmedPassword === creds.adminPassword;
 
-    if ((isVolunteerUser && isVolunteerPass) || (isAdminUser && isAdminPass)) {
+    // 1. Check admin credentials
+    if (isAdminPass && (trimmedUsername === "yuva@2047" || trimmedUsername === "admin")) {
       authenticated = true;
-      authUser = trimmedUsername === "yuva@2047" ? "Admin (Gate Lead)" : "Swayamsevak";
+      authUser = "Admin (Gate Lead)";
+    }
+    // 2. Check volunteer credentials (accepts any volunteer name/ID with valid event password)
+    else if (isVolunteerPass && trimmedUsername.length >= 2) {
+      authenticated = true;
+      authUser = trimmedUsername
+        .split(" ")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
     }
 
     if (!authenticated) {
