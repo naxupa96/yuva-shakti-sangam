@@ -17,8 +17,10 @@ import {
   VolumeX,
   Zap,
   MessageSquareQuote,
+  QrCode,
 } from "lucide-react";
 import { Html5Qrcode } from "html5-qrcode";
+import QRCode from "qrcode";
 import { Participant } from "@/types/registration";
 import { extractQuestion } from "@/lib/participant-helpers";
 
@@ -37,6 +39,12 @@ export default function CheckinPage() {
   const [cashModalOpen, setCashModalOpen] = useState(false);
   const [collectingCash, setCollectingCash] = useState(false);
   const [checkingIn, setCheckingIn] = useState(false);
+
+  // Online venue UPI payment states
+  const [paymentMode, setPaymentMode] = useState<"cash" | "upi">("cash");
+  const [upiQrDataUrl, setUpiQrDataUrl] = useState<string>("");
+  const [utrNumber, setUtrNumber] = useState<string>("");
+  const [verifyingOnline, setVerifyingOnline] = useState<boolean>(false);
 
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -209,7 +217,7 @@ export default function CheckinPage() {
       if (data.success && data.participant) {
         setScannedParticipant(data.participant);
         setCashModalOpen(false);
-        setScanState("paid");
+        setScanState("checked_in_success");
         playFeedbackSound("success");
       } else {
         setErrorMessage(data.error || "Failed to record cash payment.");
@@ -224,12 +232,62 @@ export default function CheckinPage() {
     }
   };
 
+  const handleSpotOnlinePay = async () => {
+    if (!scannedParticipant) return;
+    setVerifyingOnline(true);
+    try {
+      const res = await fetch("/api/checkin/spot-online-pay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          participant_id: scannedParticipant.id,
+          utr: utrNumber,
+          notes: "On-spot UPI verified at admin check-in desk",
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success && data.participant) {
+        setScannedParticipant(data.participant);
+        setCashModalOpen(false);
+        setScanState("checked_in_success");
+        playFeedbackSound("success");
+      } else {
+        setErrorMessage(data.error || "Online verification failed.");
+        playFeedbackSound("error");
+      }
+    } catch (err) {
+      console.error("Spot online pay error:", err);
+      setErrorMessage("Network error verifying UPI payment.");
+      playFeedbackSound("error");
+    } finally {
+      setVerifyingOnline(false);
+    }
+  };
+
   const resetScan = () => {
     setScanState("idle");
     setScannedParticipant(null);
     setErrorMessage("");
     setSearchQuery("");
+    setUtrNumber("");
+    setPaymentMode("cash");
+    setCashModalOpen(false);
   };
+
+  // Generate UPI QR Code dynamically for on-spot attendee payment
+  useEffect(() => {
+    if (scannedParticipant && scanState === "cash_pending") {
+      const regId = scannedParticipant.registration_id || "YSS";
+      const upiUrl = `upi://pay?pa=7046232003@upi&pn=KUSHAL%20GHANSHYAMBHAI&am=50&cu=INR&tn=YSS%20Pass%20${regId}`;
+      QRCode.toDataURL(upiUrl, { width: 240, margin: 1 })
+        .then((url) => setUpiQrDataUrl(url))
+        .catch((err) => console.error("Error generating UPI QR:", err));
+    } else {
+      setUpiQrDataUrl("");
+    }
+  }, [scannedParticipant, scanState]);
 
   // Setup HTML5 QR Code Scanner
   useEffect(() => {
@@ -465,9 +523,9 @@ export default function CheckinPage() {
           </div>
         )}
 
-        {/* STATE B: CASH PAYMENT PENDING (RED / AMBER) */}
+        {/* STATE B: PAYMENT PENDING (CASH OR ON-SPOT UPI) */}
         {scanState === "cash_pending" && scannedParticipant && (
-          <div className="p-6 rounded-3xl bg-amber-950/80 border-2 border-amber-500 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+          <div className="p-5 sm:p-6 rounded-3xl bg-amber-950/80 border-2 border-amber-500 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-amber-500 text-black flex items-center justify-center shrink-0">
                 <Banknote className="w-7 h-7 stroke-[2.5]" />
@@ -477,7 +535,7 @@ export default function CheckinPage() {
                   PAYMENT PENDING
                 </span>
                 <span className="text-lg font-display font-black text-white uppercase block">
-                  COLLECT ₹50 CASH
+                  ENTRY FEE REQUIRED (₹50)
                 </span>
               </div>
             </div>
@@ -513,18 +571,113 @@ export default function CheckinPage() {
               )}
             </div>
 
-            <div className="space-y-2">
-              <button
-                onClick={() => setCashModalOpen(true)}
-                className="w-full py-4 px-6 rounded-2xl bg-amber-500 hover:bg-amber-400 text-black font-display font-black text-base uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all"
-              >
-                <Banknote className="w-5 h-5" />
-                <span>COLLECT ₹50 & MARK PAID</span>
-              </button>
+            {/* Payment Method Selector: Cash vs Online UPI */}
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-2 p-1 bg-black/50 rounded-2xl border border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMode("cash")}
+                  className={`py-2.5 px-3 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    paymentMode === "cash"
+                      ? "bg-amber-500 text-black shadow-lg font-black"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <Banknote className="w-4 h-4" />
+                  <span>Cash (₹50)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaymentMode("upi")}
+                  className={`py-2.5 px-3 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    paymentMode === "upi"
+                      ? "bg-blue-600 text-white shadow-lg font-black"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <QrCode className="w-4 h-4" />
+                  <span>Online UPI (₹50)</span>
+                </button>
+              </div>
+
+              {/* MODE 1: CASH */}
+              {paymentMode === "cash" && (
+                <div className="space-y-2">
+                  <button
+                    onClick={handleConfirmCashCollection}
+                    disabled={collectingCash}
+                    className="w-full py-4 px-6 rounded-2xl bg-amber-500 hover:bg-amber-400 text-black font-display font-black text-base uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all cursor-pointer disabled:opacity-60"
+                  >
+                    {collectingCash ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>
+                        <Banknote className="w-5 h-5" />
+                        <span>COLLECT ₹50 CASH & CHECK IN</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {/* MODE 2: ONLINE UPI */}
+              {paymentMode === "upi" && (
+                <div className="space-y-3 p-4 rounded-2xl bg-black/60 border border-blue-500/40 text-center animate-in fade-in duration-150">
+                  <div className="space-y-1">
+                    <span className="text-[11px] font-mono font-bold text-blue-300 uppercase block tracking-wider">
+                      Attendee UPI QR Code
+                    </span>
+                    <p className="text-[11px] text-zinc-300">
+                      Show screen to attendee to scan with GPay / PhonePe / Paytm / BHIM
+                    </p>
+                  </div>
+
+                  {/* QR Image Container */}
+                  <div className="p-3 bg-white rounded-2xl shadow-2xl inline-block mx-auto border-2 border-blue-400">
+                    {upiQrDataUrl ? (
+                      <img src={upiQrDataUrl} alt="Venue Payment QR" className="w-48 h-48 rounded-lg" />
+                    ) : (
+                      <div className="w-48 h-48 flex items-center justify-center text-zinc-500">
+                        <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="text-[11px] font-mono text-zinc-300 space-y-0.5">
+                    <p className="font-bold text-white">UPI ID: 7046232003@upi</p>
+                    <p className="text-zinc-400 text-[10px]">Payee: KUSHAL GHANSHYAMBHAI • Amount: ₹50</p>
+                  </div>
+
+                  <div className="pt-1">
+                    <input
+                      type="text"
+                      value={utrNumber}
+                      onChange={(e) => setUtrNumber(e.target.value)}
+                      placeholder="Optional: Enter UPI UTR / Ref No..."
+                      className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-white/20 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-blue-400 font-mono text-center"
+                    />
+                  </div>
+
+                  <button
+                    onClick={handleSpotOnlinePay}
+                    disabled={verifyingOnline}
+                    className="w-full py-3.5 px-6 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-display font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all cursor-pointer disabled:opacity-60"
+                  >
+                    {verifyingOnline ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>
+                        <CheckCircle2 className="w-5 h-5" />
+                        <span>VERIFY ₹50 UPI & CHECK IN</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
 
               <button
                 onClick={resetScan}
-                className="w-full py-2.5 px-4 rounded-xl bg-black/40 hover:bg-black/60 text-xs font-bold uppercase tracking-wider text-zinc-400"
+                className="w-full py-2.5 px-4 rounded-xl bg-black/40 hover:bg-black/60 text-xs font-bold uppercase tracking-wider text-zinc-400 cursor-pointer"
               >
                 Cancel / Scan Next
               </button>
