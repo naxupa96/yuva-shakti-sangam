@@ -5,9 +5,10 @@ import { getAdminCookieName, verifyAdminToken } from "@/lib/auth/admin";
 
 export async function POST(req: NextRequest) {
   try {
-    const { token_or_id, method = "qr_scan", device_info } = await req.json();
+    const { token_or_id, participant_id, method = "qr_scan", device_info } = await req.json();
+    const identifier = (token_or_id || participant_id || "").toString().trim();
 
-    if (!token_or_id) {
+    if (!identifier) {
       return NextResponse.json({ success: false, error: "Missing token or ID for check-in." }, { status: 400 });
     }
 
@@ -23,14 +24,15 @@ export async function POST(req: NextRequest) {
     const supabase = getAdminClient();
 
     // 2. Fetch participant
-    const trimmed = String(token_or_id).trim();
     let query = supabase.from("participants").select("*");
-    if (trimmed.startsWith("yss_")) {
-      query = query.eq("qr_token", trimmed);
-    } else if (trimmed.toUpperCase().startsWith("YSS-")) {
-      query = query.eq("registration_id", trimmed.toUpperCase());
+    if (identifier.startsWith("yss_")) {
+      query = query.eq("qr_token", identifier);
+    } else if (identifier.toUpperCase().startsWith("YSS-")) {
+      query = query.eq("registration_id", identifier.toUpperCase());
+    } else if (/^[0-9a-fA-F-]{36}$/.test(identifier)) {
+      query = query.eq("id", identifier);
     } else {
-      query = query.or(`qr_token.eq.${trimmed},registration_id.ilike.${trimmed}`);
+      query = query.or(`qr_token.eq.${identifier},registration_id.ilike.${identifier},id.eq.${identifier}`);
     }
 
     const { data: participants, error: fetchErr } = await query.limit(1);

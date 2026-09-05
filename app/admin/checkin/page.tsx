@@ -18,11 +18,24 @@ import {
   Zap,
   MessageSquareQuote,
   QrCode,
+  Wifi,
+  WifiOff,
+  CloudUpload,
+  Database,
 } from "lucide-react";
 import { Html5Qrcode } from "html5-qrcode";
 import QRCode from "qrcode";
 import { Participant } from "@/types/registration";
 import { extractQuestion } from "@/lib/participant-helpers";
+import {
+  fetchAndCacheRoster,
+  lookupParticipantOffline,
+  queueOfflineAction,
+  syncQueuedOfflineActions,
+  getQueuedOfflineActions,
+  getOfflineRoster,
+  fetchWithTimeout,
+} from "@/lib/offline-sync";
 
 export default function CheckinPage() {
   const [tab, setTab] = useState<"scan" | "search">("scan");
@@ -46,8 +59,76 @@ export default function CheckinPage() {
   const [utrNumber, setUtrNumber] = useState<string>("");
   const [verifyingOnline, setVerifyingOnline] = useState<boolean>(false);
 
+  // Offline Resilience States
+  const [isOnline, setIsOnline] = useState<boolean>(true);
+  const [offlineQueueCount, setOfflineQueueCount] = useState<number>(0);
+  const [isSyncingQueue, setIsSyncingQueue] = useState<boolean>(false);
+  const [rosterCount, setRosterCount] = useState<number>(0);
+  const [isOfflineResult, setIsOfflineResult] = useState<boolean>(false);
+  const [syncFeedback, setSyncFeedback] = useState<string>("");
+
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+
+  // Initialize network status, warm local cache and setup listeners
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsOnline(navigator.onLine);
+      const initialRoster = getOfflineRoster();
+      setRosterCount(initialRoster.length);
+      const initialQueue = getQueuedOfflineActions();
+      setOfflineQueueCount(initialQueue.length);
+
+      // Warm local attendee cache in background if online
+      if (navigator.onLine) {
+        fetchAndCacheRoster().then((res) => {
+          if (res.success) setRosterCount(res.count);
+        });
+      }
+
+      const handleOnline = () => {
+        setIsOnline(true);
+        triggerSync();
+      };
+      const handleOffline = () => {
+        setIsOnline(false);
+      };
+
+      window.addEventListener("online", handleOnline);
+      window.addEventListener("offline", handleOffline);
+
+      return () => {
+        window.removeEventListener("online", handleOnline);
+        window.removeEventListener("offline", handleOffline);
+      };
+    }
+  }, []);
+
+  const triggerSync = async () => {
+    const queue = getQueuedOfflineActions();
+    if (queue.length === 0) return;
+
+    setIsSyncingQueue(true);
+    setSyncFeedback("Syncing queued actions...");
+    try {
+      const res = await syncQueuedOfflineActions();
+      setOfflineQueueCount(res.remainingCount);
+      if (res.success && res.syncedCount > 0) {
+        setSyncFeedback(`Synced ${res.syncedCount} offline action(s) to server!`);
+        const updatedRoster = getOfflineRoster();
+        setRosterCount(updatedRoster.length);
+        setTimeout(() => setSyncFeedback(""), 4000);
+      } else if (!res.success) {
+        setSyncFeedback(res.error || "Sync pending connection.");
+        setTimeout(() => setSyncFeedback(""), 4000);
+      }
+    } catch (err: any) {
+      setSyncFeedback("Sync pending retry.");
+      setTimeout(() => setSyncFeedback(""), 3000);
+    } finally {
+      setIsSyncingQueue(false);
+    }
+  };
 
   const playFeedbackSound = (type: "success" | "warning" | "error") => {
     if (!soundEnabled) return;
@@ -103,23 +184,81 @@ export default function CheckinPage() {
     if (!query.trim()) return;
     setLoading(true);
     setErrorMessage("");
+    setIsOfflineResult(false);
 
-    try {
-      // Extract clean token if full URL was scanned
-      let cleanQuery = query.trim();
-      if (cleanQuery.includes("/ticket/")) {
-        cleanQuery = cleanQuery.split("/ticket/")[1].split("?")[0].split("#")[0];
+    let cleanQuery = query.trim();
+    if (cleanQuery.includes("/ticket/")) {
+      cleanQuery = cleanQuery.split("/ticket/")[1].split("?")[0].split("#")[0];
+    }
+
+    // Fast-path: If device reports offline, use local offline roster cache immediately
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      const offlineMatch = lookupParticipantOffline(cleanQuery);
+      if (offlineMatch) {
+        setIsOfflineResult(true);
+        setScannedParticipant(offlineMatch);
+        if (offlineMatch.checked_in) {
+          setScanState("already_checked_in");
+          playFeedbackSound("warning");
+        } else if (offlineMatch.payment_status === "paid") {
+          setScanState("paid");
+          playFeedbackSound("success");
+        } else if (offlineMatch.payment_status === "pending") {
+          setScanState("cash_pending");
+          playFeedbackSound("warning");
+        } else {
+          setScanState("invalid");
+          setErrorMessage("Payment status invalid or refunded.");
+          playFeedbackSound("error");
+        }
+      } else {
+        setScanState("invalid");
+        setScannedParticipant(null);
+        setErrorMessage(`Offline Mode: Pass not found in local cache (${rosterCount} attendees cached).`);
+        playFeedbackSound("error");
       }
+      setLoading(false);
+      return;
+    }
 
-      const res = await fetch("/api/checkin/lookup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: cleanQuery }),
-      });
+    // Online attempt with fast timeout (falls back to local cache instead of hanging on congested cell towers)
+    try {
+      const res = await fetchWithTimeout(
+        "/api/checkin/lookup",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: cleanQuery }),
+        },
+        2800
+      );
 
       const data = await res.json();
 
       if (!res.ok || !data.success || !data.participant) {
+        // Fallback check against local cache before declaring invalid
+        const fallbackMatch = lookupParticipantOffline(cleanQuery);
+        if (fallbackMatch) {
+          setIsOfflineResult(true);
+          setScannedParticipant(fallbackMatch);
+          if (fallbackMatch.checked_in) {
+            setScanState("already_checked_in");
+            playFeedbackSound("warning");
+          } else if (fallbackMatch.payment_status === "paid") {
+            setScanState("paid");
+            playFeedbackSound("success");
+          } else if (fallbackMatch.payment_status === "pending") {
+            setScanState("cash_pending");
+            playFeedbackSound("warning");
+          } else {
+            setScanState("invalid");
+            setErrorMessage("Payment status invalid or refunded.");
+            playFeedbackSound("error");
+          }
+          setLoading(false);
+          return;
+        }
+
         setScanState("invalid");
         setScannedParticipant(null);
         setErrorMessage(data.error || "Ticket not recognized.");
@@ -146,10 +285,31 @@ export default function CheckinPage() {
         playFeedbackSound("error");
       }
     } catch (err: any) {
-      console.error("Lookup error:", err);
-      setScanState("invalid");
-      setErrorMessage("Network error verifying QR code.");
-      playFeedbackSound("error");
+      console.warn("Lookup network timeout/error, checking local roster:", err);
+      // Cellular network lag / timeout fallback
+      const offlineMatch = lookupParticipantOffline(cleanQuery);
+      if (offlineMatch) {
+        setIsOfflineResult(true);
+        setScannedParticipant(offlineMatch);
+        if (offlineMatch.checked_in) {
+          setScanState("already_checked_in");
+          playFeedbackSound("warning");
+        } else if (offlineMatch.payment_status === "paid") {
+          setScanState("paid");
+          playFeedbackSound("success");
+        } else if (offlineMatch.payment_status === "pending") {
+          setScanState("cash_pending");
+          playFeedbackSound("warning");
+        } else {
+          setScanState("invalid");
+          setErrorMessage("Payment status invalid or refunded.");
+          playFeedbackSound("error");
+        }
+      } else {
+        setScanState("invalid");
+        setErrorMessage("Network timed out and pass not found in local cache.");
+        playFeedbackSound("error");
+      }
     } finally {
       setLoading(false);
     }
@@ -158,16 +318,42 @@ export default function CheckinPage() {
   const handleCheckIn = async () => {
     if (!scannedParticipant) return;
     setCheckingIn(true);
+    const checkinTime = new Date().toISOString();
+
+    // If offline, queue directly in outbox
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      queueOfflineAction({
+        type: "confirm",
+        participant_id: scannedParticipant.id,
+        timestamp: checkinTime,
+      });
+      setOfflineQueueCount(getQueuedOfflineActions().length);
+      setScannedParticipant({
+        ...scannedParticipant,
+        checked_in: true,
+        check_in_time: checkinTime,
+      });
+      setScanState("checked_in_success");
+      setIsOfflineResult(true);
+      playFeedbackSound("success");
+      setCheckingIn(false);
+      return;
+    }
 
     try {
-      const res = await fetch("/api/checkin/confirm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token_or_id: scannedParticipant.qr_token || scannedParticipant.registration_id,
-          method: tab === "scan" ? "qr_scan" : "manual_search",
-        }),
-      });
+      const res = await fetchWithTimeout(
+        "/api/checkin/confirm",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token_or_id: scannedParticipant.qr_token || scannedParticipant.registration_id,
+            participant_id: scannedParticipant.id,
+            method: tab === "scan" ? "qr_scan" : "manual_search",
+          }),
+        },
+        2800
+      );
 
       const data = await res.json();
 
@@ -190,9 +376,21 @@ export default function CheckinPage() {
         }
       }
     } catch (err) {
-      console.error("Check-in confirm error:", err);
-      setErrorMessage("Network error completing check-in.");
-      playFeedbackSound("error");
+      console.warn("Checkin timeout, queuing offline action:", err);
+      queueOfflineAction({
+        type: "confirm",
+        participant_id: scannedParticipant.id,
+        timestamp: checkinTime,
+      });
+      setOfflineQueueCount(getQueuedOfflineActions().length);
+      setScannedParticipant({
+        ...scannedParticipant,
+        checked_in: true,
+        check_in_time: checkinTime,
+      });
+      setScanState("checked_in_success");
+      setIsOfflineResult(true);
+      playFeedbackSound("success");
     } finally {
       setCheckingIn(false);
     }
@@ -201,16 +399,44 @@ export default function CheckinPage() {
   const handleConfirmCashCollection = async () => {
     if (!scannedParticipant) return;
     setCollectingCash(true);
+    const payTime = new Date().toISOString();
+
+    // If offline, queue cash collection action
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      queueOfflineAction({
+        type: "cash",
+        participant_id: scannedParticipant.id,
+        timestamp: payTime,
+      });
+      setOfflineQueueCount(getQueuedOfflineActions().length);
+      setScannedParticipant({
+        ...scannedParticipant,
+        payment_status: "paid",
+        payment_method: "cash",
+        checked_in: true,
+        check_in_time: payTime,
+      });
+      setCashModalOpen(false);
+      setScanState("checked_in_success");
+      setIsOfflineResult(true);
+      playFeedbackSound("success");
+      setCollectingCash(false);
+      return;
+    }
 
     try {
-      const res = await fetch("/api/checkin/cash-collect", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          participant_id: scannedParticipant.id,
-          notes: "Collected ₹50 cash at entrance gate",
-        }),
-      });
+      const res = await fetchWithTimeout(
+        "/api/checkin/cash-collect",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            participant_id: scannedParticipant.id,
+            notes: "Collected ₹50 cash at entrance gate",
+          }),
+        },
+        2800
+      );
 
       const data = await res.json();
 
@@ -224,9 +450,24 @@ export default function CheckinPage() {
         playFeedbackSound("error");
       }
     } catch (err) {
-      console.error("Cash collection error:", err);
-      setErrorMessage("Network error recording cash.");
-      playFeedbackSound("error");
+      console.warn("Cash collection timeout, queuing offline action:", err);
+      queueOfflineAction({
+        type: "cash",
+        participant_id: scannedParticipant.id,
+        timestamp: payTime,
+      });
+      setOfflineQueueCount(getQueuedOfflineActions().length);
+      setScannedParticipant({
+        ...scannedParticipant,
+        payment_status: "paid",
+        payment_method: "cash",
+        checked_in: true,
+        check_in_time: payTime,
+      });
+      setCashModalOpen(false);
+      setScanState("checked_in_success");
+      setIsOfflineResult(true);
+      playFeedbackSound("success");
     } finally {
       setCollectingCash(false);
     }
@@ -235,16 +476,46 @@ export default function CheckinPage() {
   const handleSpotOnlinePay = async () => {
     if (!scannedParticipant) return;
     setVerifyingOnline(true);
-    try {
-      const res = await fetch("/api/checkin/spot-online-pay", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          participant_id: scannedParticipant.id,
-          utr: utrNumber,
-          notes: "On-spot UPI verified at admin check-in desk",
-        }),
+    const payTime = new Date().toISOString();
+
+    // If offline, queue spot online payment action
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      queueOfflineAction({
+        type: "spot_online",
+        participant_id: scannedParticipant.id,
+        utr: utrNumber,
+        timestamp: payTime,
       });
+      setOfflineQueueCount(getQueuedOfflineActions().length);
+      setScannedParticipant({
+        ...scannedParticipant,
+        payment_status: "paid",
+        payment_method: "online",
+        checked_in: true,
+        check_in_time: payTime,
+      });
+      setCashModalOpen(false);
+      setScanState("checked_in_success");
+      setIsOfflineResult(true);
+      playFeedbackSound("success");
+      setVerifyingOnline(false);
+      return;
+    }
+
+    try {
+      const res = await fetchWithTimeout(
+        "/api/checkin/spot-online-pay",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            participant_id: scannedParticipant.id,
+            utr: utrNumber,
+            notes: "On-spot UPI verified at admin check-in desk",
+          }),
+        },
+        2800
+      );
 
       const data = await res.json();
 
@@ -258,9 +529,25 @@ export default function CheckinPage() {
         playFeedbackSound("error");
       }
     } catch (err) {
-      console.error("Spot online pay error:", err);
-      setErrorMessage("Network error verifying UPI payment.");
-      playFeedbackSound("error");
+      console.warn("Spot online pay timeout, queuing offline action:", err);
+      queueOfflineAction({
+        type: "spot_online",
+        participant_id: scannedParticipant.id,
+        utr: utrNumber,
+        timestamp: payTime,
+      });
+      setOfflineQueueCount(getQueuedOfflineActions().length);
+      setScannedParticipant({
+        ...scannedParticipant,
+        payment_status: "paid",
+        payment_method: "online",
+        checked_in: true,
+        check_in_time: payTime,
+      });
+      setCashModalOpen(false);
+      setScanState("checked_in_success");
+      setIsOfflineResult(true);
+      playFeedbackSound("success");
     } finally {
       setVerifyingOnline(false);
     }
@@ -274,6 +561,7 @@ export default function CheckinPage() {
     setUtrNumber("");
     setPaymentMode("cash");
     setCashModalOpen(false);
+    setIsOfflineResult(false);
   };
 
   // Generate UPI QR Code dynamically for on-spot attendee payment
@@ -363,6 +651,83 @@ export default function CheckinPage() {
             {soundEnabled ? <Volume2 className="w-4 h-4 text-[#22C55E]" /> : <VolumeX className="w-4 h-4 text-zinc-500" />}
           </button>
         </div>
+
+        {/* Offline Resilience & Network Status Strip */}
+        <div className="flex items-center justify-between px-3 py-2 rounded-2xl bg-[#24170D] border border-[#FAF4EC]/10 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span
+                className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                  isOnline ? "bg-emerald-400" : "bg-amber-400"
+                }`}
+              />
+              <span
+                className={`relative inline-flex rounded-full h-2 w-2 ${
+                  isOnline ? "bg-emerald-500" : "bg-amber-500"
+                }`}
+              />
+            </span>
+            <div className="flex items-center gap-1.5 font-bold">
+              {isOnline ? (
+                <span className="text-emerald-400 flex items-center gap-1">
+                  <Wifi className="w-3.5 h-3.5" />
+                  <span>Online Mode</span>
+                </span>
+              ) : (
+                <span className="text-amber-400 flex items-center gap-1">
+                  <WifiOff className="w-3.5 h-3.5" />
+                  <span>Offline Backup Active</span>
+                </span>
+              )}
+            </div>
+            <span className="text-[#FAF4EC]/40 text-[10px]">|</span>
+            <span className="text-[11px] font-mono text-[#FAF4EC]/60" title="Locally cached attendee directory">
+              {rosterCount} cached
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {offlineQueueCount > 0 ? (
+              <button
+                onClick={triggerSync}
+                disabled={isSyncingQueue}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#E65100] text-white font-bold text-[11px] animate-pulse hover:opacity-90 disabled:opacity-50"
+                title="Sync offline actions to server"
+              >
+                {isSyncingQueue ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                  <CloudUpload className="w-3 h-3" />
+                )}
+                <span>Sync {offlineQueueCount} Queued</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  fetchAndCacheRoster().then((res) => {
+                    if (res.success) {
+                      setRosterCount(res.count);
+                      setSyncFeedback(`Cache updated: ${res.count} attendees`);
+                      setTimeout(() => setSyncFeedback(""), 3000);
+                    }
+                  });
+                }}
+                className="text-[10px] text-[#FFA000] hover:underline flex items-center gap-1 font-mono cursor-pointer"
+                title="Refresh offline attendee cache"
+              >
+                <RefreshCw className="w-3 h-3" />
+                <span>Update Roster</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Sync Feedback Alert */}
+        {syncFeedback && (
+          <div className="p-2.5 rounded-xl bg-[#E65100]/15 border border-[#E65100]/30 text-center text-xs font-bold text-[#FFA000] animate-in fade-in">
+            {syncFeedback}
+          </div>
+        )}
 
         {/* Tab Toggle: Camera Scan vs Manual Search */}
         <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-[#24170D] border border-[#FAF4EC]/10">
@@ -466,6 +831,13 @@ export default function CheckinPage() {
               </div>
             </div>
 
+            {isOfflineResult && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold">
+                <WifiOff className="w-3.5 h-3.5 shrink-0" />
+                <span>Offline Record • Changes Queued for Auto-Sync</span>
+              </div>
+            )}
+
             <div className="p-4 rounded-2xl bg-black/40 border border-green-500/30 space-y-2 text-left">
               <div>
                 <span className="text-[10px] font-bold uppercase text-zinc-400 block">NAME</span>
@@ -539,6 +911,13 @@ export default function CheckinPage() {
                 </span>
               </div>
             </div>
+
+            {isOfflineResult && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold">
+                <WifiOff className="w-3.5 h-3.5 shrink-0" />
+                <span>Offline Record • Changes Queued for Auto-Sync</span>
+              </div>
+            )}
 
             <div className="p-4 rounded-2xl bg-black/40 border border-amber-500/30 space-y-2 text-left">
               <div>
@@ -745,6 +1124,12 @@ export default function CheckinPage() {
               <p className="text-xs font-mono text-green-300">
                 Pass: {scannedParticipant.registration_id}
               </p>
+              {isOfflineResult && (
+                <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 border border-amber-400/50 text-amber-300 text-[11px] font-bold">
+                  <WifiOff className="w-3 h-3" />
+                  <span>Recorded locally • Queued for server sync</span>
+                </div>
+              )}
             </div>
 
             <div className="pt-2">
