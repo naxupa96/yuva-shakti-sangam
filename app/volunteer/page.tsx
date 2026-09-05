@@ -27,6 +27,8 @@ import {
   WifiOff,
   CloudUpload,
   Database,
+  Copy,
+  ExternalLink,
 } from "lucide-react";
 import { Html5Qrcode } from "html5-qrcode";
 import QRCode from "qrcode";
@@ -40,6 +42,13 @@ import {
   getOfflineRoster,
   fetchWithTimeout,
 } from "@/lib/offline-sync";
+import {
+  OFFICIAL_PAYMENT_QR_BASE64,
+  OFFICIAL_UPI_ID,
+  OFFICIAL_UPI_NAME,
+  OFFICIAL_UPI_AMOUNT,
+  OFFICIAL_UPI_URL,
+} from "@/lib/payment-qr-data";
 
 export default function VolunteerScannerPage() {
   const [scannerActive, setScannerActive] = useState(false);
@@ -54,9 +63,18 @@ export default function VolunteerScannerPage() {
   const [sessionCash, setSessionCash] = useState<number>(0);
   const [sessionOnline, setSessionOnline] = useState<number>(0);
   const [paymentChoice, setPaymentChoice] = useState<"cash" | "upi">("cash");
-  const [upiQrUrl, setUpiQrUrl] = useState<string>("");
+  const [showPaymentQrModal, setShowPaymentQrModal] = useState<boolean>(false);
+  const [copiedUpi, setCopiedUpi] = useState<boolean>(false);
   const [utrInput, setUtrInput] = useState<string>("");
   const [confirmingOnline, setConfirmingOnline] = useState<boolean>(false);
+
+  const copyUpiId = () => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(OFFICIAL_UPI_ID);
+      setCopiedUpi(true);
+      setTimeout(() => setCopiedUpi(false), 2000);
+    }
+  };
 
   const [scannedParticipant, setScannedParticipant] = useState<Participant | null>(null);
   const [scanState, setScanState] = useState<
@@ -579,18 +597,7 @@ export default function VolunteerScannerPage() {
       .catch((e) => console.warn("Session check error:", e));
   }, []);
 
-  // Generate UPI QR Code dynamically for on-spot payment
-  useEffect(() => {
-    if (scannedParticipant && scanState === "cash_pending") {
-      const regId = scannedParticipant.registration_id || "YSS";
-      const upiUrl = `upi://pay?pa=7046232003@upi&pn=KUSHAL%20GHANSHYAMBHAI&am=50&cu=INR&tn=YSS%20Pass%20${regId}`;
-      QRCode.toDataURL(upiUrl, { width: 240, margin: 1 })
-        .then((url) => setUpiQrUrl(url))
-        .catch((err) => console.error("Error generating UPI QR:", err));
-    } else {
-      setUpiQrUrl("");
-    }
-  }, [scannedParticipant, scanState]);
+  // Official 600x600 UPI QR code is pre-embedded via OFFICIAL_PAYMENT_QR_BASE64 for 100% offline & instant scan reliability
 
   // Camera Management
   const startScanner = async () => {
@@ -751,6 +758,16 @@ export default function VolunteerScannerPage() {
             title="Manual Search / Mobile Lookup"
           >
             <Search className="w-4 h-4" />
+          </button>
+
+          <button
+            onClick={() => setShowPaymentQrModal(true)}
+            className="px-2.5 py-1.5 rounded-xl bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/40 text-blue-300 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+            title="Show ₹50 UPI Payment QR"
+          >
+            <QrCode className="w-3.5 h-3.5 text-blue-400" />
+            <span className="hidden sm:inline">₹50 QR</span>
+            <span className="sm:hidden">QR</span>
           </button>
 
           <button
@@ -1083,28 +1100,65 @@ export default function VolunteerScannerPage() {
                 )}
 
                 {scanState === "cash_pending" && paymentChoice === "upi" && (
-                  <div className="space-y-3">
+                  <div className="space-y-3 animate-in fade-in duration-150">
                     <div className="p-3.5 rounded-2xl bg-[#1C140E] border border-blue-500/30 flex flex-col items-center text-center space-y-2.5">
-                      <p className="text-[11px] font-bold uppercase tracking-wider text-blue-300">
-                        Scan with GPay / PhonePe / Paytm / BHIM
-                      </p>
+                      <div className="flex items-center justify-between w-full px-1">
+                        <p className="text-[11px] font-bold uppercase tracking-wider text-blue-300">
+                          Scan with GPay / PhonePe / Paytm / BHIM
+                        </p>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-mono font-bold">
+                          ₹{OFFICIAL_UPI_AMOUNT}
+                        </span>
+                      </div>
 
-                      <div className="p-2.5 bg-white rounded-2xl shadow-xl flex items-center justify-center">
-                        {upiQrUrl ? (
-                          <img src={upiQrUrl} alt="Venue UPI QR" className="w-44 h-44 rounded-lg" />
-                        ) : (
-                          <div className="w-44 h-44 flex items-center justify-center text-gray-400">
-                            <Loader2 className="w-6 h-6 animate-spin" />
+                      {/* Official Verified Merchant QR Container */}
+                      <div className="p-3 bg-white rounded-2xl shadow-xl flex items-center justify-center border-2 border-blue-400/40">
+                        <img
+                          src={OFFICIAL_PAYMENT_QR_BASE64}
+                          alt="Official ₹50 Payment QR"
+                          className="w-48 h-48 max-w-full aspect-square block"
+                          style={{ imageRendering: "pixelated" }}
+                        />
+                      </div>
+
+                      <div className="w-full space-y-1.5 pt-1">
+                        <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-xs font-mono">
+                          <div className="text-left">
+                            <span className="text-[9px] text-white/40 uppercase block">UPI ID</span>
+                            <span className="font-bold text-white text-xs">{OFFICIAL_UPI_ID}</span>
                           </div>
-                        )}
+                          <button
+                            type="button"
+                            onClick={copyUpiId}
+                            className="px-2.5 py-1 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 text-[11px] font-sans font-bold flex items-center gap-1 transition-all cursor-pointer"
+                          >
+                            {copiedUpi ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                <span className="text-emerald-400">Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3.5 h-3.5" />
+                                <span>Copy</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+
+                        <div className="flex items-center justify-between px-1 text-[10px] text-white/50">
+                          <span>Payee: {OFFICIAL_UPI_NAME}</span>
+                          <a
+                            href={OFFICIAL_UPI_URL}
+                            className="text-blue-400 hover:text-blue-300 flex items-center gap-1 font-sans underline"
+                          >
+                            <span>Pay in App</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </div>
                       </div>
 
-                      <div className="text-[11px] font-mono text-white/80">
-                        <p className="font-bold text-white">7046232003@upi</p>
-                        <p className="text-white/50 text-[10px]">KUSHAL GHANSHYAMBHAI • ₹50</p>
-                      </div>
-
-                      <div className="w-full">
+                      <div className="w-full pt-1">
                         <input
                           type="text"
                           value={utrInput}
@@ -1165,6 +1219,89 @@ export default function VolunteerScannerPage() {
                 className="w-full py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold uppercase text-white"
               >
                 Scan Next Attendee
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Quick Standalone ₹50 Payment QR Modal for Queue/Direct Pay */}
+        {showPaymentQrModal && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150">
+            <div className="relative w-full max-w-sm rounded-3xl bg-[#1C140E] border-2 border-blue-500/50 p-6 shadow-2xl text-center space-y-4">
+              <button
+                type="button"
+                onClick={() => setShowPaymentQrModal(false)}
+                className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="space-y-1">
+                <span className="text-[10px] font-mono font-bold tracking-widest text-blue-400 uppercase">
+                  Yuva Shakti Sangam
+                </span>
+                <h2 className="text-xl font-display font-black text-white uppercase tracking-tight">
+                  Entry Fee: ₹{OFFICIAL_UPI_AMOUNT}
+                </h2>
+                <p className="text-xs text-zinc-300">
+                  Scan with any UPI app (GPay, PhonePe, Paytm, BHIM, Cred)
+                </p>
+              </div>
+
+              {/* Official High-Res Verified QR Container */}
+              <div className="p-3 bg-white rounded-2xl shadow-2xl inline-block mx-auto border-2 border-blue-400">
+                <img
+                  src={OFFICIAL_PAYMENT_QR_BASE64}
+                  alt="Yuva Shakti Sangam ₹50 Payment QR"
+                  className="w-56 h-56 max-w-full aspect-square block mx-auto"
+                  style={{ imageRendering: "pixelated" }}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-black/50 border border-white/10 text-xs font-mono">
+                  <div className="text-left">
+                    <span className="text-[9px] text-white/40 uppercase block">UPI ID</span>
+                    <span className="font-bold text-white text-xs">{OFFICIAL_UPI_ID}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={copyUpiId}
+                    className="px-2.5 py-1 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 text-[11px] font-sans font-bold flex items-center gap-1 transition-all cursor-pointer"
+                  >
+                    {copiedUpi ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="text-emerald-400">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between px-1 text-[11px] text-zinc-400">
+                  <span>Payee: {OFFICIAL_UPI_NAME}</span>
+                  <a
+                    href={OFFICIAL_UPI_URL}
+                    className="text-blue-400 hover:text-blue-300 flex items-center gap-1 font-sans underline"
+                  >
+                    <span>Pay in App</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowPaymentQrModal(false)}
+                className="w-full py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold uppercase tracking-wider text-white transition-colors cursor-pointer"
+              >
+                Close QR Code
               </button>
             </div>
           </div>
