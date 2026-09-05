@@ -30,16 +30,21 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "Yuva Shakti Sangam | 6 September 2026 | Maninagar, Ahmedabad",
-  description: "Yuva Shakti Sangam (युवा शक्ति • राष्ट्र शक्ति) — A dynamic youth gathering in Maninagar, Ahmedabad featuring on-ground games, live drama, open Samvaad dialogue, and nation-building initiatives.",
+  description: "Yuva Shakti Sangam (युવા શક્તિ • રાષ્ટ્ર શક્તિ) — Dynamic youth gathering in Maninagar, Ahmedabad with Chief Guest Rupesh Makwana (Guinness Record Holder) & Guest of Honor Nidhi Mehta (National Yoga Player). On-ground games, Samvaad dialogue & nation building.",
   keywords: [
     "Yuva Shakti Sangam",
     "Youth Event Ahmedabad",
     "Maninagar Event",
     "6 September 2026",
+    "Rupesh Makwana",
+    "Nidhi Mehta",
+    "National Yoga Player",
+    "Nidhi's Yoga Hub",
+    "Guest of Honor",
+    "Guinness World Record",
     "RSS Youth Gathering",
     "Yuva Samvaad",
     "Nation Building",
-    "Youth Culture India",
     "Gujarat Youth Conference"
   ],
   authors: [{ name: "Yuva Shakti Sangam" }],

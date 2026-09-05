@@ -82,7 +82,7 @@ export default function Hero() {
             <div className="my-3 p-4 rounded-2xl bg-[#17130E] text-[#F2DFBD] text-xs font-bold uppercase tracking-wider space-y-2 animate-in fade-in duration-150 border border-[#F05A12]/30">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                 <a href="#big-idea" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">The Big Idea</a>
-                <a href="#chief-guest" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] text-[#FFA000] hover:text-[#F05A12] transition-colors">Chief Guest</a>
+                <a href="#chief-guest" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] text-[#FFA000] hover:text-[#F05A12] transition-colors">Dignitaries</a>
                 <a href="#why-attend" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Why Attend</a>
                 <a href="#experience" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Experience</a>
                 <a href="#samvaad" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg bg-[#24170D] hover:text-[#F05A12] transition-colors">Yuva Samvaad</a>
@@ -171,16 +171,27 @@ export default function Hero() {
                   <span className="leading-snug">{eventConfig.venueName.toUpperCase()} • MANINAGAR</span>
                 </div>
 
-                {/* Chief Guest Spotlight Pill */}
-                <div className="pt-1">
+                {/* Dignitaries Spotlight Badges */}
+                <div className="pt-1.5 flex flex-col gap-1.5">
                   <a
                     href="#chief-guest"
                     className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#17130E] text-[#FAF4EC] hover:bg-[#24170D] transition-colors border border-[#F05A12]/40 shadow-sm group"
                   >
-                    <span className="w-2 h-2 rounded-full bg-[#F05A12] animate-pulse" />
-                    <span className="text-[10px] sm:text-[11px] font-bold text-[#FFA000] uppercase">Chief Guest:</span>
-                    <span className="text-[11px] sm:text-xs font-black uppercase text-white group-hover:text-[#F05A12] transition-colors">
+                    <span className="w-2 h-2 rounded-full bg-[#F05A12] animate-pulse shrink-0" />
+                    <span className="text-[10px] sm:text-[11px] font-bold text-[#FFA000] uppercase shrink-0">Chief Guest:</span>
+                    <span className="text-[11px] sm:text-xs font-black uppercase text-white group-hover:text-[#F05A12] transition-colors truncate">
                       Rupesh Makwana (Guinness Record Holder)
+                    </span>
+                  </a>
+
+                  <a
+                    href="#chief-guest"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#17130E] text-[#FAF4EC] hover:bg-[#24170D] transition-colors border border-[#F05A12]/40 shadow-sm group"
+                  >
+                    <span className="w-2 h-2 rounded-full bg-[#FFA000] shrink-0" />
+                    <span className="text-[10px] sm:text-[11px] font-bold text-[#FFA000] uppercase shrink-0">Guest of Honor:</span>
+                    <span className="text-[11px] sm:text-xs font-black uppercase text-white group-hover:text-[#F05A12] transition-colors truncate">
+                      Nidhi Mehta (National Yoga Player 🇮🇳)
                     </span>
                   </a>
                 </div>

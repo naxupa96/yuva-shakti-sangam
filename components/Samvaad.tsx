@@ -79,42 +79,83 @@ export default function Samvaad() {
           </p>
         </div>
 
-        {/* Keynote Speaker Banner */}
-        <div className="mb-8 p-4 sm:p-5 rounded-2xl bg-[#F2DFBD] border border-[#F05A12]/40 shadow-parchment-card flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-[#F05A12] shadow-sm shrink-0 bg-[#17130E]">
-              <Image
-                src="/images/chief-guest/portrait.jpg"
-                alt="Rupesh Makwana - Keynote Speaker"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono font-black uppercase px-2 py-0.5 rounded bg-[#F05A12] text-white">
-                  KEYNOTE SPEAKER
-                </span>
-                <span className="text-xs font-bold text-[#5A4839]">
-                  Guinness Record Holder
-                </span>
+        {/* Keynote & Distinguished Speakers Banner */}
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Speaker 1: Rupesh Makwana */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-[#F2DFBD] border border-[#F05A12]/40 shadow-parchment-card flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden border-2 border-[#F05A12] shadow-sm shrink-0 bg-[#17130E]">
+                <Image
+                  src="/images/chief-guest/portrait.jpg"
+                  alt="Rupesh Makwana - Chief Guest & Keynote Speaker"
+                  fill
+                  className="object-cover"
+                />
               </div>
-              <h4 className="font-display font-black text-base sm:text-lg text-[#17130E] uppercase mt-0.5">
-                Rupesh Makwana (National Athlete & Coach)
-              </h4>
-              <p className="text-[11px] text-[#5A4839]">
-                Addressing youth on ultra-endurance, character discipline, de-addiction & Rashtra Seva.
-              </p>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono font-black uppercase px-2 py-0.5 rounded bg-[#17130E] text-[#FAF4EC]">
+                    CHIEF GUEST
+                  </span>
+                  <span className="text-[11px] font-bold text-[#F05A12] truncate">
+                    Guinness Record Holder
+                  </span>
+                </div>
+                <h4 className="font-display font-black text-sm sm:text-base text-[#17130E] uppercase mt-0.5 truncate">
+                  Rupesh Makwana
+                </h4>
+                <p className="text-[11px] text-[#5A4839] line-clamp-1">
+                  Ultra-endurance, character discipline & de-addiction.
+                </p>
+              </div>
             </div>
+
+            <a
+              href="#chief-guest"
+              className="p-2.5 rounded-xl bg-[#17130E] text-[#F2DFBD] hover:bg-[#24170D] transition-colors shrink-0"
+              title="View Details"
+            >
+              <ArrowRight className="w-4 h-4 text-[#F05A12]" />
+            </a>
           </div>
 
-          <a
-            href="#chief-guest"
-            className="px-4 py-2.5 rounded-xl bg-[#17130E] text-[#F2DFBD] hover:bg-[#24170D] text-xs font-black uppercase tracking-wider whitespace-nowrap transition-colors flex items-center gap-1.5 shrink-0"
-          >
-            <span>CHIEF GUEST DETAILS</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#F05A12]" />
-          </a>
+          {/* Speaker 2: Nidhi Mehta */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-[#F2DFBD] border border-[#F05A12]/40 shadow-parchment-card flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden border-2 border-[#F05A12] shadow-sm shrink-0 bg-[#17130E]">
+                <Image
+                  src="/images/guest-of-honour/portrait.jpg"
+                  alt="Nidhi Mehta - Guest of Honor"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono font-black uppercase px-2 py-0.5 rounded bg-[#F05A12] text-white">
+                    GUEST OF HONOR
+                  </span>
+                  <span className="text-[11px] font-bold text-[#F05A12] truncate">
+                    National Yoga Player 🇮🇳
+                  </span>
+                </div>
+                <h4 className="font-display font-black text-sm sm:text-base text-[#17130E] uppercase mt-0.5 truncate">
+                  Nidhi Mehta
+                </h4>
+                <p className="text-[11px] text-[#5A4839] line-clamp-1">
+                  Founder Nidhi&apos;s Yoga Hub • Mental poise & yogic vigor.
+                </p>
+              </div>
+            </div>
+
+            <a
+              href="#chief-guest"
+              className="p-2.5 rounded-xl bg-[#17130E] text-[#F2DFBD] hover:bg-[#24170D] transition-colors shrink-0"
+              title="View Details"
+            >
+              <ArrowRight className="w-4 h-4 text-[#F05A12]" />
+            </a>
+          </div>
         </div>
 
         {/* Editorial Illustration & Theme Panel */}

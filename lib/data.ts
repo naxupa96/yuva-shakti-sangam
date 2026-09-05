@@ -5,7 +5,7 @@ export interface NavItem {
 
 export const navItems: NavItem[] = [
   { label: "The Big Idea", href: "#big-idea" },
-  { label: "Chief Guest", href: "#chief-guest" },
+  { label: "Dignitaries", href: "#chief-guest" },
   { label: "Why Attend", href: "#why-attend" },
   { label: "Experience", href: "#experience" },
   { label: "Samvaad", href: "#samvaad" },
@@ -481,8 +481,8 @@ export const journeySteps: JourneyStep[] = [
   {
     time: "6:15 PM",
     stepNumber: "04",
-    title: "Yuva Samvaad — Keynote by Rupesh Makwana & Q&A",
-    description: "Keynote address by Chief Guest Rupesh Makwana (Guinness Record Holder & Ultra-Athlete) on nation-building, fitness, and anti-addiction, followed by open-floor unfiltered dialogue.",
+    title: "Yuva Samvaad — Addresses by Rupesh Makwana & Nidhi Mehta",
+    description: "Inspirational addresses by Chief Guest Rupesh Makwana (Guinness Record Holder) and Guest of Honor Nidhi Mehta (National Yoga Player) on endurance, yogic resilience, and character building, followed by open-floor Q&A.",
     vibe: "Intellectual Rigor",
   },
   {
@@ -785,6 +785,199 @@ export const chiefGuestData: ChiefGuestData = {
       subtitle: "Honored on Stage for Exemplary Feats",
       image: "/images/chief-guest/award-stage.jpg",
       category: "Award",
+    },
+  ],
+};
+
+export interface GuestOfHonorRecord {
+  id: string;
+  badge: string;
+  title: string;
+  metric: string;
+  description: string;
+  year: string;
+  iconName: string;
+}
+
+export interface GuestOfHonorInitiative {
+  id: string;
+  title: string;
+  titleGujarati: string;
+  tagline: string;
+  description: string;
+  image: string;
+  impactTag: string;
+}
+
+export interface GuestOfHonorGalleryItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  category: "Award" | "Record" | "Seva" | "Poster";
+}
+
+export interface GuestOfHonorData {
+  name: string;
+  nameGujarati: string;
+  role: string;
+  roleGujarati: string;
+  title: string;
+  titleGujarati: string;
+  location: string;
+  mottoGujarati: string;
+  mottoEnglish: string;
+  missionStatement: string;
+  bioSummary: string;
+  keyStats: {
+    label: string;
+    value: string;
+    sublabel: string;
+  }[];
+  awards: string[];
+  records: GuestOfHonorRecord[];
+  initiatives: GuestOfHonorInitiative[];
+  gallery: GuestOfHonorGalleryItem[];
+}
+
+export const guestOfHonorData: GuestOfHonorData = {
+  name: "Nidhi Mehta",
+  nameGujarati: "નિધિ મહેતા",
+  role: "Guest of Honor",
+  roleGujarati: "સન્માનિત અતિથિ વિશેષ",
+  title: "National Yoga Player & Founder of Nidhi's Yoga Hub",
+  titleGujarati: "રાષ્ટ્રીય યોગ ખેલાડી અને સંસ્થાપક - નિધિ'સ યોગ હબ",
+  location: "Maninagar, Ahmedabad",
+  mottoGujarati: "યોગઃ કર્મસુ કૌશલમ્ • સ્વસ્થ યુવા, સશક્ત ભારત",
+  mottoEnglish: "Excellence in Action • Healthy Youth, Strong Nation",
+  missionStatement: "Cultivating mental resilience, breath mastery, physical agility, and inner balance among youth through the timeless science of traditional Yoga and Pranayama.",
+  bioSummary: "Nidhi Mehta is an acclaimed National Yoga Player and the visionary founder of Nidhi's Yoga Hub, with its flagship academy based right here in Maninagar, Ahmedabad. Conferred the prestigious Yoga Professional Young Star Award in 2019, she has trained more than 10,000 students, youth leaders, and aspiring instructors in traditional Hatha, Ashtanga Vinyasa, aerial yoga, and therapeutic healing. She champions youth wellness, breath awareness, and mental resilience as foundational pillars for modern nation-building.",
+  keyStats: [
+    {
+      value: "National",
+      label: "Yoga Player 🇮🇳",
+      sublabel: "Represented Gujarat in national championships",
+    },
+    {
+      value: "2019",
+      label: "Young Star Award",
+      sublabel: "Yoga Professional Excellence Winner",
+    },
+    {
+      value: "10,000+",
+      label: "Youth & Students",
+      sublabel: "Trained across workshops & mass camps",
+    },
+    {
+      value: "Maninagar",
+      label: "Flagship Studio",
+      sublabel: "Leading wellness hub in Ahmedabad",
+    },
+  ],
+  awards: [
+    "National Yoga Player 🇮🇳",
+    "Yoga Professional Young Star Award 2019 Winner",
+    "Founder & Master Trainer, Nidhi's Yoga Hub",
+    "Pioneer in Hatha, Ashtanga & Therapeutic Yoga",
+    "Certified Yoga Teacher Trainer & Youth Mentor",
+  ],
+  records: [
+    {
+      id: "national-yoga-player",
+      badge: "National Level Athlete",
+      title: "National Yoga Player Representing Gujarat",
+      metric: "National Player 🇮🇳",
+      year: "Competitive Career",
+      iconName: "Medal",
+      description: "Competed at national championship stages across India, displaying extraordinary yogic asana mastery, physical control, flexibility, and precision representing Gujarat.",
+    },
+    {
+      id: "young-star-award-2019",
+      badge: "State & National Honor",
+      title: "Yoga Professional Young Star Award Winner",
+      metric: "2019 Award Winner",
+      year: "2019",
+      iconName: "Trophy",
+      description: "Bestowed with the prestigious Yoga Professional Young Star Award 2019 in recognition of exceptional contribution to youth wellness, yogic education, and professional coaching.",
+    },
+    {
+      id: "nidhis-yoga-hub-founded",
+      badge: "Pioneering Academy",
+      title: "Founder & Director — Nidhi's Yoga Hub",
+      metric: "Est. 2016 • Maninagar",
+      year: "2016 – Present",
+      iconName: "Flame",
+      description: "Founded Nidhi's Yoga Hub, expanding across key Ahmedabad centers including Maninagar, Gota, Shyamal, and Naranpura, bringing holistic yogic education to thousands.",
+    },
+    {
+      id: "mass-riverfront-camps",
+      badge: "Mass Community Movement",
+      title: "Mass Riverfront & Public Yoga Gatherings",
+      metric: "Hundreds in Synchronized Practice",
+      year: "Ongoing Movement",
+      iconName: "Zap",
+      description: "Spearheading massive outdoor morning yoga and pranayama sessions along the Sabarmati Riverfront and community grounds, inspiring citizens of all ages to embrace daily sadhana.",
+    },
+    {
+      id: "teacher-training-leadership",
+      badge: "Youth Skill Empowerment",
+      title: "Certified Yoga Teacher Training Courses (TTC)",
+      metric: "Youth Mentorship",
+      year: "Professional Career",
+      iconName: "Award",
+      description: "Mentoring and qualifying young women and men as certified yoga coaches, unlocking economic self-reliance and career avenues in the global wellness industry.",
+    },
+  ],
+  initiatives: [
+    {
+      id: "riverfront-mass-yoga",
+      title: "Large-Scale Public & Riverfront Yoga Gatherings",
+      titleGujarati: "જાહેર મેદાનો અને રિવરફ્રન્ટ પર સામૂહિક યોગ અભિયાન",
+      tagline: "Connecting Breath, Movement & Community Fellowship",
+      description: "Leading hundreds of participants in synchronized Pranayama (Anulom-Vilom, Kapalbhati, Bhastrika) and Surya Namaskar along Ahmedabad's Sabarmati Riverfront, promoting preventive health and collective youth energy.",
+      image: "/images/guest-of-honour/yoga-session.jpg",
+      impactTag: "Mass Riverfront Sessions",
+    },
+    {
+      id: "nidhis-yoga-hub-academy",
+      title: "Nidhi's Yoga Hub — Authentic Yogic Science Academy",
+      titleGujarati: "નિધિ'સ યોગ હબ — પારંપરિક અને આધુનિક યોગ સાધના કેન્દ્ર",
+      tagline: "Flagship Academy in Maninagar (Ahmedabad)",
+      description: "Specialized training center providing systematic Hatha Yoga, dynamic Ashtanga Vinyasa, aerial/rope yoga, and therapeutic sessions for injury rehab, postural correction, and lifestyle disorder prevention.",
+      image: "/images/guest-of-honour/portrait.jpg",
+      impactTag: "Maninagar, Gota & Shyamal",
+    },
+    {
+      id: "youth-mental-resilience",
+      title: "Youth Mind-Body Discipline & Anti-Burnout Workshops",
+      titleGujarati: "યુવા માનસિક શક્તિ, એકાગ્રતા અને તણાવ નિયંત્રણ કાર્યક્રમો",
+      tagline: "Empowering Students to Beat Anxiety & Build Stamina",
+      description: "Dedicated workshops for college students and working professionals to counter screen fatigue, academic anxiety, and stress through targeted breathwork, mindful asanas, and mental equanimity.",
+      image: "/images/guest-of-honour/announcement.png",
+      impactTag: "Youth Wellness Movement",
+    },
+  ],
+  gallery: [
+    {
+      id: "official-announcement",
+      title: "Official Guest of Honor Poster",
+      subtitle: "National Yoga Player Nidhi Mehta • Yuva Shakti Sangam",
+      image: "/images/guest-of-honour/announcement.png",
+      category: "Poster",
+    },
+    {
+      id: "portrait-pose",
+      title: "Yogic Posture & Padmasana Demonstration",
+      subtitle: "Nidhi Mehta — Founder of Nidhi's Yoga Hub",
+      image: "/images/guest-of-honour/portrait.jpg",
+      category: "Award",
+    },
+    {
+      id: "riverfront-camp",
+      title: "Mass Yoga Gathering at Ahmedabad Riverfront",
+      subtitle: "Leading Hundreds in Synchronized Pranayama & Meditation",
+      image: "/images/guest-of-honour/yoga-session.jpg",
+      category: "Seva",
     },
   ],
 };
