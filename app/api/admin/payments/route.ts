@@ -205,11 +205,13 @@ export async function PATCH(req: NextRequest) {
     const supabase = getAdminClient();
 
     // Fetch existing payment
-    const { data: payment, error: fetchErr } = await supabase
+    const { data: payRows, error: fetchErr } = await supabase
       .from("payments")
       .select("id, participant_id, status, method")
       .eq("id", payment_id)
-      .single();
+      .limit(1);
+
+    const payment = payRows?.[0];
 
     if (fetchErr || !payment) {
       return NextResponse.json({ success: false, error: "Payment record not found." }, { status: 404 });
@@ -228,17 +230,18 @@ export async function PATCH(req: NextRequest) {
     }
 
     // 1. Update payments table
-    const { data: updatedPayment, error: updateErr } = await supabase
+    const { data: updatedRows, error: updateErr } = await supabase
       .from("payments")
       .update(updatePayload)
       .eq("id", payment_id)
-      .select()
-      .single();
+      .select();
 
     if (updateErr) {
       console.error("Payment update error:", updateErr);
       return NextResponse.json({ success: false, error: "Failed to update payment." }, { status: 500 });
     }
+
+    const updatedPayment = updatedRows?.[0] || { ...payment, ...updatePayload };
 
     // 2. Synchronize linked participant payment_status
     if (payment.participant_id) {

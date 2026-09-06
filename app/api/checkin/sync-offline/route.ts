@@ -44,11 +44,13 @@ export async function POST(req: NextRequest) {
         }
 
         // Fetch participant
-        const { data: participant, error: pErr } = await supabase
+        const { data: pRows, error: pErr } = await supabase
           .from("participants")
           .select("*")
           .eq("id", action.participant_id)
-          .single();
+          .limit(1);
+
+        const participant = pRows?.[0];
 
         if (pErr || !participant) {
           results.push({ id: action.id, success: false, error: "Participant not found" });
@@ -97,7 +99,7 @@ export async function POST(req: NextRequest) {
             })
             .eq("id", participant.id);
 
-          const { data: payRecord } = await supabase
+          const { data: payRows } = await supabase
             .from("payments")
             .insert({
               participant_id: participant.id,
@@ -108,8 +110,9 @@ export async function POST(req: NextRequest) {
               paid_at: actionTime,
               notes: notes,
             })
-            .select()
-            .single();
+            .select();
+
+          const payRecord = payRows?.[0];
 
           await supabase.from("audit_logs").insert({
             action: "cash_collected",
@@ -145,7 +148,7 @@ export async function POST(req: NextRequest) {
             })
             .eq("id", participant.id);
 
-          const { data: payRecord } = await supabase
+          const { data: payRows } = await supabase
             .from("payments")
             .insert({
               participant_id: participant.id,
@@ -158,8 +161,9 @@ export async function POST(req: NextRequest) {
               paid_at: actionTime,
               notes: notes,
             })
-            .select()
-            .single();
+            .select();
+
+          const payRecord = payRows?.[0];
 
           await supabase.from("audit_logs").insert({
             action: "spot_online_payment",
