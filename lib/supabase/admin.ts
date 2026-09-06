@@ -7,7 +7,9 @@ import { createClient } from "@supabase/supabase-js";
  */
 export function getAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://xoxklwtgbrohierzfztj.supabase.co";
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhveGtsd3RnYnJvaGllcnpmenRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0MjA5MjgsImV4cCI6MjEwMjk5NjkyOH0.V3mLvjcEv2zAXiEnENhYWfL19EwnGbtF-qLBMIBqbuE";
+  const supabaseServiceKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhveGtsd3RnYnJvaGllcnpmenRqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NzQyMDkyOCwiZXhwIjoyMTAyOTk2OTI4fQ.eK5y07rcNTgHes_t1fIrTp2tUV0WcgZT3qAchgg4RAM";
 
   return createClient(supabaseUrl, supabaseServiceKey, {
     auth: {

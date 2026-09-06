@@ -113,20 +113,21 @@ export async function POST(req: NextRequest) {
 
     if (mark_as_paid && participant.payment_status !== "paid") {
       updatePayload.payment_status = "paid";
-      updatePayload.payment_method = participant.payment_method || "gate_cleared";
+      updatePayload.payment_method = participant.payment_method === "online" ? "online" : "cash";
     }
 
-    const { data: updated, error: updateErr } = await supabase
+    const { data: updatedRows, error: updateErr } = await supabase
       .from("participants")
       .update(updatePayload)
       .eq("id", participant.id)
-      .select()
-      .single();
+      .select();
 
     if (updateErr) {
       console.error("Check-in update error:", updateErr);
       return NextResponse.json({ success: false, error: updateErr.message || "Failed to update check-in record in database." }, { status: 500 });
     }
+
+    const updated = updatedRows?.[0] || { ...participant, ...updatePayload };
 
     // 4. Log audit trail (safe failover: audit failure does not block gate check-in)
     try {

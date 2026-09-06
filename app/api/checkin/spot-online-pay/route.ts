@@ -23,11 +23,13 @@ export async function POST(req: NextRequest) {
     const supabase = getAdminClient();
 
     // 2. Fetch participant
-    const { data: participant, error: pErr } = await supabase
+    const { data: pRows, error: pErr } = await supabase
       .from("participants")
       .select("*")
       .eq("id", participant_id)
-      .single();
+      .limit(1);
+
+    const participant = pRows?.[0];
 
     if (pErr || !participant) {
       return NextResponse.json({ success: false, error: "Participant not found." }, { status: 404 });
@@ -52,20 +54,21 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Update participant to paid (online) and checked in
-    const { data: updatedParticipant, error: updateErr } = await supabase
+    const { data: updatedRows, error: updateErr } = await supabase
       .from("participants")
       .update(updatePayload)
       .eq("id", participant_id)
-      .select()
-      .single();
+      .select();
 
     if (updateErr) {
       console.error("Participant update error on online verify:", updateErr);
       return NextResponse.json({ success: false, error: updateErr.message || "Failed to update participant status." }, { status: 500 });
     }
 
+    const updatedParticipant = updatedRows?.[0] || { ...participant, ...updatePayload };
+
     // 4. Record entry in payments ledger
-    const { data: paymentRecord, error: payErr } = await supabase
+    const { data: paymentRows, error: payErr } = await supabase
       .from("payments")
       .insert({
         participant_id: participant.id,
@@ -78,8 +81,9 @@ export async function POST(req: NextRequest) {
         paid_at: now,
         notes: verificationNotes,
       })
-      .select()
-      .single();
+      .select();
+
+    const paymentRecord = paymentRows?.[0] || null;
 
     if (payErr) {
       console.warn("Payment ledger insert notice:", payErr.message);
