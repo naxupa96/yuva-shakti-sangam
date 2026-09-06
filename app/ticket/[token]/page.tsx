@@ -13,11 +13,14 @@ import {
   Loader2,
   CheckCircle2,
   ArrowLeft,
+  Award,
+  Ticket,
 } from "lucide-react";
 import { eventConfig } from "@/lib/config";
 import { CornerOrnament, MandalaMotif, DevanagariWatermark } from "@/components/Decorations";
 import { Participant } from "@/types/registration";
 import { generateQrDataUrl, generateTicketPdf, downloadBlob } from "@/lib/ticket/generator";
+import ParticipationCertificate from "@/components/ParticipationCertificate";
 
 export default function TicketPage({
   params,
@@ -33,6 +36,8 @@ export default function TicketPage({
   const [downloading, setDownloading] = useState(false);
   const [shared, setShared] = useState(false);
   const [error, setError] = useState("");
+  const [viewMode, setViewMode] = useState<"pass" | "certificate">("pass");
+  const [canViewCertificate, setCanViewCertificate] = useState(false);
 
   useEffect(() => {
     if (!token) return;
@@ -44,6 +49,18 @@ export default function TicketPage({
           setParticipant(data.participant);
           const qr = await generateQrDataUrl(data.participant.qr_token);
           setQrDataUrl(qr);
+
+          // Certificate unlocks strictly after 7:30 PM (19:30 IST) on 6 September 2026, ONLY for checked-in attendees
+          const CERTIFICATE_RELEASE_TIME = new Date("2026-09-06T19:30:00+05:30").getTime();
+          const isAfter730PM = Date.now() >= CERTIFICATE_RELEASE_TIME;
+          const isPreview =
+            typeof window !== "undefined" &&
+            new URLSearchParams(window.location.search).get("preview_cert") === "1";
+
+          if (data.participant.checked_in && (isAfter730PM || isPreview)) {
+            setCanViewCertificate(true);
+            setViewMode("certificate");
+          }
         } else {
           setError(data.error || "Ticket not found or invalid token.");
         }
@@ -110,16 +127,52 @@ export default function TicketPage({
           </span>
         </div>
 
-        {/* Digital Ticket Card */}
-        <div className="p-6 sm:p-10 rounded-3xl bg-[#F5EBE1] border-2 border-[#292524]/20 shadow-parchment-deep relative overflow-hidden text-center">
-          <CornerOrnament className="absolute top-3 left-3 text-[#E65100]/40" />
-          <CornerOrnament className="absolute top-3 right-3 text-[#E65100]/40 -scale-x-100" />
-          <CornerOrnament className="absolute bottom-3 left-3 text-[#E65100]/40 -scale-y-100" />
-          <CornerOrnament className="absolute bottom-3 right-3 text-[#E65100]/40 -scale-100" />
+        {/* Certificate / Pass Switcher Tabs (Rendered strictly after 7:30 PM for checked-in attendees) */}
+        {canViewCertificate && !loading && participant && (
+          <div className="mb-4 flex items-center justify-center p-1 rounded-2xl bg-[#F5EBE1] border border-[#292524]/15 shadow-sm">
+            <button
+              onClick={() => setViewMode("certificate")}
+              className={`flex-1 py-2 px-3 rounded-xl font-display font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                viewMode === "certificate"
+                  ? "bg-[#B45309] text-white shadow-sm"
+                  : "text-[#5A4839] hover:text-[#1C1917]"
+              }`}
+            >
+              <Award className="w-4 h-4 text-[#FFA000]" />
+              <span>CERTIFICATE</span>
+            </button>
 
-          <div className="absolute -right-20 -top-20 opacity-20 text-[#E65100] pointer-events-none">
-            <MandalaMotif size={360} />
+            <button
+              onClick={() => setViewMode("pass")}
+              className={`flex-1 py-2 px-3 rounded-xl font-display font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                viewMode === "pass"
+                  ? "bg-[#1C1917] text-white shadow-sm"
+                  : "text-[#5A4839] hover:text-[#1C1917]"
+              }`}
+            >
+              <Ticket className="w-4 h-4" />
+              <span>ENTRY PASS</span>
+            </button>
           </div>
+        )}
+
+        {/* View Mode: Certificate vs Digital Ticket Pass */}
+        {canViewCertificate && viewMode === "certificate" && participant ? (
+          <ParticipationCertificate
+            participant={participant}
+            onSwitchToPass={() => setViewMode("pass")}
+          />
+        ) : (
+          /* Digital Ticket Card */
+          <div className="p-6 sm:p-10 rounded-3xl bg-[#F5EBE1] border-2 border-[#292524]/20 shadow-parchment-deep relative overflow-hidden text-center">
+            <CornerOrnament className="absolute top-3 left-3 text-[#E65100]/40" />
+            <CornerOrnament className="absolute top-3 right-3 text-[#E65100]/40 -scale-x-100" />
+            <CornerOrnament className="absolute bottom-3 left-3 text-[#E65100]/40 -scale-y-100" />
+            <CornerOrnament className="absolute bottom-3 right-3 text-[#E65100]/40 -scale-100" />
+
+            <div className="absolute -right-20 -top-20 opacity-20 text-[#E65100] pointer-events-none">
+              <MandalaMotif size={360} />
+            </div>
 
           {loading ? (
             <div className="py-20 flex flex-col items-center justify-center gap-3">
@@ -286,6 +339,7 @@ export default function TicketPage({
             </div>
           )}
         </div>
+      )}
       </div>
     </div>
   );

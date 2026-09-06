@@ -38,6 +38,7 @@ next-env.d.ts
 
 # scratch & temp files
 temp_*
+scratch/
 test_*
 scratch_*
 loc_qr.png
