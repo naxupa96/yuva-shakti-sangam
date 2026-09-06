@@ -17,9 +17,9 @@ export function formatParticipantName(rawName: string): string {
       return w.toUpperCase() + ".";
     } else if (w.length === 2 && w.endsWith(".")) {
       return w.toUpperCase();
-    } else if (/^[A-Z]\.[A-Z]\.?$/i.test(w)) {
+    } else if (/^[A-Z](\.[A-Z])+\.?$/i.test(w)) {
       return w
-        .replace(".", "")
+        .replace(/\./g, "")
         .split("")
         .map((p) => p.toUpperCase() + ".")
         .join(" ");

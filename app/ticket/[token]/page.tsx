@@ -50,15 +50,16 @@ export default function TicketPage({
           const qr = await generateQrDataUrl(data.participant.qr_token);
           setQrDataUrl(qr);
 
-          // Certificate unlocks after 7:30 PM (19:30 IST) on 6 September 2026
-          const CERTIFICATE_RELEASE_TIME = new Date("2026-09-06T19:30:00+05:30").getTime();
-          const isAfter730PM = Date.now() >= CERTIFICATE_RELEASE_TIME;
+          // Certificate is available for checked-in attendees
+          const isCheckedIn = !!data.participant.checked_in;
+          const CERTIFICATE_RELEASE_TIME = new Date("2026-09-06T19:00:00+05:30").getTime();
+          const isAfterReleaseTime = Date.now() >= CERTIFICATE_RELEASE_TIME;
           const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
           const isPreview =
             searchParams?.get("preview_cert") === "1" ||
             searchParams?.get("cert") === "1";
 
-          if (isAfter730PM || isPreview) {
+          if ((isCheckedIn && isAfterReleaseTime) || isPreview) {
             setCanViewCertificate(true);
             setViewMode("certificate");
           }
@@ -278,6 +279,29 @@ export default function TicketPage({
                 )}
               </div>
 
+              {/* Certificate Ready Banner (if eligible) */}
+              {canViewCertificate && (
+                <button
+                  onClick={() => setViewMode("certificate")}
+                  className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/20 to-amber-500/15 border-2 border-[#E65100]/40 flex items-center justify-between gap-2 text-left hover:scale-[1.01] transition-all cursor-pointer shadow-sm group"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Award className="w-5 h-5 text-[#E65100] shrink-0" />
+                    <div>
+                      <div className="text-xs font-display font-black text-[#1C140E] uppercase tracking-wide">
+                        Official E-Certificate Ready!
+                      </div>
+                      <div className="text-[11px] text-[#5A4839]">
+                        Click here to view, customize &amp; download
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-xs font-black text-[#E65100] uppercase tracking-wider shrink-0 font-mono group-hover:translate-x-0.5 transition-transform">
+                    VIEW →
+                  </span>
+                </button>
+              )}
+
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                 <button
@@ -309,13 +333,19 @@ export default function TicketPage({
                   <span>Pass Inclusions &amp; Instructions:</span>
                 </div>
                 <p>
-                  &bull; <strong>Delegate ID Card:</strong> Please collect your physical ID Card at the registration / welcome desk by showing this QR.
+                  &bull; <strong>Delegate ID Card:</strong>{" "}
+                  {participant.checked_in
+                    ? "Collected upon arrival."
+                    : "Please collect your physical ID Card at the registration / welcome desk by showing this QR."}
                 </p>
                 <p>
                   &bull; <strong>High Tea &amp; Refreshments:</strong> Included for all registered attendees.
                 </p>
                 <p>
-                  &bull; <strong>E-Certificate:</strong> Official digital certificate of participation will be issued post-event.
+                  &bull; <strong>E-Certificate:</strong>{" "}
+                  {participant.checked_in
+                    ? "✓ Issued! Your official digital certificate of participation is available."
+                    : "Official digital certificate of participation is awarded to delegates who attend and check in at the venue."}
                 </p>
                 <p>
                   &bull; <strong>Venue:</strong> Shree Saurashtra Patel Samaj, Isanpur Rd, Basant Nagar, Maninagar, Ahmedabad.

@@ -18,17 +18,9 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith("/ticket/")) {
     const token = pathname.replace("/ticket/", "").split("/")[0];
 
-    // Allow viewing ticket page if explicitly requested via ?view=1 (e.g. from admin panel)
-    if (request.nextUrl.searchParams.get("view") === "1" || request.nextUrl.searchParams.get("preview") === "true") {
-      return supabaseResponse;
-    }
-
+    // If a logged-in volunteer scans with their native camera, route straight to check-in confirmation
     const volunteerCookie = request.cookies.get(getVolunteerCookieName())?.value;
     const { valid: isVolunteerTokenValid } = await verifyVolunteerToken(volunteerCookie);
-
-    const adminCookie = request.cookies.get(getAdminCookieName())?.value;
-    const { valid: isAdminTokenValid } = await verifyAdminToken(adminCookie);
-
     if (isVolunteerTokenValid) {
       const volunteerUrl = request.nextUrl.clone();
       volunteerUrl.pathname = "/volunteer";
@@ -36,11 +28,32 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(volunteerUrl);
     }
 
+    // Allow viewing ticket page if admin is logged in
+    const adminCookie = request.cookies.get(getAdminCookieName())?.value;
+    const { valid: isAdminTokenValid } = await verifyAdminToken(adminCookie);
     if (isAdminTokenValid) {
       return supabaseResponse;
     }
 
-    // Normal person scanning the QR code: redirect to the homepage!
+    // Allow viewing ticket page if explicitly requested via ?cert=1, ?preview_cert=1, ?view=1, or ?preview=true
+    const isExplicitView =
+      request.nextUrl.searchParams.get("view") === "1" ||
+      request.nextUrl.searchParams.get("preview") === "true" ||
+      request.nextUrl.searchParams.has("cert") ||
+      request.nextUrl.searchParams.has("preview_cert");
+
+    if (isExplicitView) {
+      return supabaseResponse;
+    }
+
+    // After 7:00 PM (19:00 IST) on 6 September 2026, or anytime post-event:
+    // Attendees scan the QR code on their physical ID card to access their official E-Certificate and Digital Pass!
+    const CERTIFICATE_RELEASE_TIME = new Date("2026-09-06T19:00:00+05:30").getTime();
+    if (Date.now() >= CERTIFICATE_RELEASE_TIME) {
+      return supabaseResponse;
+    }
+
+    // Pre-event: Normal person scanning the QR code redirects to the homepage
     const homeUrl = request.nextUrl.clone();
     homeUrl.pathname = "/";
     homeUrl.search = "";

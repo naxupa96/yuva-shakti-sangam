@@ -135,7 +135,8 @@ def generate_sample():
     cert_img.save(png_path, dpi=(300, 300), format="PNG")
     
     brain_dir = r"C:\Users\naksh\.gemini\antigravity-ide\brain\807c3b42-ab0d-47c4-a3e2-6d32791cf111"
-    cert_img.save(os.path.join(brain_dir, "sample_customized_certificate.png"), dpi=(300, 300), format="PNG")
+    if os.path.exists(brain_dir):
+        cert_img.save(os.path.join(brain_dir, "sample_customized_certificate.png"), dpi=(300, 300), format="PNG")
     
     print(f"Sample PDF created: {pdf_path} ({os.path.getsize(pdf_path)/1024:.1f} KB)")
     print(f"Sample PNG created: {png_path} ({os.path.getsize(png_path)/1024:.1f} KB)")
@@ -214,7 +215,9 @@ if __name__ == "__main__":
     parser.add_argument("--include-png", action="store_true", help="Also save individual PNGs along with PDFs")
     args = parser.parse_args()
     
-    if args.all:
+    if args.sample:
+        generate_sample()
+    elif args.all:
         generate_all(checked_in_only=args.checked_in_only, include_png=args.include_png)
     elif args.name:
         template_path = ensure_template()
