@@ -36,23 +36,31 @@ export async function POST(req: NextRequest) {
     const now = new Date().toISOString();
     const collectionNotes = `Collected ₹50 cash by volunteer: ${operatorName}${notes ? ` | ${notes}` : ""}`;
 
+    const isValidUUID = (val: any): boolean =>
+      typeof val === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val);
+
+    const updatePayload: Record<string, any> = {
+      payment_status: "paid",
+      payment_method: "cash",
+      checked_in: true,
+      check_in_time: now,
+    };
+
+    if (isValidUUID(operatorName)) {
+      updatePayload.checked_in_by = operatorName;
+    }
+
     // 3. Update participant to paid and checked in
     const { data: updatedParticipant, error: updateErr } = await supabase
       .from("participants")
-      .update({
-        payment_status: "paid",
-        payment_method: "cash",
-        checked_in: true,
-        check_in_time: now,
-        checked_in_by: operatorName,
-      })
+      .update(updatePayload)
       .eq("id", participant_id)
       .select()
       .single();
 
     if (updateErr) {
       console.error("Participant update error on cash collect:", updateErr);
-      return NextResponse.json({ success: false, error: "Failed to update participant record." }, { status: 500 });
+      return NextResponse.json({ success: false, error: updateErr.message || "Failed to update participant record." }, { status: 500 });
     }
 
     // 4. Record entry in payments ledger

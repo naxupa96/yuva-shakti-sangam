@@ -99,11 +99,17 @@ export async function POST(req: NextRequest) {
 
     // 3. Mark check-in
     const now = new Date().toISOString();
+    const isValidUUID = (val: any): boolean =>
+      typeof val === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val);
+
     const updatePayload: Record<string, any> = {
       checked_in: true,
       check_in_time: now,
-      checked_in_by: operatorName,
     };
+
+    if (isValidUUID(operatorName)) {
+      updatePayload.checked_in_by = operatorName;
+    }
 
     if (mark_as_paid && participant.payment_status !== "paid") {
       updatePayload.payment_status = "paid";
@@ -119,7 +125,7 @@ export async function POST(req: NextRequest) {
 
     if (updateErr) {
       console.error("Check-in update error:", updateErr);
-      return NextResponse.json({ success: false, error: "Failed to update check-in record in database." }, { status: 500 });
+      return NextResponse.json({ success: false, error: updateErr.message || "Failed to update check-in record in database." }, { status: 500 });
     }
 
     // 4. Log audit trail (safe failover: audit failure does not block gate check-in)
