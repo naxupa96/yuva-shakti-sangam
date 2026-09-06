@@ -11,16 +11,25 @@ export function getVolunteerCookieName() {
   return VOLUNTEER_COOKIE_NAME;
 }
 
+export const AUTHORIZED_VOLUNTEER_ACCOUNTS: Record<string, { name: string }> = {
+  "9104742662": { name: "Aryan Vaghela" },
+  "9328251834": { name: "Volunteer (9328251834)" },
+  "9328660080": { name: "Volunteer (9328660080)" },
+  "9825560619": { name: "Volunteer (9825560619)" },
+  "9099537629": { name: "Kankshil Mehta" },
+};
+
 export function getVolunteerCredentials() {
   return {
     usernames: [
       (process.env.VOLUNTEER_USERNAME || "volunteer").toLowerCase(),
+      ...Object.keys(AUTHORIZED_VOLUNTEER_ACCOUNTS),
       "swayamsevak",
       "gate",
-      "volunteer@yuvashakti",
+      "volunteer@yuvashaktisangam",
       "yuva@2047", // Admin username is also allowed
     ],
-    password: process.env.VOLUNTEER_PASSWORD || "seva2026",
+    password: process.env.VOLUNTEER_PASSWORD || "vandemataram",
     adminPassword: process.env.ADMIN_PASSWORD || "bharatmatakijai",
   };
 }

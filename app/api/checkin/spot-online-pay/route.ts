@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
         payment_method: "online",
         checked_in: true,
         check_in_time: now,
+        checked_in_by: operatorName,
       })
       .eq("id", participant_id)
       .select()

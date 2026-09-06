@@ -50,14 +50,15 @@ export default function TicketPage({
           const qr = await generateQrDataUrl(data.participant.qr_token);
           setQrDataUrl(qr);
 
-          // Certificate unlocks strictly after 7:30 PM (19:30 IST) on 6 September 2026, ONLY for checked-in attendees
+          // Certificate unlocks after 7:30 PM (19:30 IST) on 6 September 2026
           const CERTIFICATE_RELEASE_TIME = new Date("2026-09-06T19:30:00+05:30").getTime();
           const isAfter730PM = Date.now() >= CERTIFICATE_RELEASE_TIME;
+          const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
           const isPreview =
-            typeof window !== "undefined" &&
-            new URLSearchParams(window.location.search).get("preview_cert") === "1";
+            searchParams?.get("preview_cert") === "1" ||
+            searchParams?.get("cert") === "1";
 
-          if (data.participant.checked_in && (isAfter730PM || isPreview)) {
+          if (isAfter730PM || isPreview) {
             setCanViewCertificate(true);
             setViewMode("certificate");
           }

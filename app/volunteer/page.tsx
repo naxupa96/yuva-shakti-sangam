@@ -41,6 +41,7 @@ import {
   getQueuedOfflineActions,
   getOfflineRoster,
   fetchWithTimeout,
+  updateLocalParticipantStatus,
 } from "@/lib/offline-sync";
 import {
   OFFICIAL_PAYMENT_QR_BASE64,
@@ -216,6 +217,10 @@ export default function VolunteerScannerPage() {
     if (cleanQuery.includes("/ticket/")) {
       cleanQuery = cleanQuery.split("/ticket/")[1].split("?")[0].split("#")[0];
     }
+    const tokenMatch = cleanQuery.match(/yss_[a-fA-F0-9]+/);
+    if (tokenMatch) {
+      cleanQuery = tokenMatch[0];
+    }
 
     // Fast-path: If device is offline, check local roster directly
     if (typeof navigator !== "undefined" && !navigator.onLine) {
@@ -247,7 +252,7 @@ export default function VolunteerScannerPage() {
       return;
     }
 
-    // Online attempt with fast timeout (falls back to local cache instead of hanging on congested cell towers)
+    // Online attempt with reliable timeout (falls back to local cache if network is down)
     try {
       const res = await fetchWithTimeout(
         "/api/checkin/lookup",
@@ -256,7 +261,7 @@ export default function VolunteerScannerPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query: cleanQuery }),
         },
-        2800
+        12000
       );
 
       const data = await res.json();
@@ -344,6 +349,7 @@ export default function VolunteerScannerPage() {
   const handleConfirmCheckin = async () => {
     if (!scannedParticipant) return;
     setCheckingIn(true);
+    setErrorMessage("");
     const checkinTime = new Date().toISOString();
 
     // If offline, queue directly in outbox
@@ -354,8 +360,13 @@ export default function VolunteerScannerPage() {
         timestamp: checkinTime,
       });
       setOfflineQueueCount(getQueuedOfflineActions().length);
-      setScannedParticipant({
+      const updated = {
         ...scannedParticipant,
+        checked_in: true,
+        check_in_time: checkinTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
         checked_in: true,
         check_in_time: checkinTime,
       });
@@ -379,12 +390,29 @@ export default function VolunteerScannerPage() {
             method: "qr_scan",
           }),
         },
-        2800
+        12000
       );
 
       const data = await res.json();
 
-      if (data.success) {
+      if (data.already_checked_in) {
+        setScanState("already_checked_in");
+        if (data.participant) {
+          setScannedParticipant(data.participant);
+          updateLocalParticipantStatus(data.participant.id, data.participant);
+        }
+        playFeedbackSound("warning");
+      } else if (data.success) {
+        const updated = data.participant || {
+          ...scannedParticipant,
+          checked_in: true,
+          check_in_time: checkinTime,
+        };
+        setScannedParticipant(updated);
+        updateLocalParticipantStatus(scannedParticipant.id, {
+          checked_in: true,
+          check_in_time: checkinTime,
+        });
         setScanState("checked_in_success");
         setSessionCheckins((c) => c + 1);
         playFeedbackSound("success");
@@ -400,8 +428,116 @@ export default function VolunteerScannerPage() {
         timestamp: checkinTime,
       });
       setOfflineQueueCount(getQueuedOfflineActions().length);
-      setScannedParticipant({
+      const updated = {
         ...scannedParticipant,
+        checked_in: true,
+        check_in_time: checkinTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
+        checked_in: true,
+        check_in_time: checkinTime,
+      });
+      setScanState("checked_in_success");
+      setSessionCheckins((c) => c + 1);
+      setIsOfflineResult(true);
+      playFeedbackSound("success");
+    } finally {
+      setCheckingIn(false);
+    }
+  };
+
+  const handleDirectOverrideCheckin = async () => {
+    if (!scannedParticipant) return;
+    setCheckingIn(true);
+    setErrorMessage("");
+    const checkinTime = new Date().toISOString();
+
+    // If offline, queue directly in outbox
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      queueOfflineAction({
+        type: "confirm",
+        participant_id: scannedParticipant.id,
+        timestamp: checkinTime,
+      });
+      setOfflineQueueCount(getQueuedOfflineActions().length);
+      const updated = {
+        ...scannedParticipant,
+        checked_in: true,
+        check_in_time: checkinTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
+        checked_in: true,
+        check_in_time: checkinTime,
+      });
+      setScanState("checked_in_success");
+      setSessionCheckins((c) => c + 1);
+      setIsOfflineResult(true);
+      playFeedbackSound("success");
+      setCheckingIn(false);
+      return;
+    }
+
+    try {
+      const res = await fetchWithTimeout(
+        "/api/checkin/confirm",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token_or_id: scannedParticipant.qr_token || scannedParticipant.registration_id,
+            participant_id: scannedParticipant.id,
+            method: "qr_scan",
+            mark_as_paid: true,
+            notes: "Direct gate check-in override by volunteer",
+          }),
+        },
+        12000
+      );
+
+      const data = await res.json();
+
+      if (data.already_checked_in) {
+        setScanState("already_checked_in");
+        if (data.participant) {
+          setScannedParticipant(data.participant);
+          updateLocalParticipantStatus(data.participant.id, data.participant);
+        }
+        playFeedbackSound("warning");
+      } else if (data.success) {
+        const updated = data.participant || {
+          ...scannedParticipant,
+          checked_in: true,
+          check_in_time: checkinTime,
+        };
+        setScannedParticipant(updated);
+        updateLocalParticipantStatus(scannedParticipant.id, {
+          checked_in: true,
+          check_in_time: checkinTime,
+        });
+        setScanState("checked_in_success");
+        setSessionCheckins((c) => c + 1);
+        playFeedbackSound("success");
+      } else {
+        setErrorMessage(data.error || "Check-in failed.");
+        playFeedbackSound("error");
+      }
+    } catch (err) {
+      console.warn("Check-in network timeout, queuing offline action:", err);
+      queueOfflineAction({
+        type: "confirm",
+        participant_id: scannedParticipant.id,
+        timestamp: checkinTime,
+      });
+      setOfflineQueueCount(getQueuedOfflineActions().length);
+      const updated = {
+        ...scannedParticipant,
+        checked_in: true,
+        check_in_time: checkinTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
         checked_in: true,
         check_in_time: checkinTime,
       });
@@ -417,6 +553,7 @@ export default function VolunteerScannerPage() {
   const handleCollectCash = async () => {
     if (!scannedParticipant) return;
     setCollectingCash(true);
+    setErrorMessage("");
     const payTime = new Date().toISOString();
 
     // If offline, queue cash action
@@ -427,8 +564,15 @@ export default function VolunteerScannerPage() {
         timestamp: payTime,
       });
       setOfflineQueueCount(getQueuedOfflineActions().length);
-      setScannedParticipant({
+      const updated: Participant = {
         ...scannedParticipant,
+        payment_status: "paid",
+        payment_method: "cash",
+        checked_in: true,
+        check_in_time: payTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
         payment_status: "paid",
         payment_method: "cash",
         checked_in: true,
@@ -454,12 +598,26 @@ export default function VolunteerScannerPage() {
             notes: "Collected ₹50 cash at volunteer gate scanner",
           }),
         },
-        2800
+        12000
       );
 
       const data = await res.json();
 
       if (data.success) {
+        const updated: Participant = data.participant || {
+          ...scannedParticipant,
+          payment_status: "paid",
+          payment_method: "cash",
+          checked_in: true,
+          check_in_time: payTime,
+        };
+        setScannedParticipant(updated);
+        updateLocalParticipantStatus(scannedParticipant.id, {
+          payment_status: "paid",
+          payment_method: "cash",
+          checked_in: true,
+          check_in_time: payTime,
+        });
         setScanState("checked_in_success");
         setSessionCheckins((c) => c + 1);
         setSessionCash((c) => c + 50);
@@ -476,8 +634,15 @@ export default function VolunteerScannerPage() {
         timestamp: payTime,
       });
       setOfflineQueueCount(getQueuedOfflineActions().length);
-      setScannedParticipant({
+      const updated: Participant = {
         ...scannedParticipant,
+        payment_status: "paid",
+        payment_method: "cash",
+        checked_in: true,
+        check_in_time: payTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
         payment_status: "paid",
         payment_method: "cash",
         checked_in: true,
@@ -496,6 +661,7 @@ export default function VolunteerScannerPage() {
   const handleSpotOnlinePayment = async () => {
     if (!scannedParticipant) return;
     setConfirmingOnline(true);
+    setErrorMessage("");
     const payTime = new Date().toISOString();
 
     // If offline, queue spot online action
@@ -507,8 +673,15 @@ export default function VolunteerScannerPage() {
         timestamp: payTime,
       });
       setOfflineQueueCount(getQueuedOfflineActions().length);
-      setScannedParticipant({
+      const updated: Participant = {
         ...scannedParticipant,
+        payment_status: "paid",
+        payment_method: "online",
+        checked_in: true,
+        check_in_time: payTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
         payment_status: "paid",
         payment_method: "online",
         checked_in: true,
@@ -535,12 +708,26 @@ export default function VolunteerScannerPage() {
             notes: "On-spot venue UPI verified",
           }),
         },
-        2800
+        12000
       );
 
       const data = await res.json();
 
       if (data.success) {
+        const updated: Participant = data.participant || {
+          ...scannedParticipant,
+          payment_status: "paid",
+          payment_method: "online",
+          checked_in: true,
+          check_in_time: payTime,
+        };
+        setScannedParticipant(updated);
+        updateLocalParticipantStatus(scannedParticipant.id, {
+          payment_status: "paid",
+          payment_method: "online",
+          checked_in: true,
+          check_in_time: payTime,
+        });
         setScanState("checked_in_success");
         setSessionCheckins((c) => c + 1);
         setSessionOnline((c) => c + 50);
@@ -558,8 +745,15 @@ export default function VolunteerScannerPage() {
         timestamp: payTime,
       });
       setOfflineQueueCount(getQueuedOfflineActions().length);
-      setScannedParticipant({
+      const updated: Participant = {
         ...scannedParticipant,
+        payment_status: "paid",
+        payment_method: "online",
+        checked_in: true,
+        check_in_time: payTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
         payment_status: "paid",
         payment_method: "online",
         checked_in: true,
@@ -1063,6 +1257,23 @@ export default function VolunteerScannerPage() {
                 )}
               </div>
 
+              {/* Inline Error Alert if check-in or cash collection fails */}
+              {errorMessage && (
+                <div className="p-3 rounded-2xl bg-red-950/80 border border-red-500/50 text-red-200 text-xs flex items-center justify-between gap-2 animate-fadeIn">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+                    <span className="font-semibold">{errorMessage}</span>
+                  </div>
+                  <button
+                    onClick={() => setErrorMessage("")}
+                    className="text-red-400 hover:text-white p-1"
+                    title="Dismiss"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+
               {/* Action Buttons */}
               <div className="space-y-2 pt-1">
                 {scanState === "paid" && (
@@ -1184,6 +1395,23 @@ export default function VolunteerScannerPage() {
                       )}
                     </button>
                   </div>
+                )}
+
+                {scanState === "cash_pending" && (
+                  <button
+                    onClick={handleDirectOverrideCheckin}
+                    disabled={checkingIn}
+                    className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white font-mono text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 border border-white/10 transition-all cursor-pointer disabled:opacity-50 mt-1"
+                  >
+                    {checkingIn ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-[#FFA000]" />
+                    ) : (
+                      <>
+                        <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                        <span>Waive / Verified — Check In Anyway</span>
+                      </>
+                    )}
+                  </button>
                 )}
 
                 {(scanState === "checked_in_success" || scanState === "already_checked_in") && (

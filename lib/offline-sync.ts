@@ -19,10 +19,10 @@ const QUEUE_KEY = "yss_offline_actions_queue";
 const LAST_SYNC_KEY = "yss_offline_last_sync_time";
 
 /**
- * Perform a fetch with an aggressive timeout for spotty mobile networks.
- * Falls back quickly instead of hanging on congested cell towers.
+ * Perform a fetch with a reliable timeout for mobile networks.
+ * 12 seconds provides ample time for serverless lambda wakeups and database writes.
  */
-export async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 2800): Promise<Response> {
+export async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 12000): Promise<Response> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -85,7 +85,7 @@ export function getLastSyncTime(): string | null {
  */
 export async function fetchAndCacheRoster(): Promise<{ success: boolean; count: number; error?: string }> {
   try {
-    const res = await fetchWithTimeout("/api/checkin/roster", { method: "GET" }, 6000);
+    const res = await fetchWithTimeout("/api/checkin/roster", { method: "GET" }, 12000);
     const data = await res.json();
 
     if (data.success && Array.isArray(data.participants)) {
@@ -110,12 +110,16 @@ export function lookupParticipantOffline(query: string): Participant | null {
   if (cleanQuery.includes("/ticket/")) {
     cleanQuery = cleanQuery.split("/ticket/")[1].split("?")[0].split("#")[0];
   }
+  const tokenMatch = cleanQuery.match(/yss_[a-fA-F0-9]+/);
+  if (tokenMatch) {
+    cleanQuery = tokenMatch[0];
+  }
 
   const cleanPhone = cleanQuery.replace(/\D/g, "");
   const roster = getOfflineRoster();
 
-  // 1. Exact match on qr_token
-  const byToken = roster.find((p) => p.qr_token && p.qr_token === cleanQuery);
+  // 1. Exact or extracted match on qr_token
+  const byToken = roster.find((p) => p.qr_token && (p.qr_token === cleanQuery || cleanQuery.includes(p.qr_token)));
   if (byToken) return byToken;
 
   // 2. Exact match on registration_id
@@ -124,13 +128,22 @@ export function lookupParticipantOffline(query: string): Participant | null {
   );
   if (byRegId) return byRegId;
 
-  // 3. Match by phone
+  // 3. Match by numeric ID fragment (e.g., "126" -> "YSS-2026-000126")
+  if (/^\d{1,6}$/.test(cleanQuery)) {
+    const padded = cleanQuery.padStart(6, "0");
+    const byPadded = roster.find(
+      (p) => p.registration_id && (p.registration_id.endsWith(padded) || p.registration_id.endsWith(cleanQuery))
+    );
+    if (byPadded) return byPadded;
+  }
+
+  // 4. Match by phone
   if (cleanPhone.length >= 10) {
     const byPhone = roster.find((p) => p.phone && p.phone.replace(/\D/g, "").includes(cleanPhone));
     if (byPhone) return byPhone;
   }
 
-  // 4. Case-insensitive substring match on name or ID
+  // 5. Case-insensitive substring match on name or ID
   const lowerQuery = cleanQuery.toLowerCase();
   const byName = roster.find(
     (p) =>

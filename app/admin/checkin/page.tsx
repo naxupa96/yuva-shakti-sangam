@@ -39,6 +39,7 @@ import {
   getQueuedOfflineActions,
   getOfflineRoster,
   fetchWithTimeout,
+  updateLocalParticipantStatus,
 } from "@/lib/offline-sync";
 import {
   OFFICIAL_PAYMENT_QR_BASE64,
@@ -210,6 +211,10 @@ export default function CheckinPage() {
     if (cleanQuery.includes("/ticket/")) {
       cleanQuery = cleanQuery.split("/ticket/")[1].split("?")[0].split("#")[0];
     }
+    const tokenMatch = cleanQuery.match(/yss_[a-fA-F0-9]+/);
+    if (tokenMatch) {
+      cleanQuery = tokenMatch[0];
+    }
 
     // Fast-path: If device reports offline, use local offline roster cache immediately
     if (typeof navigator !== "undefined" && !navigator.onLine) {
@@ -241,7 +246,7 @@ export default function CheckinPage() {
       return;
     }
 
-    // Online attempt with fast timeout (falls back to local cache instead of hanging on congested cell towers)
+    // Online attempt with reliable timeout (falls back to local cache if network is down)
     try {
       const res = await fetchWithTimeout(
         "/api/checkin/lookup",
@@ -250,7 +255,7 @@ export default function CheckinPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query: cleanQuery }),
         },
-        2800
+        12000
       );
 
       const data = await res.json();
@@ -338,6 +343,7 @@ export default function CheckinPage() {
   const handleCheckIn = async () => {
     if (!scannedParticipant) return;
     setCheckingIn(true);
+    setErrorMessage("");
     const checkinTime = new Date().toISOString();
 
     // If offline, queue directly in outbox
@@ -348,8 +354,13 @@ export default function CheckinPage() {
         timestamp: checkinTime,
       });
       setOfflineQueueCount(getQueuedOfflineActions().length);
-      setScannedParticipant({
+      const updated = {
         ...scannedParticipant,
+        checked_in: true,
+        check_in_time: checkinTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
         checked_in: true,
         check_in_time: checkinTime,
       });
@@ -372,16 +383,30 @@ export default function CheckinPage() {
             method: tab === "scan" ? "qr_scan" : "manual_search",
           }),
         },
-        2800
+        12000
       );
 
       const data = await res.json();
 
-      if (data.success) {
-        setScanState("checked_in_success");
+      if (data.already_checked_in) {
+        setScanState("already_checked_in");
         if (data.participant) {
           setScannedParticipant(data.participant);
+          updateLocalParticipantStatus(data.participant.id, data.participant);
         }
+        playFeedbackSound("warning");
+      } else if (data.success) {
+        const updated = data.participant || {
+          ...scannedParticipant,
+          checked_in: true,
+          check_in_time: checkinTime,
+        };
+        setScannedParticipant(updated);
+        updateLocalParticipantStatus(scannedParticipant.id, {
+          checked_in: true,
+          check_in_time: checkinTime,
+        });
+        setScanState("checked_in_success");
         playFeedbackSound("success");
       } else {
         if (data.code === "ALREADY_CHECKED_IN") {
@@ -403,8 +428,112 @@ export default function CheckinPage() {
         timestamp: checkinTime,
       });
       setOfflineQueueCount(getQueuedOfflineActions().length);
-      setScannedParticipant({
+      const updated = {
         ...scannedParticipant,
+        checked_in: true,
+        check_in_time: checkinTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
+        checked_in: true,
+        check_in_time: checkinTime,
+      });
+      setScanState("checked_in_success");
+      setIsOfflineResult(true);
+      playFeedbackSound("success");
+    } finally {
+      setCheckingIn(false);
+    }
+  };
+
+  const handleDirectOverrideCheckin = async () => {
+    if (!scannedParticipant) return;
+    setCheckingIn(true);
+    setErrorMessage("");
+    const checkinTime = new Date().toISOString();
+
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      queueOfflineAction({
+        type: "confirm",
+        participant_id: scannedParticipant.id,
+        timestamp: checkinTime,
+      });
+      setOfflineQueueCount(getQueuedOfflineActions().length);
+      const updated = {
+        ...scannedParticipant,
+        checked_in: true,
+        check_in_time: checkinTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
+        checked_in: true,
+        check_in_time: checkinTime,
+      });
+      setScanState("checked_in_success");
+      setIsOfflineResult(true);
+      playFeedbackSound("success");
+      setCheckingIn(false);
+      return;
+    }
+
+    try {
+      const res = await fetchWithTimeout(
+        "/api/checkin/confirm",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token_or_id: scannedParticipant.qr_token || scannedParticipant.registration_id,
+            participant_id: scannedParticipant.id,
+            method: tab === "scan" ? "qr_scan" : "manual_search",
+            mark_as_paid: true,
+            notes: "Direct gate check-in override by admin",
+          }),
+        },
+        12000
+      );
+
+      const data = await res.json();
+
+      if (data.already_checked_in) {
+        setScanState("already_checked_in");
+        if (data.participant) {
+          setScannedParticipant(data.participant);
+          updateLocalParticipantStatus(data.participant.id, data.participant);
+        }
+        playFeedbackSound("warning");
+      } else if (data.success) {
+        const updated = data.participant || {
+          ...scannedParticipant,
+          checked_in: true,
+          check_in_time: checkinTime,
+        };
+        setScannedParticipant(updated);
+        updateLocalParticipantStatus(scannedParticipant.id, {
+          checked_in: true,
+          check_in_time: checkinTime,
+        });
+        setScanState("checked_in_success");
+        playFeedbackSound("success");
+      } else {
+        setErrorMessage(data.error || "Check-in failed.");
+        playFeedbackSound("error");
+      }
+    } catch (err) {
+      console.warn("Check-in timeout, queuing offline action:", err);
+      queueOfflineAction({
+        type: "confirm",
+        participant_id: scannedParticipant.id,
+        timestamp: checkinTime,
+      });
+      setOfflineQueueCount(getQueuedOfflineActions().length);
+      const updated = {
+        ...scannedParticipant,
+        checked_in: true,
+        check_in_time: checkinTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
         checked_in: true,
         check_in_time: checkinTime,
       });
@@ -419,6 +548,7 @@ export default function CheckinPage() {
   const handleConfirmCashCollection = async () => {
     if (!scannedParticipant) return;
     setCollectingCash(true);
+    setErrorMessage("");
     const payTime = new Date().toISOString();
 
     // If offline, queue cash collection action
@@ -429,8 +559,15 @@ export default function CheckinPage() {
         timestamp: payTime,
       });
       setOfflineQueueCount(getQueuedOfflineActions().length);
-      setScannedParticipant({
+      const updated: Participant = {
         ...scannedParticipant,
+        payment_status: "paid",
+        payment_method: "cash",
+        checked_in: true,
+        check_in_time: payTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
         payment_status: "paid",
         payment_method: "cash",
         checked_in: true,
@@ -455,13 +592,14 @@ export default function CheckinPage() {
             notes: "Collected ₹50 cash at entrance gate",
           }),
         },
-        2800
+        12000
       );
 
       const data = await res.json();
 
       if (data.success && data.participant) {
         setScannedParticipant(data.participant);
+        updateLocalParticipantStatus(data.participant.id, data.participant);
         setCashModalOpen(false);
         setScanState("checked_in_success");
         playFeedbackSound("success");
@@ -477,8 +615,15 @@ export default function CheckinPage() {
         timestamp: payTime,
       });
       setOfflineQueueCount(getQueuedOfflineActions().length);
-      setScannedParticipant({
+      const updated: Participant = {
         ...scannedParticipant,
+        payment_status: "paid",
+        payment_method: "cash",
+        checked_in: true,
+        check_in_time: payTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
         payment_status: "paid",
         payment_method: "cash",
         checked_in: true,
@@ -496,6 +641,7 @@ export default function CheckinPage() {
   const handleSpotOnlinePay = async () => {
     if (!scannedParticipant) return;
     setVerifyingOnline(true);
+    setErrorMessage("");
     const payTime = new Date().toISOString();
 
     // If offline, queue spot online payment action
@@ -507,8 +653,15 @@ export default function CheckinPage() {
         timestamp: payTime,
       });
       setOfflineQueueCount(getQueuedOfflineActions().length);
-      setScannedParticipant({
+      const updated: Participant = {
         ...scannedParticipant,
+        payment_status: "paid",
+        payment_method: "online",
+        checked_in: true,
+        check_in_time: payTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
         payment_status: "paid",
         payment_method: "online",
         checked_in: true,
@@ -534,13 +687,14 @@ export default function CheckinPage() {
             notes: "On-spot UPI verified at admin check-in desk",
           }),
         },
-        2800
+        12000
       );
 
       const data = await res.json();
 
       if (data.success && data.participant) {
         setScannedParticipant(data.participant);
+        updateLocalParticipantStatus(data.participant.id, data.participant);
         setCashModalOpen(false);
         setScanState("checked_in_success");
         playFeedbackSound("success");
@@ -557,8 +711,15 @@ export default function CheckinPage() {
         timestamp: payTime,
       });
       setOfflineQueueCount(getQueuedOfflineActions().length);
-      setScannedParticipant({
+      const updated: Participant = {
         ...scannedParticipant,
+        payment_status: "paid",
+        payment_method: "online",
+        checked_in: true,
+        check_in_time: payTime,
+      };
+      setScannedParticipant(updated);
+      updateLocalParticipantStatus(scannedParticipant.id, {
         payment_status: "paid",
         payment_method: "online",
         checked_in: true,
@@ -889,6 +1050,22 @@ export default function CheckinPage() {
               )}
             </div>
 
+            {errorMessage && (
+              <div className="p-3 rounded-2xl bg-red-950/80 border border-red-500/50 text-red-200 text-xs flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+                  <span className="font-semibold">{errorMessage}</span>
+                </div>
+                <button
+                  onClick={() => setErrorMessage("")}
+                  className="text-red-400 hover:text-white p-1"
+                  title="Dismiss"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
             <div className="space-y-2">
               <button
                 onClick={handleCheckIn}
@@ -969,6 +1146,22 @@ export default function CheckinPage() {
                 </div>
               )}
             </div>
+
+            {errorMessage && (
+              <div className="p-3 rounded-2xl bg-red-950/80 border border-red-500/50 text-red-200 text-xs flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+                  <span className="font-semibold">{errorMessage}</span>
+                </div>
+                <button
+                  onClick={() => setErrorMessage("")}
+                  className="text-red-400 hover:text-white p-1"
+                  title="Dismiss"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
 
             {/* Payment Method Selector: Cash vs Online UPI */}
             <div className="space-y-3">
@@ -1107,6 +1300,21 @@ export default function CheckinPage() {
                   </button>
                 </div>
               )}
+
+              <button
+                onClick={handleDirectOverrideCheckin}
+                disabled={checkingIn}
+                className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white font-mono text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 border border-white/10 transition-all cursor-pointer disabled:opacity-50 mt-1"
+              >
+                {checkingIn ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-[#FFA000]" />
+                ) : (
+                  <>
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    <span>Waive / Verified — Check In Anyway</span>
+                  </>
+                )}
+              </button>
 
               <button
                 onClick={resetScan}

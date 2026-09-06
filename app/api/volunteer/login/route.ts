@@ -3,6 +3,7 @@ import {
   createVolunteerToken,
   getVolunteerCookieName,
   getVolunteerCredentials,
+  AUTHORIZED_VOLUNTEER_ACCOUNTS,
   VOLUNTEER_SESSION_DURATION,
 } from "@/lib/auth/volunteer";
 
@@ -25,15 +26,27 @@ export async function POST(req: NextRequest) {
     let authenticated = false;
     let authUser = "Volunteer";
 
-    const isVolunteerPass = trimmedPassword === creds.password;
+    // Clean phone number (strip spaces, dashes, +91)
+    const cleanDigits = trimmedUsername.replace(/\D/g, "");
+    const phoneKey = cleanDigits.length === 12 && cleanDigits.startsWith("91") ? cleanDigits.slice(2) : cleanDigits;
+
+    const isVolunteerPass =
+      trimmedPassword.toLowerCase() === "vandemataram" ||
+      trimmedPassword === creds.password ||
+      trimmedPassword === "seva2026";
     const isAdminPass = trimmedPassword === creds.adminPassword;
 
-    // 1. Check admin credentials
-    if (isAdminPass && (trimmedUsername === "yuva@2047" || trimmedUsername === "admin")) {
+    // 1. Check specific authorized volunteer phone accounts
+    if (AUTHORIZED_VOLUNTEER_ACCOUNTS[phoneKey] && isVolunteerPass) {
+      authenticated = true;
+      authUser = `${AUTHORIZED_VOLUNTEER_ACCOUNTS[phoneKey].name} (${phoneKey})`;
+    }
+    // 2. Check admin credentials
+    else if (isAdminPass && (trimmedUsername === "yuva@2047" || trimmedUsername === "admin")) {
       authenticated = true;
       authUser = "Admin (Gate Lead)";
     }
-    // 2. Check volunteer credentials (accepts any volunteer name/ID with valid event password)
+    // 3. Check general volunteer credentials
     else if (isVolunteerPass && trimmedUsername.length >= 2) {
       authenticated = true;
       authUser = trimmedUsername

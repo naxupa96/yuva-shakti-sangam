@@ -17,22 +17,36 @@ export async function POST(req: NextRequest) {
     const authClient = await createServerSupabaseClient();
     const { data: { user } } = await authClient.auth.getUser();
 
-    // Search by exact qr_token, upper registration_id, or phone
-    const cleanPhone = trimmed.replace(/\D/g, "");
+    let clean = trimmed;
+    if (clean.includes("/ticket/")) {
+      clean = clean.split("/ticket/")[1].split(/[?#]/)[0].trim();
+    }
+    const tokenMatch = clean.match(/yss_[a-fA-F0-9]+/);
+    if (tokenMatch) {
+      clean = tokenMatch[0];
+    }
+
+    const cleanPhone = clean.replace(/\D/g, "");
 
     let queryBuilder = supabase
       .from("participants")
       .select("*");
 
-    if (trimmed.startsWith("yss_")) {
-      queryBuilder = queryBuilder.eq("qr_token", trimmed);
-    } else if (trimmed.toUpperCase().startsWith("YSS-")) {
-      queryBuilder = queryBuilder.eq("registration_id", trimmed.toUpperCase());
+    if (/^[0-9a-fA-F-]{36}$/.test(clean)) {
+      queryBuilder = queryBuilder.eq("id", clean);
+    } else if (clean.startsWith("yss_")) {
+      queryBuilder = queryBuilder.eq("qr_token", clean);
+    } else if (clean.toUpperCase().startsWith("YSS-")) {
+      queryBuilder = queryBuilder.ilike("registration_id", `%${clean.toUpperCase()}%`);
+    } else if (/^\d{1,6}$/.test(clean)) {
+      // Direct numeric ID (e.g. 126 or 000126)
+      const padded = clean.padStart(6, "0");
+      queryBuilder = queryBuilder.or(`registration_id.ilike.%${padded}%,registration_id.ilike.%${clean}%`);
     } else if (cleanPhone.length >= 10) {
-      queryBuilder = queryBuilder.eq("phone", cleanPhone);
+      queryBuilder = queryBuilder.ilike("phone", `%${cleanPhone}%`);
     } else {
       // General match on registration_id or name
-      queryBuilder = queryBuilder.or(`registration_id.ilike.%${trimmed}%,name.ilike.%${trimmed}%`);
+      queryBuilder = queryBuilder.or(`registration_id.ilike.%${clean}%,name.ilike.%${clean}%`);
     }
 
     const { data: participants, error } = await queryBuilder.limit(5);

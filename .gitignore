@@ -46,5 +46,11 @@ reg_qr.png
 cookie.txt
 /canva_qr_codes
 Yuva_Shakti_Sangam_*
-/final_id_cards
+__pycache__/
+*.pdf
+final_id_cards/
+ID_Card_*.png
+Sample_*.png
+certificates_output/
+~$*
 

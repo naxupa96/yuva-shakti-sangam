@@ -8,7 +8,6 @@ import {
   Loader2,
   FileText,
   Image as ImageIcon,
-  ExternalLink,
   Award,
   Sparkles,
   Ticket,
@@ -18,9 +17,10 @@ import { Participant } from "@/types/registration";
 import {
   generateCertificatePdf,
   generateCertificatePng,
+  generateCertificateDataUrl,
+  formatParticipantName,
 } from "@/lib/ticket/certificate-generator";
 import { downloadBlob } from "@/lib/ticket/generator";
-import { CornerOrnament, DevanagariWatermark } from "@/components/Decorations";
 
 interface ParticipationCertificateProps {
   participant: Participant;
@@ -34,26 +34,52 @@ export default function ParticipationCertificate({
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [downloadingPng, setDownloadingPng] = useState(false);
   const [shared, setShared] = useState(false);
+  const [certDataUrl, setCertDataUrl] = useState<string>("");
+  const [loadingPreview, setLoadingPreview] = useState(true);
 
-  // Trigger celebratory confetti on initial certificate reveal
+  const formattedName = formatParticipantName(participant.name || "Participant");
+
+  // Render on-screen preview image using the official certificate template
   useEffect(() => {
+    let isMounted = true;
+    generateCertificateDataUrl(participant)
+      .then((url) => {
+        if (isMounted) {
+          setCertDataUrl(url);
+          setLoadingPreview(false);
+        }
+      })
+      .catch((err) => {
+        console.error("Preview render error:", err);
+        if (isMounted) setLoadingPreview(false);
+      });
+
+    // Trigger celebratory confetti on certificate reveal
     try {
       confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 },
+        particleCount: 90,
+        spread: 80,
+        origin: { y: 0.5 },
         colors: ["#E65100", "#FFA000", "#15803D", "#FFFFFF", "#B45309"],
       });
     } catch (e) {
-      // safe fallback
+      // Safe fallback
     }
-  }, []);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [participant]);
 
   const handleDownloadPdf = async () => {
     setDownloadingPdf(true);
     try {
       const blob = await generateCertificatePdf(participant);
-      downloadBlob(blob, `Yuva-Shakti-Sangam-Certificate-${participant.registration_id}.pdf`);
+      const safeName = formattedName.replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "_");
+      downloadBlob(
+        blob,
+        `Yuva-Shakti-Sangam-Certificate-${participant.registration_id}-${safeName}.pdf`
+      );
     } catch (err) {
       console.error("PDF certificate generation error:", err);
     } finally {
@@ -65,7 +91,11 @@ export default function ParticipationCertificate({
     setDownloadingPng(true);
     try {
       const blob = await generateCertificatePng(participant);
-      downloadBlob(blob, `Yuva-Shakti-Sangam-Certificate-${participant.registration_id}.png`);
+      const safeName = formattedName.replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "_");
+      downloadBlob(
+        blob,
+        `Yuva-Shakti-Sangam-Certificate-${participant.registration_id}-${safeName}.png`
+      );
     } catch (err) {
       console.error("PNG certificate generation error:", err);
     } finally {
@@ -80,13 +110,13 @@ export default function ParticipationCertificate({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `Yuva Shakti Sangam Certificate - ${participant.name}`,
+          title: `Yuva Shakti Sangam Certificate - ${formattedName}`,
           text: shareText,
           url: certUrl,
         });
         setShared(true);
       } catch (e) {
-        // user cancelled or share failed
+        // User cancelled
       }
     } else {
       await navigator.clipboard.writeText(certUrl);
@@ -105,123 +135,51 @@ export default function ParticipationCertificate({
           <Sparkles className="w-4 h-4 text-[#FFA000]" />
         </div>
         <h2 className="text-xl sm:text-2xl font-display font-black text-[#1C140E] uppercase tracking-tight">
-          Congratulations, {participant.name}!
+          Congratulations, {formattedName}!
         </h2>
         <p className="text-xs text-[#5A4839]">
-          Thank you for joining Yuva Shakti Sangam today and being a torchbearer for Bharat&apos;s youth.
+          Thank you for joining Yuva Shakti Sangam and contributing towards a cultured, organised and stronger nation.
         </p>
       </div>
 
-      {/* Visual Certificate Container (A4 Landscape aspect ratio) */}
-      <div className="relative rounded-3xl bg-[#FDF8EE] border-4 border-[#B45309] shadow-2xl p-6 sm:p-10 text-center overflow-hidden">
-        {/* Inner Gold Hairline Frame */}
-        <div className="absolute inset-2 sm:inset-3 border-2 border-[#D97706]/70 rounded-2xl pointer-events-none" />
-        <div className="absolute inset-3 sm:inset-4 border border-[#1C140E]/30 rounded-xl pointer-events-none" />
-
-        {/* Corner Ornaments */}
-        <CornerOrnament className="absolute top-4 left-4 text-[#B45309]/60" />
-        <CornerOrnament className="absolute top-4 right-4 text-[#B45309]/60 -scale-x-100" />
-        <CornerOrnament className="absolute bottom-4 left-4 text-[#B45309]/60 -scale-y-100" />
-        <CornerOrnament className="absolute bottom-4 right-4 text-[#B45309]/60 -scale-100" />
-
-        {/* Devanagari Background Watermark */}
-        <DevanagariWatermark
-          text="संगम"
-          className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] sm:text-[18rem] text-[#B45309]/5 select-none pointer-events-none"
-        />
-
-        <div className="relative z-10 space-y-5">
-          {/* Certificate Header */}
-          <div className="space-y-1">
-            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#B45309] block">
-              Rashtriya Swayamsevak Sangh (RSS)
-            </span>
-            <h1 className="text-2xl sm:text-4xl font-display font-black uppercase text-[#1C140E] tracking-tight">
-              YUVA <span className="text-[#E65100]">SHAKTI</span> SANGAM
-            </h1>
-            <div className="text-[11px] font-devanagari font-black text-[#E65100] tracking-wide">
-              युवा शक्ति • राष्ट्र शक्ति
-            </div>
-            <div className="w-24 h-0.5 bg-[#D97706] mx-auto mt-2" />
-          </div>
-
-          {/* Ribbon */}
-          <div className="inline-block px-6 py-2 rounded-xl bg-[#1C140E] text-white shadow-md">
-            <span className="font-display font-black text-xs sm:text-sm uppercase tracking-widest text-amber-300">
-              CERTIFICATE OF PARTICIPATION
-            </span>
-            <span className="text-[11px] font-devanagari block text-white/80 font-bold">
-              साभार प्रमाण पत्र
-            </span>
-          </div>
-
-          {/* Recipient */}
-          <div className="space-y-1.5 pt-1">
-            <p className="text-xs sm:text-sm text-[#5A4839] font-medium italic">
-              This is proudly presented to
-            </p>
-            <h3 className="text-2xl sm:text-3xl font-display font-black text-[#1C140E] uppercase tracking-wide underline decoration-[#E65100] decoration-2 underline-offset-8">
-              {participant.name}
-            </h3>
-          </div>
-
-          {/* Citation */}
-          <div className="max-w-md mx-auto text-xs sm:text-sm text-[#4A3B32] leading-relaxed pt-2">
-            for active participation and enthusiastic presence in the national youth assembly{" "}
-            <strong>YUVA SHAKTI SANGAM</strong>, contributing ideas, energy, and leadership towards
-            nation-building (राष्ट्र निर्माण).
-          </div>
-
-          {/* Verified Details Card */}
-          <div className="max-w-md mx-auto p-3 sm:p-4 rounded-xl bg-[#F5EADC] border border-[#D97706]/40 text-left text-xs font-mono grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <div>
-              <span className="text-[9px] text-[#5A4839] uppercase font-bold block">DATE & VENUE</span>
-              <span className="font-bold text-[#1C140E]">06 September 2026</span>
-              <span className="text-[10px] text-[#5A4839] block truncate">Maninagar, Ahmedabad</span>
-            </div>
-            <div>
-              <span className="text-[9px] text-[#5A4839] uppercase font-bold block">REGISTRATION & STATUS</span>
-              <span className="font-bold text-[#B45309]">{participant.registration_id}</span>
-              <span className="text-[10px] text-emerald-700 font-bold block flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3" />
-                <span>Verified Attendee</span>
+      {/* Visual Official Certificate Container */}
+      <div className="relative rounded-3xl bg-[#1C140E] p-2 sm:p-3 shadow-2xl overflow-hidden border-2 border-[#D97706]">
+        {loadingPreview ? (
+          <div className="aspect-[3000/1998] w-full rounded-2xl bg-[#F5EADC] flex flex-col items-center justify-center gap-3 p-6 text-center">
+            <Loader2 className="w-8 h-8 text-[#E65100] animate-spin" />
+            <div className="space-y-1">
+              <span className="text-sm font-bold text-[#1C140E] block">
+                Rendering Official Certificate...
+              </span>
+              <span className="text-xs text-[#5A4839] block">
+                Customizing with your name: {formattedName}
               </span>
             </div>
           </div>
+        ) : (
+          <div className="relative group overflow-hidden rounded-2xl">
+            {/* Real Customized Official Certificate Image */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={certDataUrl}
+              alt={`Yuva Shakti Sangam Certificate of Participation - ${formattedName}`}
+              className="w-full h-auto object-contain rounded-2xl shadow-inner transition-transform duration-300 group-hover:scale-[1.01]"
+            />
 
-          {/* Bottom Signatures & Official Badge */}
-          <div className="pt-4 border-t border-[#1C140E]/15 flex flex-wrap items-center justify-between gap-4 text-left">
-            <div className="flex items-center gap-2.5">
-              <div className="w-12 h-12 rounded-full border-2 border-dashed border-[#D97706] bg-amber-100/60 flex flex-col items-center justify-center text-center p-1 text-[8px] font-black text-[#B45309]">
-                <span>OFFICIAL</span>
-                <span className="text-[#1C140E]">SEAL</span>
-                <span>2026</span>
-              </div>
-              <div className="text-[10px] font-mono text-[#5A4839]">
-                <span className="font-bold text-[#1C140E] block">Yuva Shakti Sangam</span>
-                <span>Karnavati, Gujarat</span>
-              </div>
-            </div>
-
-            <div className="text-right">
-              <div className="w-32 border-b border-[#1C140E]/60 pb-1 mb-1" />
-              <span className="text-[11px] font-bold text-[#1C140E] block">
-                Organizing Committee
-              </span>
-              <span className="text-[9px] text-[#5A4839] font-mono block">
-                Yuva Shakti Sangam 2026
-              </span>
+            <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-[#1C140E]/80 backdrop-blur-md border border-[#FFA000]/40 flex items-center gap-1.5 text-[10px] font-mono text-amber-200">
+              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+              <span>OFFICIAL 300 DPI</span>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Action Buttons: Download PDF, Image, Share, Switch to Pass */}
+      {/* Primary Action Buttons: Download PDF & Save Photo */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <button
           onClick={handleDownloadPdf}
           disabled={downloadingPdf}
-          className="py-3.5 px-5 rounded-2xl btn-bhagwa-primary text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all cursor-pointer disabled:opacity-60"
+          className="py-4 px-5 rounded-2xl btn-bhagwa-primary text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all cursor-pointer disabled:opacity-60"
         >
           {downloadingPdf ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -234,7 +192,7 @@ export default function ParticipationCertificate({
         <button
           onClick={handleDownloadPng}
           disabled={downloadingPng}
-          className="py-3.5 px-5 rounded-2xl bg-[#1C140E] hover:bg-[#2A1D15] text-[#FAF4EC] text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all cursor-pointer disabled:opacity-60"
+          className="py-4 px-5 rounded-2xl bg-[#1C140E] hover:bg-[#2A1D15] text-[#FAF4EC] text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all cursor-pointer disabled:opacity-60 border border-[#D97706]/40"
         >
           {downloadingPng ? (
             <Loader2 className="w-4 h-4 animate-spin" />
