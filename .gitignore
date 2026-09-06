@@ -54,3 +54,15 @@ Sample_*.png
 certificates_output/
 ~$*
 
+# batch checkin screenshots, scripts & pii dumps
+567/
+*.dump.json
+participants_dump.json
+ocr_extraction_results.json
+checkin_candidates.json
+execution_result.json
+analyze_results.py
+execute_checkins.js
+process_screenshots.py
+verify_matched.py
+

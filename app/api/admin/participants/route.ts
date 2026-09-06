@@ -4,6 +4,7 @@ import {
   extractQuestion,
   extractInterests,
   extractReferralSource,
+  extractGender,
 } from "@/lib/participant-helpers";
 
 export async function GET(req: NextRequest) {
@@ -14,6 +15,7 @@ export async function GET(req: NextRequest) {
     const paymentMethod = searchParams.get("payment_method") || "";
     const checkedIn = searchParams.get("checked_in") || "";
     const hasQuestion = searchParams.get("has_question") || "";
+    const gender = (searchParams.get("gender") || "").trim().toLowerCase();
     const isExport = searchParams.get("export") === "csv";
     const limit = isExport ? 5000 : parseInt(searchParams.get("limit") || "100", 10);
     const page = parseInt(searchParams.get("page") || "1", 10);
@@ -41,9 +43,9 @@ export async function GET(req: NextRequest) {
 
     query = query.order("created_at", { ascending: false });
 
-    // When searching or filtering by question (which might be in referral_source or samvaad_question column),
+    // When searching or filtering by question or gender,
     // fetch records and filter in-memory with high fidelity
-    if (search || hasQuestion === "true" || hasQuestion === "false") {
+    if (search || hasQuestion === "true" || hasQuestion === "false" || (gender && gender !== "all")) {
       const { data: rawParticipants, error } = await query.limit(2000);
 
       if (error) {
@@ -55,8 +57,10 @@ export async function GET(req: NextRequest) {
         const question = extractQuestion(p);
         const interests = extractInterests(p);
         const cleanReferral = extractReferralSource(p);
+        const detectedGender = extractGender(p);
         return {
           ...p,
+          gender: detectedGender,
           samvaad_question: question || p.samvaad_question || null,
           interests: interests.length > 0 ? interests : p.interests || null,
           referral_source: cleanReferral || p.referral_source || null,
@@ -68,6 +72,12 @@ export async function GET(req: NextRequest) {
         filtered = filtered.filter((p) => Boolean(p.samvaad_question && p.samvaad_question.trim()));
       } else if (hasQuestion === "false") {
         filtered = filtered.filter((p) => !p.samvaad_question || !p.samvaad_question.trim());
+      }
+
+      if (gender === "male") {
+        filtered = filtered.filter((p) => p.gender === "Male");
+      } else if (gender === "female") {
+        filtered = filtered.filter((p) => p.gender === "Female");
       }
 
       if (search) {
@@ -125,8 +135,10 @@ export async function GET(req: NextRequest) {
       const question = extractQuestion(p);
       const interests = extractInterests(p);
       const cleanReferral = extractReferralSource(p);
+      const detectedGender = extractGender(p);
       return {
         ...p,
+        gender: detectedGender,
         samvaad_question: question || p.samvaad_question || null,
         interests: interests.length > 0 ? interests : p.interests || null,
         referral_source: cleanReferral || p.referral_source || null,
@@ -155,6 +167,7 @@ function generateParticipantsCsv(participants: any[]) {
   const headers = [
     "Registration ID",
     "Full Name",
+    "Gender",
     "Mobile Number",
     "Email",
     "Age",
@@ -175,10 +188,12 @@ function generateParticipantsCsv(participants: any[]) {
     const question = extractQuestion(p);
     const interests = extractInterests(p).join(", ");
     const referral = extractReferralSource(p);
+    const gender = p.gender || extractGender(p);
 
     return [
       `"${p.registration_id}"`,
       `"${(p.name || "").replace(/"/g, '""')}"`,
+      `"${gender}"`,
       `"${p.phone}"`,
       `"${p.email || ""}"`,
       p.age,

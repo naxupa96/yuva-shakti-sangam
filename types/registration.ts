@@ -10,6 +10,7 @@ export interface Participant {
   email: string | null;
   phone: string;
   age: number;
+  gender?: "Male" | "Female" | string;
   city: string;
   college?: string | null;
   referral_source?: string | null;

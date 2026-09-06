@@ -26,7 +26,7 @@ import {
   Tag,
 } from "lucide-react";
 import { Participant } from "@/types/registration";
-import { extractQuestion, extractInterests, extractReferralSource } from "@/lib/participant-helpers";
+import { extractQuestion, extractInterests, extractReferralSource, extractGender } from "@/lib/participant-helpers";
 
 export default function AdminParticipantsPage() {
   const [participants, setParticipants] = useState<Participant[]>([]);
@@ -34,6 +34,7 @@ export default function AdminParticipantsPage() {
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
+  const [gender, setGender] = useState("all");
   const [paymentStatus, setPaymentStatus] = useState("all");
   const [paymentMethod, setPaymentMethod] = useState("all");
   const [checkedIn, setCheckedIn] = useState("all");
@@ -49,6 +50,7 @@ export default function AdminParticipantsPage() {
     try {
       const params = new URLSearchParams({
         search,
+        gender,
         payment_status: paymentStatus,
         payment_method: paymentMethod,
         checked_in: checkedIn,
@@ -73,11 +75,12 @@ export default function AdminParticipantsPage() {
 
   useEffect(() => {
     fetchParticipants();
-  }, [search, paymentStatus, paymentMethod, checkedIn, hasQuestion, page]);
+  }, [search, gender, paymentStatus, paymentMethod, checkedIn, hasQuestion, page]);
 
   const handleExportCsv = () => {
     const params = new URLSearchParams({
       search,
+      gender,
       payment_status: paymentStatus,
       payment_method: paymentMethod,
       checked_in: checkedIn,
@@ -137,7 +140,7 @@ export default function AdminParticipantsPage() {
 
         {/* Filter Toolbar */}
         <div className="p-4 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-sm space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {/* Search Input */}
             <div className="relative lg:col-span-1">
               <Search className="w-4 h-4 text-[#5A4839] absolute left-3 top-3.5" />
@@ -152,6 +155,20 @@ export default function AdminParticipantsPage() {
                 className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-xs font-medium text-[#1C1917] focus:outline-none focus:border-[#E65100]"
               />
             </div>
+
+            {/* Gender Filter */}
+            <select
+              value={gender}
+              onChange={(e) => {
+                setGender(e.target.value);
+                setPage(1);
+              }}
+              className="w-full px-3 py-2.5 rounded-xl bg-[#FAF4EC] border border-[#292524]/20 text-xs font-bold text-[#1C1917] focus:outline-none focus:border-[#E65100]"
+            >
+              <option value="all">Gender: All</option>
+              <option value="male">Gender: Male</option>
+              <option value="female">Gender: Female</option>
+            </select>
 
             {/* Questions Filter */}
             <select
@@ -245,6 +262,7 @@ export default function AdminParticipantsPage() {
                   participants.map((p) => {
                     const question = extractQuestion(p);
                     const interests = extractInterests(p);
+                    const participantGender = p.gender || extractGender(p);
 
                     return (
                       <tr
@@ -255,8 +273,19 @@ export default function AdminParticipantsPage() {
                         <td className="py-3 px-4 font-mono font-bold text-[#E65100] whitespace-nowrap">
                           {p.registration_id}
                         </td>
-                        <td className="py-3 px-4 font-bold uppercase whitespace-nowrap">
-                          {p.name}
+                        <td className="py-3 px-4 uppercase whitespace-nowrap">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-bold text-[#1C1917]">{p.name}</span>
+                            <span
+                              className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ${
+                                participantGender === "Female"
+                                  ? "bg-rose-100 text-rose-800 border border-rose-300"
+                                  : "bg-blue-100 text-blue-800 border border-blue-200"
+                              }`}
+                            >
+                              {participantGender}
+                            </span>
+                          </div>
                           <span className="text-[10px] font-normal block text-[#5A4839]">
                             {p.age} yrs
                           </span>
@@ -391,12 +420,22 @@ export default function AdminParticipantsPage() {
                 <h2 className="text-xl sm:text-2xl font-display font-black uppercase tracking-tight text-white mt-0.5">
                   {selectedParticipant.name}
                 </h2>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
                   <span className="font-mono text-xs text-[#FFA000] font-bold">
                     {selectedParticipant.registration_id}
                   </span>
                   <span className="text-white/40">•</span>
                   <span className="text-xs text-white/70">{selectedParticipant.age} Years Old</span>
+                  <span className="text-white/40">•</span>
+                  <span
+                    className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${
+                      (selectedParticipant.gender || extractGender(selectedParticipant)) === "Female"
+                        ? "bg-rose-500/20 text-rose-300 border border-rose-500/40"
+                        : "bg-blue-500/20 text-blue-300 border border-blue-500/40"
+                    }`}
+                  >
+                    {(selectedParticipant.gender || extractGender(selectedParticipant))}
+                  </span>
                 </div>
               </div>
 
@@ -522,6 +561,26 @@ export default function AdminParticipantsPage() {
                   <span className="font-medium text-xs text-[#1C1917] block truncate">
                     {selectedParticipant.college || "—"}
                   </span>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#F5EBE1] border border-[#292524]/10 space-y-1 sm:col-span-2">
+                  <span className="text-[10px] font-bold uppercase text-[#5A4839] flex items-center gap-1">
+                    <Users className="w-3 h-3 text-[#E65100]" /> Gender
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-xs text-[#1C1917]">
+                      {(selectedParticipant.gender || extractGender(selectedParticipant))}
+                    </span>
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${
+                        (selectedParticipant.gender || extractGender(selectedParticipant)) === "Female"
+                          ? "bg-rose-100 text-rose-800 border border-rose-300"
+                          : "bg-blue-100 text-blue-800 border border-blue-200"
+                      }`}
+                    >
+                      {(selectedParticipant.gender || extractGender(selectedParticipant))}
+                    </span>
+                  </div>
                 </div>
               </div>
 
