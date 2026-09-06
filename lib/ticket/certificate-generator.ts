@@ -457,7 +457,7 @@ export async function generateCertificatePng(
   ctx.fillText(
     `Official Participation Certificate | Token: ${participant.qr_token.slice(0, 24)}... | Issued 06 September 2026`,
     w / 2,
-    h - 60
+    h - 95
   );
 
   return new Promise((resolve, reject) => {
