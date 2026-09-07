@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MessageSquare, ArrowRight, Flame, Sparkles } from "lucide-react";
 import { CornerOrnament, DevanagariWatermark } from "./Decorations";
+import { eventConfig } from "@/lib/config";
 
 interface SamvaadTopic {
   id: string;
@@ -235,15 +236,21 @@ export default function Samvaad() {
             </h3>
 
             <p className="text-xs sm:text-sm text-[#5A4839] max-w-lg mx-auto leading-relaxed font-medium">
-              You can submit your questions and topics directly in the registration form before the event, or raise them live during the open-mic dialogue on 6 September.
+              {eventConfig.registrationsClosed
+                ? "Online registrations are now closed. Registered delegates can raise their questions live during the open-mic dialogue on 6 September."
+                : "You can submit your questions and topics directly in the registration form before the event, or raise them live during the open-mic dialogue on 6 September."}
             </p>
 
             <div className="pt-3 flex items-center justify-center">
               <Link
                 href="/register"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl btn-bhagwa-primary text-xs sm:text-sm font-black uppercase tracking-wider active:scale-95 transition-all shadow-bhagwa-sm group"
+                className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider active:scale-95 transition-all group ${
+                  eventConfig.registrationsClosed
+                    ? "bg-[#17130E] hover:bg-[#24170D] text-[#FAF4EC] border border-[#E7CEA3]/20 shadow-md"
+                    : "btn-bhagwa-primary shadow-bhagwa-sm"
+                }`}
               >
-                <span>REGISTER & SUBMIT YOUR QUESTION</span>
+                <span>{eventConfig.registrationsClosed ? "VIEW EVENT NOTICE & DETAILS" : "REGISTER & SUBMIT YOUR QUESTION"}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>

@@ -3,9 +3,20 @@ import crypto from "node:crypto";
 import { getAdminClient } from "@/lib/supabase/admin";
 import { getPaymentProvider } from "@/lib/payment/provider";
 import { RegistrationInput } from "@/types/registration";
+import { eventConfig } from "@/lib/config";
 
 export async function POST(req: NextRequest) {
   try {
+    if (eventConfig.registrationsClosed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: eventConfig.registrationClosedNotice?.message || "Registrations are now closed. Thank you for your interest!",
+        },
+        { status: 403 }
+      );
+    }
+
     const body: RegistrationInput = await req.json();
 
     // 1. Validation

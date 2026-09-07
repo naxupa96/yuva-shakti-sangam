@@ -22,6 +22,12 @@ export const eventConfig = {
   venueNote: "Shree Saurashtra Patel Samaj, Isanpur Rd, Chandranagar Society, Basant Nagar, Maninagar, Ahmedabad",
   googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=Shree+Saurashtra+Patel+Samaj+Maninagar,+Isanpur+Rd,+Chandranagar+Society,+Basant+Nagar,+Maninagar,+Ahmedabad",
   registrationUrl: "/register",
+  registrationsClosed: true,
+  registrationClosedNotice: {
+    title: "Registrations Are Closed",
+    titleGujarati: "રજીસ્ટ્રેશન બંધ કરવામાં આવ્યું છે",
+    message: "Online and on-ground registrations for Yuva Shakti Sangam are officially closed. We express heartfelt gratitude to everyone who participated and supported the event!",
+  },
   registrationFee: "₹50",
   registrationFeeAmount: 50,
   inclusions: [

@@ -194,12 +194,18 @@ export default function TicketPage({
               <p className="text-xs sm:text-sm text-[#5A4839] max-w-sm mx-auto">
                 {error || "This QR code or ticket link is not recognized in the system."}
               </p>
-              <div className="pt-4">
+              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-2">
+                <Link
+                  href="/"
+                  className="inline-flex py-3 px-6 rounded-xl bg-[#1C1917] text-[#FAF4EC] hover:bg-[#24170D] text-xs font-black uppercase tracking-wider transition-colors"
+                >
+                  Return to Home
+                </Link>
                 <Link
                   href="/register"
                   className="inline-flex py-3 px-6 rounded-xl btn-bhagwa-primary text-xs font-black uppercase tracking-wider"
                 >
-                  REGISTER FOR YUVA SHAKTI SANGAM (₹50)
+                  {eventConfig.registrationsClosed ? "Event Notice & Helpline" : "Register For Pass (₹50)"}
                 </Link>
               </div>
             </div>

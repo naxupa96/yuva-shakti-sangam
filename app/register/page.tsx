@@ -269,6 +269,147 @@ export default function RegisterPage() {
 
   const upiPayUrl = eventConfig.upi?.getUpiUrl?.() || `upi://pay?pa=${eventConfig.upi?.id}&pn=${encodeURIComponent(eventConfig.upi?.name || "")}&am=50&cu=INR&tn=Yuva%20Shakti%20Sangam`;
 
+  if (eventConfig.registrationsClosed) {
+    return (
+      <div className="min-h-screen bg-[#EAE0D0] bg-parchment-texture text-[#1C1917] selection:bg-[#E65100] selection:text-white py-8 sm:py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden flex flex-col justify-center">
+        <DevanagariWatermark text="शक्ति" className="top-10 left-6 text-[14rem] sm:text-[22rem] text-[#292524]/5" />
+
+        <div className="max-w-2xl mx-auto w-full relative z-10">
+          {/* Navigation back */}
+          <div className="mb-6 flex items-center justify-between">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#5A4839] hover:text-[#F05A12] transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Home</span>
+            </Link>
+
+            <div className="text-[11px] font-devanagari font-black text-[#5A4839] flex items-center gap-1">
+              <span className="text-[#F05A12]">युवा शक्ति</span>
+              <span>•</span>
+              <span>राष्ट्र शक्ति</span>
+            </div>
+          </div>
+
+          {/* Main Card */}
+          <div className="p-6 sm:p-12 rounded-3xl bg-[#F5EBE1] border-2 border-[#292524]/15 shadow-parchment-deep relative overflow-hidden text-center">
+            <CornerOrnament className="absolute top-3 left-3 text-[#E65100]/40" />
+            <CornerOrnament className="absolute top-3 right-3 text-[#E65100]/40 -scale-x-100" />
+            <CornerOrnament className="absolute bottom-3 left-3 text-[#E65100]/40 -scale-y-100" />
+            <CornerOrnament className="absolute bottom-3 right-3 text-[#E65100]/40 -scale-100" />
+
+            {/* Background Mandala */}
+            <div className="absolute -right-20 -top-20 opacity-20 text-[#E65100] pointer-events-none">
+              <MandalaMotif size={400} />
+            </div>
+
+            {/* Logo */}
+            <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-full overflow-hidden border-2 border-[#E65100]/30 bg-white/40 shadow-md p-1 mb-4">
+              <Image
+                src="/images/logo.png"
+                alt="Yuva Shakti Sangam"
+                width={96}
+                height={96}
+                className="w-full h-full object-contain"
+                priority
+              />
+            </div>
+
+            {/* Closed Status Pill */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1C1917] text-[#FAF4EC] text-xs font-black uppercase tracking-widest shadow-sm mb-4">
+              <Sparkles className="w-3.5 h-3.5 text-[#FFA000]" />
+              <span>REGISTRATIONS CLOSED • પ્રવેશ બંધ</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-5xl font-display font-black uppercase text-[#1C1917] tracking-tight leading-none mb-3">
+              YUVA <span className="text-[#F05A12]">SHAKTI</span> SANGAM
+            </h1>
+
+            <div className="flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm font-bold text-[#5A4839] uppercase tracking-wider mb-6">
+              <span>{eventConfig.dateDisplay}</span>
+              <span>•</span>
+              <span>{eventConfig.locationShort}</span>
+            </div>
+
+            {/* Closed Message Banner */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#FAF4EC] border-2 border-[#E65100]/30 shadow-sm text-left mb-8 space-y-3">
+              <div className="flex items-center gap-2.5 text-[#E65100] font-display font-black text-base sm:text-lg uppercase">
+                <CheckCircle2 className="w-5 h-5 shrink-0" />
+                <span>Registrations Have Officially Concluded</span>
+              </div>
+              <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed font-medium">
+                Online and on-ground registrations for <strong className="text-[#1C1917]">Yuva Shakti Sangam</strong> are now closed. We express our deepest gratitude to all youth delegates, volunteers, and well-wishers for the overwhelming enthusiasm and participation.
+              </p>
+              <div className="pt-2 border-t border-[#292524]/10 text-xs font-devanagari font-bold text-[#78350F]">
+                યુવા શક્તિ સંગમ માટે રજીસ્ટ્રેશન પ્રક્રિયા પૂર્ણ થઈ ગઈ છે. તમામ સહભાગીઓનો હૃદયપૂર્વક આભાર!
+              </div>
+            </div>
+
+            {/* Already Registered & Helpline Section */}
+            <div className="space-y-4 mb-8 text-left">
+              <h2 className="text-xs font-black uppercase tracking-wider text-[#5A4839] border-b border-[#292524]/10 pb-2">
+                ALREADY REGISTERED? NEED YOUR PASS OR CERTIFICATE?
+              </h2>
+              <p className="text-xs text-[#57534E]">
+                If you registered previously and need your digital ticket pass, certificate access, or event confirmation, please connect directly with our coordination team:
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {eventConfig.coordinators.map((c) => (
+                  <div key={c.name} className="p-3.5 rounded-xl bg-[#FAF4EC] border border-[#292524]/10 flex flex-col justify-between">
+                    <div>
+                      <div className="text-xs font-black text-[#1C1917] uppercase">{c.name}</div>
+                      <div className="text-[11px] text-[#5A4839] font-mono mt-0.5">{c.phone}</div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-3 pt-2 border-t border-[#292524]/10">
+                      <a
+                        href={c.whatsappUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#128C7E] font-bold text-[11px] text-center transition-colors"
+                      >
+                        WhatsApp
+                      </a>
+                      <a
+                        href={`tel:${c.phoneRaw}`}
+                        className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#1C1917]/10 hover:bg-[#1C1917]/20 text-[#1C1917] font-bold text-[11px] text-center transition-colors"
+                      >
+                        Call
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <Link
+                href="/"
+                className="w-full sm:w-auto py-3.5 px-8 rounded-xl btn-bhagwa-primary text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 active:scale-95 transition-all shadow-bhagwa-sm"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Return to Home</span>
+              </Link>
+              {eventConfig.instagramUrl && (
+                <a
+                  href={eventConfig.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto py-3.5 px-6 rounded-xl bg-[#1C1917] hover:bg-[#24170D] text-[#FAF4EC] text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-colors"
+                >
+                  <Instagram className="w-4 h-4 text-[#FFA000]" />
+                  <span>Instagram Updates</span>
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#EAE0D0] bg-parchment-texture text-[#1C1917] selection:bg-[#E65100] selection:text-white py-8 sm:py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       <DevanagariWatermark text="शक्ति" className="top-10 left-6 text-[14rem] sm:text-[22rem] text-[#292524]/5" />

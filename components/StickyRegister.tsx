@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { eventConfig } from "@/lib/config";
 
 export default function StickyRegister() {
   const [visible, setVisible] = useState(false);
@@ -31,7 +32,7 @@ export default function StickyRegister() {
             Yuva Shakti Sangam
           </span>
           <span className="text-[10px] text-text-muted font-medium">
-            6 Sept 2026 • ₹50 Entry Pass
+            {eventConfig.registrationsClosed ? "Registrations Closed" : "6 Sept 2026 • ₹50 Entry Pass"}
           </span>
         </div>
 
@@ -39,7 +40,7 @@ export default function StickyRegister() {
           href="/register"
           className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-saffron text-black font-display font-black text-xs shrink-0 active:scale-95 transition-all shadow-[0_0_15px_rgba(255,106,0,0.4)]"
         >
-          <span>REGISTER (₹50)</span>
+          <span>{eventConfig.registrationsClosed ? "EVENT NOTICE" : "REGISTER (₹50)"}</span>
           <ArrowUpRight className="w-3.5 h-3.5" />
         </Link>
       </div>

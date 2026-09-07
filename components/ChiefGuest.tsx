@@ -33,6 +33,7 @@ import {
   GuestOfHonorRecord,
 } from "@/lib/data";
 import { CornerOrnament, DevanagariWatermark, OrnamentalDivider } from "./Decorations";
+import { eventConfig } from "@/lib/config";
 
 const iconMap: Record<string, React.ElementType> = {
   Trophy,
@@ -352,9 +353,13 @@ export default function ChiefGuest() {
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <Link
                   href="/register"
-                  className="px-6 py-3 rounded-xl btn-bhagwa-primary text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-bhagwa-sm"
+                  className={`px-6 py-3 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 ${
+                    eventConfig.registrationsClosed
+                      ? "bg-[#17130E] hover:bg-[#24170D] text-[#FAF4EC] border border-[#E7CEA3]/20 shadow-sm"
+                      : "btn-bhagwa-primary shadow-bhagwa-sm"
+                  }`}
                 >
-                  <span>REGISTER TO ATTEND PASS (₹50)</span>
+                  <span>{eventConfig.registrationsClosed ? "REGISTRATIONS CLOSED • EVENT DETAILS" : "REGISTER TO ATTEND PASS (₹50)"}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <a

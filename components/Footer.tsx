@@ -123,16 +123,22 @@ export default function Footer() {
           <div className="space-y-4">
             <div>
               <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#FAF4EC] block mb-2">
-                REGISTRATION PASS (₹50)
+                {eventConfig.registrationsClosed ? "REGISTRATIONS CLOSED" : "REGISTRATION PASS (₹50)"}
               </span>
               <p className="text-xs text-[#A8A29E] mb-3">
-                Prior registration is mandatory for entry and event logistics.
+                {eventConfig.registrationsClosed
+                  ? "Registrations for Yuva Shakti Sangam have officially concluded."
+                  : "Prior registration is mandatory for entry and event logistics."}
               </p>
               <Link
                 href="/register"
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#E65100] text-white text-xs font-black tracking-wider shadow-bhagwa-sm hover:bg-[#FF6D00] transition-colors"
+                className={`inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-black tracking-wider transition-colors ${
+                  eventConfig.registrationsClosed
+                    ? "bg-[#292524] text-[#FAF4EC] hover:bg-[#3E3832] border border-[#FAF4EC]/10"
+                    : "bg-[#E65100] text-white shadow-bhagwa-sm hover:bg-[#FF6D00]"
+                }`}
               >
-                <span>REGISTER NOW (₹50)</span>
+                <span>{eventConfig.registrationsClosed ? "VIEW NOTICE & PASSES" : "REGISTER NOW (₹50)"}</span>
                 <ArrowUpRight className="w-4 h-4 stroke-[3]" />
               </Link>
             </div>

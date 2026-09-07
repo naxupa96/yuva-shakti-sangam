@@ -76,9 +76,13 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <Link
               href="/register"
-              className="px-5 py-2.5 rounded-xl btn-bhagwa-primary text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
+              className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 ${
+                eventConfig.registrationsClosed
+                  ? "bg-[#17130E] text-[#FAF4EC] hover:bg-[#24170D] border border-[#E7CEA3]/20"
+                  : "btn-bhagwa-primary"
+              }`}
             >
-              <span>REGISTER (₹50)</span>
+              <span>{eventConfig.registrationsClosed ? "REGISTRATIONS CLOSED" : "REGISTER (₹50)"}</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
 
@@ -111,9 +115,13 @@ export default function Navbar() {
                 <Link
                   href="/register"
                   onClick={() => setIsOpen(false)}
-                  className="block w-full text-center py-3 rounded-xl btn-bhagwa-primary text-xs font-black uppercase tracking-wider"
+                  className={`block w-full text-center py-3 rounded-xl text-xs font-black uppercase tracking-wider ${
+                    eventConfig.registrationsClosed
+                      ? "bg-[#17130E] text-[#FAF4EC] hover:bg-[#24170D] border border-[#E7CEA3]/20"
+                      : "btn-bhagwa-primary"
+                  }`}
                 >
-                  REGISTER NOW (₹50)
+                  {eventConfig.registrationsClosed ? "REGISTRATIONS CLOSED" : "REGISTER NOW (₹50)"}
                 </Link>
               </div>
             </div>

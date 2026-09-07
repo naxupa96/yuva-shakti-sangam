@@ -27,7 +27,7 @@ export default function RegistrationCTA() {
           {/* Overline Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1C1917] text-[#FAF4EC] text-xs font-black uppercase tracking-widest mb-6 shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-[#FFA000]" />
-            <span>OFFICIAL REGISTRATION PASS (₹50)</span>
+            <span>{eventConfig.registrationsClosed ? "REGISTRATIONS CLOSED • પ્રવેશ બંધ" : "OFFICIAL REGISTRATION PASS (₹50)"}</span>
           </div>
 
           {/* Heading */}
@@ -58,9 +58,13 @@ export default function RegistrationCTA() {
           <div className="flex flex-col items-center justify-center gap-2 max-w-md mx-auto mb-10">
             <Link
               href="/register"
-              className="w-full py-4 px-8 rounded-xl btn-bhagwa-primary text-base sm:text-lg font-black uppercase tracking-wider flex items-center justify-center gap-3 active:scale-95 transition-all group"
+              className={`w-full py-4 px-8 rounded-xl text-base sm:text-lg font-black uppercase tracking-wider flex items-center justify-center gap-3 active:scale-95 transition-all group ${
+                eventConfig.registrationsClosed
+                  ? "bg-[#1C1917] hover:bg-[#24170D] text-[#FAF4EC] border border-[#E7CEA3]/20 shadow-md"
+                  : "btn-bhagwa-primary"
+              }`}
             >
-              <span>JOIN THE SANGAM (₹50)</span>
+              <span>{eventConfig.registrationsClosed ? "REGISTRATIONS CLOSED • VIEW NOTICE" : "JOIN THE SANGAM (₹50)"}</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
             </Link>
             <span className="text-[11px] font-bold text-[#57534E]">

@@ -97,7 +97,7 @@ export default function EventInfo() {
                 href="/register"
                 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#E65100] hover:text-[#D84315] transition-colors"
               >
-                <span>GET DIGITAL PASS (₹50)</span>
+                <span>{eventConfig.registrationsClosed ? "VIEW PASS & EVENT NOTICE" : "GET DIGITAL PASS (₹50)"}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -154,9 +154,13 @@ export default function EventInfo() {
 
           <Link
             href="/register"
-            className="px-6 py-3 rounded-xl bg-[#E65100] hover:bg-[#FF6D00] text-white text-xs font-black uppercase tracking-wider shadow-bhagwa-sm transition-all active:scale-95 shrink-0"
+            className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all active:scale-95 shrink-0 ${
+              eventConfig.registrationsClosed
+                ? "bg-[#1C1917] hover:bg-[#24170D] text-white border border-[#E7CEA3]/20 shadow-sm"
+                : "bg-[#E65100] hover:bg-[#FF6D00] text-white shadow-bhagwa-sm"
+            }`}
           >
-            REGISTER NOW
+            {eventConfig.registrationsClosed ? "REGISTRATIONS CLOSED" : "REGISTER NOW"}
           </Link>
         </div>
 

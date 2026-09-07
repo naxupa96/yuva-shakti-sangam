@@ -62,9 +62,13 @@ export default function Hero() {
 
               <Link
                 href="/register"
-                className="px-4 sm:px-6 py-2.5 rounded-xl bg-[#F05A12] hover:bg-[#C8460B] text-white text-xs sm:text-sm font-black uppercase tracking-wider shadow-bhagwa-sm transition-all active:scale-95 flex items-center gap-1.5"
+                className={`px-4 sm:px-6 py-2.5 rounded-xl text-white text-xs sm:text-sm font-black uppercase tracking-wider transition-all active:scale-95 flex items-center gap-1.5 ${
+                  eventConfig.registrationsClosed
+                    ? "bg-[#17130E] hover:bg-[#24170D] border border-[#E7CEA3]/20 shadow-sm"
+                    : "bg-[#F05A12] hover:bg-[#C8460B] shadow-bhagwa-sm"
+                }`}
               >
-                <span>REGISTER (₹50)</span>
+                <span>{eventConfig.registrationsClosed ? "CLOSED" : "REGISTER (₹50)"}</span>
               </Link>
 
               <button
@@ -240,9 +244,13 @@ export default function Hero() {
               <div className="pt-1">
                 <Link
                   href="/register"
-                  className="w-full py-4 px-6 rounded-xl btn-bhagwa-primary text-sm sm:text-base font-black uppercase tracking-wider flex items-center justify-center gap-2 group"
+                  className={`w-full py-4 px-6 rounded-xl text-sm sm:text-base font-black uppercase tracking-wider flex items-center justify-center gap-2 group ${
+                    eventConfig.registrationsClosed
+                      ? "bg-[#17130E] text-[#FAF4EC] hover:bg-[#24170D] border border-[#E7CEA3]/20 shadow-md"
+                      : "btn-bhagwa-primary"
+                  }`}
                 >
-                  <span>JOIN THE SANGAM (₹50)</span>
+                  <span>{eventConfig.registrationsClosed ? "REGISTRATIONS CLOSED • VIEW DETAILS" : "JOIN THE SANGAM (₹50)"}</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
