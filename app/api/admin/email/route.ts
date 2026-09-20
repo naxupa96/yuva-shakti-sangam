@@ -46,8 +46,13 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const apiKey = process.env.RESEND_API_KEY;
-    const fromEmail = process.env.RESEND_FROM_EMAIL || "Yuva Shakti Sangam <onboarding@resend.dev>";
+    const rawFrom = (process.env.RESEND_FROM_EMAIL || "").trim();
+    // Resend requires verified custom domain; if @gmail.com is provided, use onboarding@resend.dev with reply-to
+    const isGmailSender = rawFrom.includes("@gmail.com");
+    const fromEmail = !rawFrom || isGmailSender
+      ? "Yuva Shakti Sangam <onboarding@resend.dev>"
+      : rawFrom;
+    const replyTo = "yuvashaktisangam2047@gmail.com";
 
     if (!apiKey) {
       return NextResponse.json(
@@ -81,6 +86,7 @@ export async function POST(req: NextRequest) {
 
       const { data, error } = await resend.emails.send({
         from: fromEmail,
+        reply_to: replyTo,
         to: testRecipient,
         subject: "Certificate of Participation & Event Feedback • Yuva Shakti Sangam",
         html: sampleHtml,
@@ -131,10 +137,12 @@ export async function POST(req: NextRequest) {
 
         const { error: sendErr } = await resend.emails.send({
           from: fromEmail,
+          reply_to: replyTo,
           to: p.email!,
           subject: "Your Official Certificate of Participation & Feedback • Yuva Shakti Sangam",
           html,
         });
+
 
         if (sendErr) {
           failedCount++;
