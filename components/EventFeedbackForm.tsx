@@ -29,7 +29,7 @@ const RATING_LABELS: Record<number, { title: string; subtitle: string }> = {
 };
 
 export default function EventFeedbackForm({ participant }: EventFeedbackFormProps) {
-  const [rating, setRating] = useState<number>(5);
+  const [rating, setRating] = useState<number>(1);
   const [hoverRating, setHoverRating] = useState<number | null>(null);
   const [feedbackText, setFeedbackText] = useState<string>("");
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -112,7 +112,7 @@ export default function EventFeedbackForm({ participant }: EventFeedbackFormProp
   };
 
   const activeRating = hoverRating || rating;
-  const ratingDetails = RATING_LABELS[activeRating] || RATING_LABELS[5];
+  const ratingDetails = RATING_LABELS[activeRating] || RATING_LABELS[1];
 
   if (loadingInitial) {
     return (
