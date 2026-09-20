@@ -45,7 +45,7 @@ export default function AdminEmailBroadcastPage() {
   const fetchStatus = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/email");
+      const res = await fetch("/api/admin/email", { cache: "no-store" });
       const data = await res.json();
       if (data.success) {
         setHasResendKey(data.has_resend_key);
@@ -267,7 +267,7 @@ export default function AdminEmailBroadcastPage() {
             />
             <button
               type="submit"
-              disabled={sendingTest || !hasResendKey}
+              disabled={sendingTest}
               className="w-full sm:w-auto px-5 py-3 rounded-xl bg-[#1C1917] text-white hover:bg-[#2E241E] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
             >
               {sendingTest ? (

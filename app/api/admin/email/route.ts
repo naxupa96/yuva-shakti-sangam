@@ -4,6 +4,9 @@ import { getAdminClient } from "@/lib/supabase/admin";
 import { generateCertificateEmailHtml } from "@/lib/email/template";
 import { eventConfig } from "@/lib/config";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(req: NextRequest) {
   try {
     const supabase = getAdminClient();
@@ -53,6 +56,8 @@ export async function POST(req: NextRequest) {
       ? "Yuva Shakti Sangam <onboarding@resend.dev>"
       : rawFrom;
     const replyTo = "yuvashaktisangam2047@gmail.com";
+
+    const apiKey = process.env.RESEND_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json(
