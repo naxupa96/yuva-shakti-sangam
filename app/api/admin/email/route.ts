@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
       total_checked_in: participants?.length || 0,
       eligible_count: eligible.length,
       has_resend_key: hasResendKey,
-      sender_email: process.env.RESEND_FROM_EMAIL || "Yuva Shakti Sangam <onboarding@resend.dev>",
+      sender_email: process.env.RESEND_FROM_EMAIL || "Yuva Shakti Sangam <contact@yuvashaktisangam.me>",
       sample_recipients: eligible.slice(0, 10).map((p) => ({
         id: p.id,
         name: p.name,
@@ -50,10 +50,10 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const rawFrom = (process.env.RESEND_FROM_EMAIL || "").trim();
-    // Resend requires verified custom domain; if @gmail.com is provided, use onboarding@resend.dev with reply-to
+    // Default to verified domain contact@yuvashaktisangam.me if none or gmail provided
     const isGmailSender = rawFrom.includes("@gmail.com");
     const fromEmail = !rawFrom || isGmailSender
-      ? "Yuva Shakti Sangam <onboarding@resend.dev>"
+      ? "Yuva Shakti Sangam <contact@yuvashaktisangam.me>"
       : rawFrom;
     const replyTo = "yuvashaktisangam2047@gmail.com";
 
