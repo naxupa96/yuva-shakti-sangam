@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
 
       const { data, error } = await resend.emails.send({
         from: fromEmail,
-        reply_to: replyTo,
+        replyTo: replyTo,
         to: testRecipient,
         subject: "Certificate of Participation & Event Feedback • Yuva Shakti Sangam",
         html: sampleHtml,
@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
 
         const { error: sendErr } = await resend.emails.send({
           from: fromEmail,
-          reply_to: replyTo,
+          replyTo: replyTo,
           to: p.email!,
           subject: "Your Official Certificate of Participation & Feedback • Yuva Shakti Sangam",
           html,
