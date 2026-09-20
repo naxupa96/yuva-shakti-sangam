@@ -21,6 +21,7 @@ import {
   formatParticipantName,
 } from "@/lib/ticket/certificate-generator";
 import { downloadBlob } from "@/lib/ticket/generator";
+import EventFeedbackForm from "@/components/EventFeedbackForm";
 
 interface ParticipationCertificateProps {
   participant: Participant;
@@ -223,6 +224,10 @@ export default function ParticipationCertificate({
           <span>{shared ? "LINK COPIED!" : "SHARE CERTIFICATE"}</span>
         </button>
       </div>
+
+      {/* Participant Event Feedback & 5-Star Rating */}
+      <EventFeedbackForm participant={participant} />
     </div>
   );
 }
+

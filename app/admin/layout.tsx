@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   ExternalLink,
   MessageSquareQuote,
+  Star,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -116,8 +117,10 @@ export default function AdminLayout({
     { href: "/admin/checkin", label: "Check-in Scanner", icon: QrCode },
     { href: "/admin/participants", label: "Participants", icon: Users },
     { href: "/admin/questions", label: "Questions", icon: MessageSquareQuote },
+    { href: "/admin/feedback", label: "Feedback", icon: Star },
     { href: "/admin/payments", label: "Payments", icon: CreditCard },
   ];
+
 
   return (
     <div className="min-h-screen flex flex-col bg-[#EAE0D0] bg-parchment-texture text-[#1C1917]">

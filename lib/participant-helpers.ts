@@ -125,7 +125,7 @@ export function extractInterests(p: ParticipantLike | null | undefined): string[
 }
 
 /**
- * Extracts pure referral source by stripping out embedded `Q: ...`, `Interests: ...`, and `Gender: ...` segments.
+ * Extracts pure referral source by stripping out embedded `Q: ...`, `Interests: ...`, `Gender: ...`, `Rating: ...`, and `Feedback: ...` segments.
  */
 export function extractReferralSource(p: ParticipantLike | null | undefined): string {
   if (!p || !p.referral_source || typeof p.referral_source !== "string") return "";
@@ -135,8 +135,36 @@ export function extractReferralSource(p: ParticipantLike | null | undefined): st
     (seg) =>
       !seg.toLowerCase().startsWith("q:") &&
       !seg.toLowerCase().startsWith("interests:") &&
-      !seg.toLowerCase().startsWith("gender:")
+      !seg.toLowerCase().startsWith("gender:") &&
+      !seg.toLowerCase().startsWith("rating:") &&
+      !seg.toLowerCase().startsWith("feedback:")
   );
 
   return cleanSegments.join(" | ");
 }
+
+/**
+ * Extracts rating (1 to 5) from participant referral_source if present
+ */
+export function extractRating(p: ParticipantLike | null | undefined): number | null {
+  if (!p || !p.referral_source || typeof p.referral_source !== "string") return null;
+  const match = p.referral_source.match(/(?:^|\|\s*)Rating:\s*(\d(?:\.\d)?)\s*(?:\/5)?/i);
+  if (match && match[1]) {
+    const val = parseFloat(match[1]);
+    if (!isNaN(val) && val >= 1 && val <= 5) return val;
+  }
+  return null;
+}
+
+/**
+ * Extracts feedback text from participant referral_source if present
+ */
+export function extractFeedback(p: ParticipantLike | null | undefined): string {
+  if (!p || !p.referral_source || typeof p.referral_source !== "string") return "";
+  const match = p.referral_source.match(/(?:^|\|\s*)Feedback:\s*([^|]+)/i);
+  if (match && match[1]) {
+    return match[1].trim();
+  }
+  return "";
+}
+

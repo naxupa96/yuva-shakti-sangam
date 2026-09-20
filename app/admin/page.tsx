@@ -17,6 +17,7 @@ import {
   AlertCircle,
   LogOut,
   MessageSquareQuote,
+  Star,
 } from "lucide-react";
 import { DashboardStats } from "@/types/registration";
 import { createClient } from "@/lib/supabase/client";
@@ -38,7 +39,10 @@ export default function AdminDashboardPage() {
     pending_cash_amount: 0,
     total_questions: 0,
     checked_in_questions: 0,
+    total_feedback: 0,
+    average_rating: 5.0,
   });
+
 
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
@@ -127,7 +131,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Core Metric Overview Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-3.5">
           {/* Card 1: Registered Total */}
           <div className="p-4 sm:p-5 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-parchment-card space-y-2 relative overflow-hidden">
             <CornerOrnament className="absolute top-2 right-2 text-[#E65100]/20 -scale-x-100" />
@@ -184,7 +188,31 @@ export default function AdminDashboardPage() {
             </div>
           </Link>
 
-          {/* Card 4: Total Revenue Collected */}
+          {/* Card 4: Event Feedback & Ratings */}
+          <Link
+            href="/admin/feedback"
+            className="p-4 sm:p-5 rounded-2xl bg-amber-50/90 border-2 border-[#FFA000]/60 hover:border-[#E65100] shadow-parchment-card space-y-2 relative overflow-hidden transition-all group cursor-pointer"
+          >
+            <CornerOrnament className="absolute top-2 right-2 text-[#E65100]/20 -scale-x-100" />
+            <div className="flex items-center justify-between text-[#5A4839]">
+              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#B45309]">
+                FEEDBACK
+              </span>
+              <Star className="w-4 h-4 text-[#FFA000] fill-[#FFA000] group-hover:scale-110 transition-transform" />
+            </div>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-display font-black text-[#1C1917]">
+                {(stats.average_rating || 5.0).toFixed(1)}
+              </span>
+              <span className="text-xs font-bold text-[#FFA000]">★</span>
+            </div>
+            <div className="text-[10px] text-[#5A4839] font-bold flex items-center gap-1">
+              <span>{stats.total_feedback || 0} Reviews</span>
+              <span>• View &rarr;</span>
+            </div>
+          </Link>
+
+          {/* Card 5: Total Revenue Collected */}
           <div className="p-4 sm:p-5 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-parchment-card space-y-2 relative overflow-hidden">
             <CornerOrnament className="absolute top-2 right-2 text-[#E65100]/20 -scale-x-100" />
             <div className="flex items-center justify-between text-[#5A4839]">
@@ -199,7 +227,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {/* Card 5: Pending Cash at Gate */}
+          {/* Card 6: Pending Cash at Gate */}
           <div className="p-4 sm:p-5 rounded-2xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-parchment-card space-y-2 relative overflow-hidden col-span-2 lg:col-span-1">
             <CornerOrnament className="absolute top-2 right-2 text-[#E65100]/20 -scale-x-100" />
             <div className="flex items-center justify-between text-[#5A4839]">
@@ -210,10 +238,11 @@ export default function AdminDashboardPage() {
               ₹{stats.pending_cash_amount.toLocaleString("en-IN")}
             </div>
             <div className="text-[10px] text-amber-800 font-medium truncate">
-              {stats.cash_pending_count} to collect at gate
+              {stats.cash_pending_count} at gate
             </div>
           </div>
         </div>
+
 
         {/* Financial Breakdown Section */}
         <div className="p-6 rounded-3xl bg-[#F5EBE1] border-2 border-[#1C1917]/15 shadow-parchment-deep space-y-5">

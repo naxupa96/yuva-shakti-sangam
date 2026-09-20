@@ -21,6 +21,7 @@ import { CornerOrnament, MandalaMotif, DevanagariWatermark } from "@/components/
 import { Participant } from "@/types/registration";
 import { generateQrDataUrl, generateTicketPdf, downloadBlob } from "@/lib/ticket/generator";
 import ParticipationCertificate from "@/components/ParticipationCertificate";
+import EventFeedbackForm from "@/components/EventFeedbackForm";
 
 export default function TicketPage({
   params,
@@ -357,6 +358,13 @@ export default function TicketPage({
                   &bull; <strong>Venue:</strong> Shree Saurashtra Patel Samaj, Isanpur Rd, Basant Nagar, Maninagar, Ahmedabad.
                 </p>
               </div>
+
+              {/* Event Feedback Section for Attendees */}
+              {participant.checked_in && (
+                <div className="pt-2 text-left">
+                  <EventFeedbackForm participant={participant} />
+                </div>
+              )}
 
               {/* Event Timing strip */}
               <div className="pt-4 border-t border-[#292524]/10 flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-[#5A4839]">

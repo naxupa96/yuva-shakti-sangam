@@ -104,4 +104,7 @@ export interface DashboardStats {
   pending_cash_amount: number;
   total_questions?: number;
   checked_in_questions?: number;
+  total_feedback?: number;
+  average_rating?: number;
 }
+

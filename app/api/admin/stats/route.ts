@@ -5,14 +5,18 @@ export async function GET(_req: NextRequest) {
   try {
     const supabase = getAdminClient();
 
-    // 1. Fetch live records from participants and payments
-    const [participantsRes, paymentsRes] = await Promise.all([
+    // 1. Fetch live records from participants, payments, and feedback audit_logs
+    const [participantsRes, paymentsRes, feedbackRes] = await Promise.all([
       supabase
         .from("participants")
         .select("id, payment_status, payment_method, checked_in, referral_source"),
       supabase
         .from("payments")
         .select("amount, status, method"),
+      supabase
+        .from("audit_logs")
+        .select("details")
+        .eq("action", "EVENT_FEEDBACK"),
     ]);
 
     if (participantsRes.error) {
@@ -86,6 +90,16 @@ export async function GET(_req: NextRequest) {
 
     const total_revenue = online_revenue + cash_revenue;
 
+    // Feedback calculations
+    const feedbackItems = feedbackRes.data || [];
+    let feedbackTotalScore = 0;
+    feedbackItems.forEach((f: any) => {
+      const rating = Number(f.details?.rating) || 5;
+      feedbackTotalScore += rating;
+    });
+    const total_feedback = feedbackItems.length;
+    const average_rating = total_feedback > 0 ? Number((feedbackTotalScore / total_feedback).toFixed(1)) : 5.0;
+
     const stats = {
       total_registered,
       total_paid,
@@ -101,12 +115,15 @@ export async function GET(_req: NextRequest) {
       pending_cash_amount,
       total_questions,
       checked_in_questions,
+      total_feedback,
+      average_rating,
     };
 
     return NextResponse.json({
       success: true,
       stats,
     });
+
   } catch (error: any) {
     console.error("Admin stats error:", error);
     return NextResponse.json({ success: false, error: "Server error fetching stats." }, { status: 500 });
