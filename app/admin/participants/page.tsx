@@ -24,9 +24,17 @@ import {
   GraduationCap,
   Sparkles,
   Tag,
+  Star,
 } from "lucide-react";
 import { Participant } from "@/types/registration";
-import { extractQuestion, extractInterests, extractReferralSource, extractGender } from "@/lib/participant-helpers";
+import {
+  extractQuestion,
+  extractInterests,
+  extractReferralSource,
+  extractGender,
+  extractRating,
+  extractFeedback,
+} from "@/lib/participant-helpers";
 
 export default function AdminParticipantsPage() {
   const [participants, setParticipants] = useState<Participant[]>([]);
@@ -494,6 +502,46 @@ export default function AdminParticipantsPage() {
                   <p className="text-xs font-medium">No open-mic question was submitted during registration.</p>
                 </div>
               )}
+
+              {/* Event Feedback & 5-Star Rating Section */}
+              {extractRating(selectedParticipant) !== null && (
+                <div className="p-5 rounded-2xl bg-[#FAF4EC] border-2 border-[#FFA000]/60 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-[#FFA000] text-black flex items-center justify-center">
+                        <Star className="w-4 h-4 fill-black" />
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-mono font-black uppercase tracking-wider text-[#B45309] block">
+                          EVENT FEEDBACK &amp; RATING
+                        </span>
+                        <div className="flex items-center gap-1 mt-0.5">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star
+                              key={s}
+                              className={`w-3.5 h-3.5 ${
+                                s <= (extractRating(selectedParticipant) || 5)
+                                  ? "text-[#FFA000] fill-[#FFA000]"
+                                  : "text-zinc-300"
+                              }`}
+                            />
+                          ))}
+                          <span className="text-xs font-black text-[#E65100] ml-1">
+                            {extractRating(selectedParticipant)} / 5 Stars
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {extractFeedback(selectedParticipant) && (
+                    <blockquote className="text-sm font-serif font-medium text-[#1C1917] bg-white/90 p-4 rounded-xl border border-[#292524]/10 leading-relaxed italic">
+                      &ldquo;{extractFeedback(selectedParticipant)}&rdquo;
+                    </blockquote>
+                  )}
+                </div>
+              )}
+
 
               {/* Areas of Interest */}
               {extractInterests(selectedParticipant).length > 0 && (

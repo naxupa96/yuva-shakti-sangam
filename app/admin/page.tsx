@@ -311,7 +311,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Quick Management Shortcuts */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <Link
             href="/admin/checkin"
             className="p-5 rounded-2xl bg-[#1C1917] text-[#FAF4EC] hover:bg-[#24170D] transition-all flex items-center justify-between shadow-lg group"
@@ -346,6 +346,24 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <ArrowUpRight className="w-4 h-4 text-[#F05A12] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+          </Link>
+
+          <Link
+            href="/admin/feedback"
+            className="p-5 rounded-2xl bg-[#FAF4EC] border-2 border-[#FFA000]/60 hover:border-[#E65100] transition-all flex items-center justify-between shadow-parchment-card group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#FFA000] text-black flex items-center justify-center">
+                <Star className="w-5 h-5 fill-black" />
+              </div>
+              <div>
+                <span className="text-sm font-display font-black uppercase block text-[#1C1917]">
+                  EVENT FEEDBACK
+                </span>
+                <span className="text-[10px] text-[#5A4839]">5-star ratings & reviews</span>
+              </div>
+            </div>
+            <ArrowUpRight className="w-4 h-4 text-[#FFA000] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </Link>
 
           <Link
@@ -384,6 +402,7 @@ export default function AdminDashboardPage() {
             <ArrowUpRight className="w-4 h-4 text-[#F05A12] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </Link>
         </div>
+
       </div>
     </div>
   );
