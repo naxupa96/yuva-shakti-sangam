@@ -18,7 +18,9 @@ import {
   LogOut,
   MessageSquareQuote,
   Star,
+  Mail,
 } from "lucide-react";
+
 import { DashboardStats } from "@/types/registration";
 import { createClient } from "@/lib/supabase/client";
 import { CornerOrnament, MandalaMotif } from "@/components/Decorations";
@@ -311,7 +313,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Quick Management Shortcuts */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
           <Link
             href="/admin/checkin"
             className="p-5 rounded-2xl bg-[#1C1917] text-[#FAF4EC] hover:bg-[#24170D] transition-all flex items-center justify-between shadow-lg group"
@@ -401,7 +403,26 @@ export default function AdminDashboardPage() {
             </div>
             <ArrowUpRight className="w-4 h-4 text-[#F05A12] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </Link>
+
+          <Link
+            href="/admin/email"
+            className="p-5 rounded-2xl bg-emerald-50 border-2 border-emerald-300 hover:border-emerald-500 transition-all flex items-center justify-between shadow-parchment-card group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+                <Mail className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-sm font-display font-black uppercase block text-emerald-950">
+                  EMAIL ATTENDEES
+                </span>
+                <span className="text-[10px] text-emerald-800">Certificate &amp; Feedback dispatch</span>
+              </div>
+            </div>
+            <ArrowUpRight className="w-4 h-4 text-emerald-700 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+          </Link>
         </div>
+
 
       </div>
     </div>

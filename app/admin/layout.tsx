@@ -15,6 +15,7 @@ import {
   ExternalLink,
   MessageSquareQuote,
   Star,
+  Mail,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -118,6 +119,7 @@ export default function AdminLayout({
     { href: "/admin/participants", label: "Participants", icon: Users },
     { href: "/admin/questions", label: "Questions", icon: MessageSquareQuote },
     { href: "/admin/feedback", label: "Feedback", icon: Star },
+    { href: "/admin/email", label: "Email Attendees", icon: Mail },
     { href: "/admin/payments", label: "Payments", icon: CreditCard },
   ];
 
