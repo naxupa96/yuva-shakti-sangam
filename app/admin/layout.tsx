@@ -16,6 +16,7 @@ import {
   MessageSquareQuote,
   Star,
   Mail,
+  Building,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -115,6 +116,7 @@ export default function AdminLayout({
 
   const navLinks = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/mahattam-sakha", label: "महोत्तम शाखा", icon: Building },
     { href: "/admin/checkin", label: "Check-in Scanner", icon: QrCode },
     { href: "/admin/participants", label: "Participants", icon: Users },
     { href: "/admin/questions", label: "Questions", icon: MessageSquareQuote },

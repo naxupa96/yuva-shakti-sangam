@@ -60,10 +60,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(homeUrl);
   }
 
-  // 1. Volunteer route logic
+  // 1. Team / Volunteer route logic
   const isVolunteerLoginPage = pathname === "/volunteer/login";
   const isVolunteerRoute = pathname.startsWith("/volunteer");
+  const isTeamRoute = pathname.startsWith("/team");
   const isVolunteerApiRoute = pathname.startsWith("/api/volunteer");
+  const isMahattamApiRoute = pathname.startsWith("/api/mahattam-sakha");
   const isVolunteerAuthApi =
     pathname === "/api/volunteer/login" ||
     pathname === "/api/volunteer/logout" ||
@@ -73,7 +75,7 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse;
   }
 
-  // Check admin session (admin can also access volunteer area)
+  // Check admin session (admin can also access volunteer & team area)
   const adminCookie = request.cookies.get(getAdminCookieName())?.value;
   const { valid: isAdminTokenValid } = await verifyAdminToken(adminCookie);
 
@@ -83,12 +85,23 @@ export async function middleware(request: NextRequest) {
 
   const isVolunteerAuthenticated = isVolunteerTokenValid || isAdminTokenValid;
 
-  // Protect Volunteer API routes
-  if (isVolunteerApiRoute && !isVolunteerAuthenticated) {
+  // Protect Volunteer & Mahattam API routes
+  if ((isVolunteerApiRoute || isMahattamApiRoute) && !isVolunteerAuthenticated) {
     return NextResponse.json(
-      { success: false, error: "Unauthorized. Volunteer access required." },
+      { success: false, error: "Unauthorized. Authorized team member or admin access required." },
       { status: 401 }
     );
+  }
+
+  // Protect Team Pages (Mahattam Shakha form)
+  if (isTeamRoute) {
+    if (!isVolunteerAuthenticated) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/volunteer/login";
+      redirectUrl.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(redirectUrl);
+    }
+    return supabaseResponse;
   }
 
   // Protect Volunteer Pages
@@ -199,6 +212,8 @@ export const config = {
     "/api/admin/:path*",
     "/volunteer/:path*",
     "/api/volunteer/:path*",
+    "/team/:path*",
+    "/api/mahattam-sakha/:path*",
     "/ticket/:path*",
   ],
 };

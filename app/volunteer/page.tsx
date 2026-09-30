@@ -29,6 +29,7 @@ import {
   Database,
   Copy,
   ExternalLink,
+  FileText,
 } from "lucide-react";
 import { Html5Qrcode } from "html5-qrcode";
 import QRCode from "qrcode";
@@ -953,6 +954,15 @@ export default function VolunteerScannerPage() {
           >
             <Search className="w-4 h-4" />
           </button>
+
+          <a
+            href="/team/mahattam-sakha"
+            className="px-2.5 py-1.5 rounded-xl bg-[#E65100]/20 hover:bg-[#E65100]/40 border border-[#E65100]/40 text-[#FFA000] font-bold text-xs flex items-center gap-1.5 transition-colors"
+            title="Mahattam Shakha Attendance Form"
+          >
+            <FileText className="w-3.5 h-3.5 text-[#FFA000]" />
+            <span className="hidden sm:inline">महोत्तम शाखा</span>
+          </a>
 
           <button
             onClick={() => setShowPaymentQrModal(true)}

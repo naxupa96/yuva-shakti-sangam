@@ -19,6 +19,7 @@ import {
   MessageSquareQuote,
   Star,
   Mail,
+  Building,
 } from "lucide-react";
 
 import { DashboardStats } from "@/types/registration";
@@ -313,7 +314,25 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Quick Management Shortcuts */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4">
+          <Link
+            href="/admin/mahattam-sakha"
+            className="p-5 rounded-2xl bg-[#E65100] text-white hover:bg-[#D84315] transition-all flex items-center justify-between shadow-lg group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center">
+                <Building className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-sm font-display font-black uppercase block text-white">
+                  महोत्तम शाखा
+                </span>
+                <span className="text-[10px] text-white/80">Daily Vasti attendance</span>
+              </div>
+            </div>
+            <ArrowUpRight className="w-4 h-4 text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+          </Link>
+
           <Link
             href="/admin/checkin"
             className="p-5 rounded-2xl bg-[#1C1917] text-[#FAF4EC] hover:bg-[#24170D] transition-all flex items-center justify-between shadow-lg group"
