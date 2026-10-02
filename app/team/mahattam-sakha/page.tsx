@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import {
   VASTI_STHAN_DATA,
+  VASTI_CONFIG,
   VASTI_LIST,
   TIMING_OPTIONS,
   VALID_DATES,
@@ -77,6 +78,17 @@ export default function MahattamSakhaFormPage() {
 
   // Available sthans for the selected vasti
   const availableSthans = vasti && VASTI_STHAN_DATA[vasti] ? VASTI_STHAN_DATA[vasti] : [];
+  const currentSthanConfig = vasti && VASTI_CONFIG[vasti] ? VASTI_CONFIG[vasti].find((s) => s.name === sthan) : null;
+
+  const handleSthanChange = (selectedSthan: string) => {
+    setSthan(selectedSthan);
+    if (vasti && VASTI_CONFIG[vasti]) {
+      const match = VASTI_CONFIG[vasti].find((s) => s.name === selectedSthan);
+      if (match?.preferredTiming) {
+        setTiming(match.preferredTiming);
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -321,7 +333,7 @@ export default function MahattamSakhaFormPage() {
                 required
                 disabled={!vasti}
                 value={sthan}
-                onChange={(e) => setSthan(e.target.value)}
+                onChange={(e) => handleSthanChange(e.target.value)}
                 className={`w-full px-4 py-3 rounded-xl bg-white border border-[#292524]/30 focus:border-[#E65100] focus:ring-2 focus:ring-[#E65100]/20 font-semibold text-sm text-[#1C1917] outline-none transition-all ${
                   !vasti ? "opacity-50 cursor-not-allowed bg-gray-100" : "cursor-pointer"
                 }`}
@@ -329,13 +341,29 @@ export default function MahattamSakhaFormPage() {
                 <option value="">
                   {vasti ? `-- Select Sthan for ${vasti} --` : "-- First choose a Vasti above --"}
                 </option>
-                {availableSthans.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
+                {availableSthans.map((s) => {
+                  const detail = vasti && VASTI_CONFIG[vasti] ? VASTI_CONFIG[vasti].find((item) => item.name === s) : null;
+                  return (
+                    <option key={s} value={s}>
+                      {s} {detail?.defaultTime ? `• (${detail.defaultTime})` : ""}
+                    </option>
+                  );
+                })}
               </select>
-              {vasti && availableSthans.length > 0 && (
+              {currentSthanConfig && (
+                <div className="mt-2.5 p-2.5 rounded-xl bg-white border border-[#292524]/20 flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <div className="flex items-center gap-1.5 font-bold text-[#E65100]">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Time: {currentSthanConfig.defaultTime || "Standard"}</span>
+                  </div>
+                  {currentSthanConfig.category && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-[#E65100]/10 text-[#E65100] border border-[#E65100]/20">
+                      Type: {currentSthanConfig.category}
+                    </span>
+                  )}
+                </div>
+              )}
+              {vasti && availableSthans.length > 0 && !currentSthanConfig && (
                 <p className="text-[11px] text-[#5A4839]/80 mt-1.5 font-medium">
                   Showing {availableSthans.length} verified sthan{availableSthans.length > 1 ? "s" : ""} under{" "}
                   <strong>{vasti}</strong>
