@@ -108,6 +108,57 @@ export default function AdminMahattamSakhaPage() {
     );
   }, [filteredEntries]);
 
+  // Export to Excel (.xlsx)
+  const exportToExcel = async () => {
+    if (filteredEntries.length === 0) return;
+    try {
+      const XLSX = await import("xlsx");
+      const rows = filteredEntries.map((e, idx) => ({
+        "Sr. No": idx + 1,
+        "Date": e.date,
+        "Timing": e.timing,
+        "Vasti (Zone)": e.vasti,
+        "Sthan (Location)": e.sthan,
+        "Tarun (Youth)": e.tarun,
+        "Bal (Children)": e.bal,
+        "Upasthiti of Yog (Tarun + Bal)": e.yog,
+        "Shishu (Toddlers - Separate)": e.shishu,
+        "Reported By": e.reporter_name || "",
+        "Remarks / Notes": e.notes || "",
+        "Submitted At": e.created_at ? new Date(e.created_at).toLocaleString("en-IN") : "",
+      }));
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(rows);
+
+      // Set column widths
+      ws["!cols"] = [
+        { wch: 8 },
+        { wch: 14 },
+        { wch: 12 },
+        { wch: 18 },
+        { wch: 34 },
+        { wch: 14 },
+        { wch: 14 },
+        { wch: 28 },
+        { wch: 26 },
+        { wch: 20 },
+        { wch: 26 },
+        { wch: 24 },
+      ];
+
+      XLSX.utils.book_append_sheet(wb, ws, "Mahattam Shakha");
+      XLSX.writeFile(
+        wb,
+        `Mahattam_Shakha_Attendance_${new Date().toISOString().slice(0, 10)}.xlsx`
+      );
+    } catch (err) {
+      console.error("Failed to generate Excel:", err);
+      // Fallback to CSV
+      exportToCSV();
+    }
+  };
+
   // Export to CSV
   const exportToCSV = () => {
     if (filteredEntries.length === 0) return;
@@ -195,12 +246,21 @@ export default function AdminMahattamSakhaPage() {
           </button>
 
           <button
+            onClick={exportToExcel}
+            disabled={filteredEntries.length === 0}
+            className="px-4 py-2.5 rounded-xl bg-emerald-700 text-white hover:bg-emerald-800 font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow transition-all cursor-pointer disabled:opacity-50"
+          >
+            <FileSpreadsheet className="w-4 h-4 text-emerald-200" />
+            <span>Export Excel</span>
+          </button>
+
+          <button
             onClick={exportToCSV}
             disabled={filteredEntries.length === 0}
-            className="px-4 py-2.5 rounded-xl bg-[#1C1917] text-[#FAF4EC] hover:bg-[#292524] font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow transition-all cursor-pointer disabled:opacity-50"
+            className="px-3.5 py-2.5 rounded-xl bg-[#1C1917] text-[#FAF4EC] hover:bg-[#292524] font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow transition-all cursor-pointer disabled:opacity-50"
           >
             <Download className="w-4 h-4 text-[#FFA000]" />
-            <span>Export CSV</span>
+            <span>CSV</span>
           </button>
         </div>
       </div>
