@@ -118,7 +118,8 @@ export async function middleware(request: NextRequest) {
     if (isVolunteerLoginPage && isVolunteerAuthenticated) {
       const redirectParam = request.nextUrl.searchParams.get("redirect");
       const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = redirectParam && redirectParam.startsWith("/volunteer") ? redirectParam : "/volunteer";
+      const isSafeTarget = redirectParam && redirectParam.startsWith("/") && !redirectParam.startsWith("//");
+      redirectUrl.pathname = isSafeTarget ? redirectParam : "/volunteer";
       redirectUrl.search = "";
       return NextResponse.redirect(redirectUrl);
     }

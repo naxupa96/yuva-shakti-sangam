@@ -55,10 +55,11 @@ function VolunteerLoginForm() {
         return;
       }
 
-      setMessage("Access verified! Opening scanner...");
+      setMessage(redirectTarget.startsWith("/team") ? "Access verified! Opening Mahattam Shakha form..." : "Access verified! Opening portal...");
 
       setTimeout(() => {
-        window.location.href = redirectTarget.startsWith("/volunteer") ? redirectTarget : "/volunteer";
+        const isSafePath = redirectTarget.startsWith("/") && !redirectTarget.startsWith("//");
+        window.location.href = isSafePath ? redirectTarget : "/volunteer";
       }, 400);
     } catch (err: any) {
       console.error("Volunteer login error:", err);
