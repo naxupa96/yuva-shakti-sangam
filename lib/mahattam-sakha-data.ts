@@ -53,6 +53,7 @@ export const VASTI_CONFIG: Record<string, SthanDetail[]> = {
     { name: "Uttamnagar Garden", defaultTime: "Evening 6:30 to 7:30", preferredTiming: "Shayam", category: "Vidyardhi" },
     { name: "Doon School (Manav kalyan sayukta vidhyarthi)", defaultTime: "Evening 8:00 to 9:00", preferredTiming: "Shayam", category: "Vidyardhi" },
     { name: "canal garden Nr. Avkar hall", defaultTime: "Evening 6:00 to 7:00", preferredTiming: "Shayam", category: "Vidyardhi" },
+    { name: "Canal Garden (Senior Citizen)", defaultTime: "7:00 to 8:00", preferredTiming: "Prabhat", category: "vyavsayi" },
     { name: "Suryacity", defaultTime: "Evening", preferredTiming: "Shayam", category: "Vidyardhi" },
   ],
   "Ramkrushna": [
